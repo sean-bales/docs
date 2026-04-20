@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decks &middot; Sean Bales</title>
+<meta name="description" content="Decks and working artifacts from Sean Bales at Crain Communications.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 920px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); margin: 0; text-wrap: pretty; }
+h1 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  font-weight: 400;
+}
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h3 {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  line-height: 1.22;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover {
+  text-decoration-color: var(--accent);
+  color: var(--accent-deep);
+}
+a:focus-visible {
+  outline: 2px solid var(--accent2);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+header.hero {
+  padding: 1rem 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 { margin-bottom: 1.35rem; }
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: 38em;
+}
+
+/* Deck index list */
+
+.decks-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0 0.8rem;
+  border-bottom: 1.5px solid var(--ink);
+  margin-bottom: 0.5rem;
+}
+.decks-header h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+}
+.decks-header .count {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-list { list-style: none; padding: 0; margin: 0; }
+.deck-list > li {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 2rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.deck-list > li:last-child { border-bottom: none; }
+
+.deck-meta {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.deck-meta .deck-date { display: block; color: var(--ink); margin-bottom: 0.3rem; }
+.deck-meta .deck-topic { color: var(--ink-mute); font-weight: 500; }
+
+.deck-title {
+  margin-bottom: 0.65rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  line-height: 1.22;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+.deck-title a {
+  color: var(--ink);
+  text-decoration: none;
+  background-image: linear-gradient(to right, var(--accent-line), var(--accent-line));
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  padding-bottom: 2px;
+}
+.deck-title a:hover {
+  color: var(--accent);
+  background-image: linear-gradient(to right, var(--accent), var(--accent));
+}
+.deck-title a::after {
+  content: " \2192";
+  color: var(--accent2);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  letter-spacing: 0;
+  padding-left: 0.1em;
+}
+
+.deck-summary {
+  color: var(--ink-soft);
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 42em;
+}
+
+.deck-tags {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.deck-tags .tag {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: var(--sage-wash);
+  color: var(--ink-mute);
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  line-height: 1.3;
+  border: 1px solid var(--rule);
+}
+
+footer.endnote {
+  margin-top: 4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  line-height: 1.7;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .deck-list > li { grid-template-columns: 1fr; gap: 0.75rem; }
+  .deck-meta { display: flex; align-items: baseline; gap: 0.85rem; }
+  .deck-meta .deck-date, .deck-meta .deck-topic { display: inline; margin: 0; }
+  footer.endnote { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/gnw-taxonomy-deck/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>Decks</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Decks &amp; working <em>artifacts.</em></h1>
+    <p class="standfirst">Presentations, planning docs, and long-scroll working deliverables from Sean Bales at Crain Communications. Published as they happen.</p>
+  </header>
+
+  <div class="decks-header">
+    <h4>Published</h4>
+    <span class="count">1 deck</span>
+  </div>
+
+  <ol class="deck-list">
+
+    <li>
+      <div class="deck-meta">
+        <span class="deck-date">04 / 20 / 2026</span>
+        <span class="deck-topic">Claude Enterprise</span>
+      </div>
+      <div>
+        <h3 class="deck-title"><a href="decks/phase1-help-desk-deck-2026-04-20.html">Standing up Phase 1 of Claude Enterprise for Crain</a></h3>
+        <p class="deck-summary">Executive setup plan walked through with the IT Help Desk team: procurement path through AWS Marketplace, identity stack, four-week critical path to launch, and ownership scope for the first 22 editorial seats. Appendix covers the full RACI matrix, connector and plugin governance, skills management framework, and beyond-skills use-case patterns.</p>
+        <div class="deck-tags">
+          <span class="tag">Phase 1</span>
+          <span class="tag">IT Help Desk</span>
+          <span class="tag">Governance</span>
+        </div>
+      </div>
+    </li>
+
+  </ol>
+
+  <footer class="endnote">
+    <span>Sean Bales &middot; Crain Communications</span>
+    <span>Published via GitHub Pages</span>
+  </footer>
+
+</main>
+</body>
+</html>

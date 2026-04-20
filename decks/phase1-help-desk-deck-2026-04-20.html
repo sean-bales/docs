@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standing up Phase 1 of Claude Enterprise for Crain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: transparent; z-index: 10; pointer-events: none; }
+.progress-rail::before { content: ""; display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); transition: transform 0.12s linear; }
+
+.brand-strip { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 0.25rem 0 1.5rem; margin-bottom: clamp(1.25rem, 2.5vw, 2rem); border-bottom: 1px solid var(--rule); }
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline { display: flex; align-items: center; gap: 0.85rem; font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); font-variant-numeric: tabular-nums; }
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); margin: 0; text-wrap: pretty; }
+h1 { font-size: clamp(1.95rem, 3.8vw, 2.85rem); line-height: 1.08; letter-spacing: -0.015em; font-weight: 400; }
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h2 { font-size: clamp(1.55rem, 2.7vw, 2.05rem); line-height: 1.15; letter-spacing: -0.008em; font-weight: 400; }
+h2 em { font-style: italic; color: var(--ink-soft); }
+h3 { font-size: clamp(1.12rem, 1.7vw, 1.3rem); line-height: 1.3; letter-spacing: -0.003em; font-weight: 500; }
+h4 { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--accent-line); transition: text-decoration-color 0.15s ease, color 0.15s ease; }
+a:hover { text-decoration-color: var(--accent); color: var(--accent-deep); }
+a:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; border-radius: 1px; }
+
+.num { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum", "lnum"; letter-spacing: -0.005em; }
+.num.neg { color: var(--neg); }
+.num.pos { color: var(--pos); }
+.mono { font-family: var(--font-mono); font-size: 0.85em; font-feature-settings: "tnum"; letter-spacing: -0.01em; }
+
+.kicker { display: flex; align-items: center; gap: 0.85rem; font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 1.25rem; }
+.kicker .sec-num { font-family: var(--font-display); font-size: 1.6rem; font-weight: 400; letter-spacing: -0.005em; color: var(--ink); line-height: 1; text-transform: none; font-style: italic; }
+.kicker .sec-num::after { content: ""; display: inline-block; width: 26px; height: 1px; background: var(--accent); vertical-align: middle; margin: 0 0 5px 0.75rem; }
+
+header.hero { padding: 0 0 clamp(2.5rem, 5vw, 4rem); margin-bottom: clamp(0.5rem, 1.5vw, 1rem); position: relative; background: transparent; }
+header.hero::before { content: ""; display: block; width: 36px; height: 2px; background: var(--accent); margin-bottom: 1.75rem; }
+header.hero h1 { margin-bottom: 1.35rem; max-width: none; }
+header.hero .standfirst { font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 1.45rem); line-height: 1.42; font-weight: 400; color: var(--ink-soft); font-style: italic; letter-spacing: -0.003em; max-width: none; }
+
+section.primary { position: relative; background: var(--card); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: 3px; padding: var(--card-pad-y) var(--card-pad-x); margin: 0 0 clamp(1.75rem, 3vw, 2.5rem); box-shadow: var(--shadow-card); }
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+section.primary .lead { font-family: var(--font-display); font-size: clamp(1.2rem, 2vw, 1.5rem); line-height: 1.35; font-style: italic; font-weight: 400; color: var(--ink); margin-bottom: 1.5rem; max-width: none; letter-spacing: -0.005em; }
+
+ol.agenda { list-style: none; padding: 0; margin: 1rem 0 0; counter-reset: agenda; }
+ol.agenda > li { counter-increment: agenda; display: grid; grid-template-columns: 2.25rem 1fr; gap: 1.1rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); font-family: var(--font-display); font-size: clamp(1.08rem, 1.6vw, 1.22rem); line-height: 1.4; color: var(--ink); }
+ol.agenda > li:last-child { border-bottom: none; }
+ol.agenda > li::before { content: counter(agenda, decimal-leading-zero); font-family: var(--font-display); font-style: italic; font-size: 1.5rem; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+ol.agenda > li b { font-weight: 600; color: var(--ink); }
+ol.agenda > li .clarifier { color: var(--ink-soft); }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; margin: 1.25rem 0 0.5rem; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.kpi { padding: 1.5rem 1.25rem; border-right: 1px solid var(--rule); position: relative; }
+.kpi:last-child { border-right: none; }
+.kpi .k-label { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem; }
+.kpi .k-val { font-family: var(--font-display); font-size: clamp(2.4rem, 4vw, 3.5rem); font-weight: 400; line-height: 1; letter-spacing: -0.015em; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; margin-bottom: 0.45rem; }
+.kpi .k-val.neg { color: var(--neg); }
+.kpi .k-val.pos { color: var(--pos); }
+.kpi .k-delta { font-family: var(--font-ui); font-size: 0.88rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.kpi .k-delta b { color: var(--ink); font-weight: 600; }
+.kpi.featured { background: var(--sage-wash); }
+.kpi.featured .k-val { color: var(--accent2); }
+
+.chip { display: inline-block; padding: 0.16rem 0.5rem 0.14rem; background: var(--accent2); color: var(--card); font-family: var(--font-ui); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; border-radius: 2px; line-height: 1; font-variant-numeric: tabular-nums; vertical-align: 0.12em; }
+
+.ifthen { display: grid; grid-template-columns: 2.25rem 1fr; gap: 1.1rem; padding: 1.35rem 0; border-bottom: 1px solid var(--rule); }
+.ifthen:first-of-type { padding-top: 0.5rem; }
+.ifthen:last-of-type { border-bottom: none; padding-bottom: 0.3rem; }
+.ifthen .nn { font-family: var(--font-display); font-style: italic; font-size: 1.5rem; font-weight: 400; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.ifthen .cond { font-family: var(--font-display); font-size: clamp(1.08rem, 1.7vw, 1.25rem); line-height: 1.38; font-weight: 400; color: var(--ink); margin-bottom: 0.55rem; letter-spacing: -0.003em; }
+.ifthen .actual { font-size: 0.98rem; color: var(--ink-soft); line-height: 1.58; }
+.ifthen .actual b { font-family: var(--font-ui); font-weight: 600; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.16em; color: var(--ink-mute); margin-right: 0.55rem; }
+
+.callout { margin: 1.75rem 0 0; padding: 1.25rem 1.5rem; background: var(--accent-wash); border-left: 3px solid var(--accent); border-radius: 0 2px 2px 0; font-size: 1rem; line-height: 1.6; color: var(--ink); }
+.callout strong { color: var(--accent-deep); font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; display: inline-block; margin-right: 0.45rem; }
+.callout.decision { background: var(--accent2-wash); border-left-color: var(--accent2); }
+.callout.decision strong { color: var(--accent2-deep); }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.96rem; margin: 0.85rem 0 1.25rem; font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum", "lnum"; }
+th { text-align: left; padding: 0.8rem 1rem 0.6rem 0; border-bottom: 1.5px solid var(--ink); font-family: var(--font-ui); font-weight: 600; color: var(--ink); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; vertical-align: bottom; }
+td { padding: 0.68rem 1rem 0.68rem 0; border-bottom: 1px solid var(--rule); color: var(--ink-soft); vertical-align: top; line-height: 1.5; }
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+th.num, td.num { text-align: right; padding-right: 0.3rem; }
+td.num:last-child, th.num:last-child { padding-right: 0; }
+td.pos { color: var(--pos); font-weight: 500; }
+td.neg { color: var(--neg); font-weight: 500; }
+tbody tr:nth-child(even):not(.emph) td { background: var(--sage-wash); }
+tr.emph td { background: var(--accent-wash); color: var(--ink); font-weight: 500; }
+tr.emph td:first-child { box-shadow: inset 2px 0 0 var(--accent); padding-left: 0.75rem; }
+
+ol.timeline { list-style: none; padding: 0; margin: 1rem 0 0; position: relative; }
+ol.timeline::before { content: ""; position: absolute; left: 0.42rem; top: 0.5rem; bottom: 0.5rem; width: 1px; background: var(--rule); }
+ol.timeline > li { position: relative; padding: 0.85rem 0 1.35rem 2rem; border-bottom: 1px solid var(--rule); }
+ol.timeline > li:last-child { border-bottom: none; }
+ol.timeline > li::before { content: ""; position: absolute; left: 0; top: 1.1rem; width: 0.85rem; height: 0.85rem; background: var(--card); border: 2px solid var(--accent); border-radius: 50%; }
+ol.timeline > li.milestone::before { background: var(--accent2); border-color: var(--accent2); }
+ol.timeline .t-date { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mute); font-variant-numeric: tabular-nums; margin-bottom: 0.4rem; }
+ol.timeline .t-title { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.32; color: var(--ink); margin-bottom: 0.35rem; letter-spacing: -0.003em; }
+ol.timeline .t-detail { font-size: 0.98rem; color: var(--ink-soft); line-height: 1.55; }
+
+.src { font-family: var(--font-body); font-style: italic; font-size: 0.82rem; color: var(--ink-mute); margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--rule); font-variant-numeric: tabular-nums oldstyle-nums; line-height: 1.55; }
+
+.refs { font-family: var(--font-ui); font-size: 0.78rem; color: var(--ink-mute); margin: 0.45rem 0 0; line-height: 1.75; }
+.refs .refs-label { font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.7rem; color: var(--ink-mute); margin-right: 0.55rem; }
+.refs a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: var(--accent-line); }
+.refs a:hover { color: var(--accent-deep); text-decoration-color: var(--accent); }
+.refs .sep { color: var(--ink-faint); margin: 0 0.35rem; }
+
+.appx-break { margin: 4rem auto 2rem; padding: 2.5rem 0 0; text-align: center; position: relative; }
+.appx-break::before { content: ""; display: block; width: 3rem; height: 1px; background: var(--ink); margin: 0 auto 2rem; }
+.appx-break::after { content: ""; display: block; width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; margin: 0.85rem auto 0; }
+.appx-break h2 { font-size: clamp(1.8rem, 3vw, 2.3rem); font-weight: 500; letter-spacing: -0.008em; color: var(--ink); margin: 0; }
+.appx-break .sub { font-weight: 400; color: var(--ink-soft); font-style: italic; font-size: 1.05rem; margin-top: 0.65rem; }
+
+section.appx { position: relative; background: var(--card); border: 1px solid var(--rule); border-top: 1px solid var(--rule); border-radius: 3px; padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.25rem); margin: 0 0 clamp(1rem, 2vw, 1.5rem); }
+section.appx h3 { margin-bottom: 1.15rem; font-size: 1.3rem; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
+section.appx .kicker { margin-bottom: 0.9rem; color: var(--ink-mute); }
+section.appx .kicker .sec-num { font-size: 1.25rem; }
+section.appx h4 { margin-top: 1.75rem; margin-bottom: 0.55rem; }
+section.appx h4:first-of-type { margin-top: 1.1rem; }
+section.appx p { font-size: 0.98rem; color: var(--ink-soft); line-height: 1.6; margin: 0 0 0.85rem; }
+section.appx p:last-child { margin-bottom: 0; }
+section.appx p .mono { color: var(--ink); }
+section.appx p b, section.appx p strong { color: var(--ink); font-weight: 600; }
+
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.5rem; margin: 1.25rem 0 0; text-align: left; }
+.toc { margin: 0; padding: 0; list-style: none; font-size: 0.96rem; }
+.toc li { break-inside: avoid; padding: 0.55rem 0; border-bottom: 1px dotted var(--rule); }
+.toc li a { text-decoration: none; color: var(--ink); display: flex; align-items: baseline; gap: 0.55rem; }
+.toc li a:hover { color: var(--accent); }
+.toc li a b { font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; min-width: 1.7rem; }
+
+footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--card); border: 1px solid var(--rule); border-radius: 3px; font-family: var(--font-ui); font-size: 0.86rem; color: var(--ink-mute); line-height: 1.7; }
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary, section.appx { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .kicker .sec-num::after { display: none; }
+  .kpis { grid-template-columns: 1fr; }
+  .kpi { border-right: none; border-bottom: 1px solid var(--rule); }
+  .kpi:last-child { border-bottom: none; }
+  .ifthen { grid-template-columns: 1fr; gap: 0.4rem; }
+  table { font-size: 0.9rem; }
+  th, td { padding-right: 0.5rem; }
+  section.primary, section.appx { padding: clamp(1.25rem, 4vw, 1.75rem); }
+  .toc-grid { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/gnw-taxonomy-deck/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales &amp; Marisa Marcinkowski</b>
+      <span>04/20/2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Standing up Phase 1 of Claude Enterprise <em>for Crain.</em></h1>
+  </header>
+
+  <section class="primary" id="s0">
+    <div class="kicker"><span class="sec-num">00</span>Agenda</div>
+    <h2>What we decide today.</h2>
+    <ol class="agenda">
+      <li><div><b>Confirm Help Desk holds the Anthropic org from fulfillment forward</b> <span class="clarifier">&mdash; Primary Owner mailbox is Help Desk's call.</span></div></li>
+      <li><div><b>Walk the identity stand-up</b> <span class="clarifier">&mdash; SAML SSO, SCIM provisioning, 10 groups for role + brand scoping.</span></div></li>
+      <li><div><b>Lock the SSO reclaim comms timing</b> <span class="clarifier">&mdash; Help Desk drafts; Sean approves; sends ~2 weeks before enforcement.</span></div></li>
+      <li><div><b>Scope the runbook</b> <span class="clarifier">&mdash; provisioning, cert rotation, audit-log export, support escalation, renewal calendar.</span></div></li>
+    </ol>
+  </section>
+
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Phase 1 in numbers</div>
+    <h2>Phase 1 is small on purpose &mdash; 22 seats, two surfaces, conservative caps.</h2>
+    <div class="kpis">
+      <div class="kpi featured">
+        <div class="k-label">Editorial seats <span class="chip">P1</span></div>
+        <div class="k-val">22</div>
+        <div class="k-delta">Phase 1 Licenses</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Spend cap, Builder</div>
+        <div class="k-val">$125</div>
+        <div class="k-delta">per user / month &middot; ceiling, not budget</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Spend cap, User</div>
+        <div class="k-val">$50</div>
+        <div class="k-delta">per user / month &middot; ceiling, not budget</div>
+      </div>
+    </div>
+    <p class="src">Source: Phase 1 rollout plan, sections 4 + 9. As of 04/18/2026. Surfaces enabled: Chat + Cowork. Claude Code off for P1.</p>
+  </section>
+
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Procurement &amp; ownership</div>
+    <h2>We buy through AWS Marketplace and seed the org with a service account.</h2>
+    <p class="lead">Two structural choices have to be right from the first click &mdash; the licensing path and who holds Primary Owner.</p>
+
+    <div class="ifthen">
+      <div class="nn">01</div>
+      <div>
+        <div class="cond">AWS Marketplace, the Claude app.</div>
+        <div class="actual"><b>Why</b> DevOps subscribes Claude through AWS. Seat fees flow through Crain's AWS bill; token usage bills on top at API rates. Anthropic removed bundled tokens in Nov 2025 &mdash; every prompt costs, which is why the caps in Section 01 matter from day one.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">02</div>
+      <div>
+        <div class="cond">Primary Owner: a Help Desk-owned mailbox.</div>
+        <div class="actual"><b>Why</b> Whoever's logged in at the fulfillment URL becomes Primary Owner. The org root needs a mailbox that doesn't depend on one person staying &mdash; whether that's a service account, a shared inbox, or a role-based mailbox is Help Desk's call. Sean and Mike Palazuk become Owners. Admins: Marisa (CORP), Mark Fischer (AA), Gennady (PI). The Primary Owner mailbox consumes one license &mdash; expected.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">03</div>
+      <div>
+        <div class="cond">Start at 22 seats. Adds are easy; cuts wait for renewal.</div>
+        <div class="actual"><b>Why</b> AWS daily true-up for seat additions runs $0.66 / seat / day. Reductions only at contract renewal. Conservative start protects the budget; expansion happens on signal in Phase 2.</div>
+      </div>
+    </div>
+
+    <div class="callout decision">
+      <strong>Confirm with Anthropic Support</strong> Whoever lands on the fulfillment URL becomes Primary Owner. Help Desk and Jack coordinate so the right account is logged in at click time.
+    </div>
+    <p class="src">Source: Phase 1 rollout plan, sections 2.2 + 4.4. AWS Marketplace listing pulled 04/18/2026.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/11526368-how-am-i-billed-for-my-enterprise-plan" target="_blank" rel="noopener">Enterprise billing</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/9267276-roles-and-permissions" target="_blank" rel="noopener">Roles &amp; permissions</a></p>
+  </section>
+
+  <section class="primary" id="s3">
+    <div class="kicker"><span class="sec-num">03</span>Identity stack</div>
+    <h2>Identity wires through our enterprise SSO &mdash; SAML for sign-in, SCIM for lifecycle.</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>What it does</th>
+          <th>Owner</th>
+          <th>Operational note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="emph">
+          <td>SAML 2.0 (via WorkOS)</td>
+          <td>SSO from our IdP to Claude</td>
+          <td>Help Desk</td>
+          <td>Domain verified by DNS TXT first. Cert does <em>not</em> auto-rotate &mdash; 30-day expiry reminder lives in the runbook.</td>
+        </tr>
+        <tr>
+          <td>Enterprise IdP</td>
+          <td>Authenticates users; source of group membership</td>
+          <td>Help Desk</td>
+          <td>Tenant + IdP confirmed by Help Desk. Group cap on Claude side is 100 &mdash; not a constraint for us.</td>
+        </tr>
+        <tr>
+          <td>SCIM provisioning</td>
+          <td>Auto user lifecycle (invite, seat, deprovision)</td>
+          <td>Help Desk (Kristy)</td>
+          <td>Push lag from the IdP is normal, not a bug. Triage tickets accordingly.</td>
+        </tr>
+        <tr>
+          <td>Groups (10)</td>
+          <td>Role + brand-level scoping for skills, connectors, spend</td>
+          <td>Help Desk</td>
+          <td>3 admin / role groups + 6 per-brand editorial groups + 1 engineering group. Drives custom roles and spend limits.</td>
+        </tr>
+        <tr>
+          <td>SSO enforcement toggle</td>
+          <td>Forces all Claude logins through SSO</td>
+          <td>Help Desk</td>
+          <td>Flips after the reclaim window closes. Pre-existing personal accounts on Crain emails get locked &mdash; reclaim comms is the mitigation.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="src">Source: Phase 1 rollout plan, sections 4.2&ndash;4.4. Anthropic identity docs, pulled 04/18/2026.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso" target="_blank" rel="noopener">SSO setup</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning" target="_blank" rel="noopener">SCIM provisioning</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/10276682-important-considerations-before-enabling-single-sign-on-sso-and-jit-scim-provisioning" target="_blank" rel="noopener">Pre-enablement considerations</a></p>
+  </section>
+
+  <section class="primary" id="s4">
+    <div class="kicker"><span class="sec-num">04</span>Critical path</div>
+    <h2>Milestones to reach for Phase One and proposed timeline.</h2>
+    <ol class="timeline">
+      <li>
+        <div class="t-date">04/20/2026 &middot; This week</div>
+        <div class="t-title">DevOps subscribes Claude through AWS. IT meeting + Mon/Tue editorial workshop kick off.</div>
+        <div class="t-detail">Help Desk-owned mailbox becomes Primary Owner at fulfillment. Sean and Mike added as Owners. Admins (Marisa, Mark Fischer, Gennady) invited. Workshop locks per-asset migration triage and engineering seat count.</div>
+      </li>
+      <li>
+        <div class="t-date">Week of 04/27 &middot; Identity</div>
+        <div class="t-title">Domain verified, SAML wired, SCIM provisioned.</div>
+        <div class="t-detail">Group scaffolding stood up in our IdP. Skills repo (<span class="mono">crain-claude-skills</span>) created in GitHub by engineering in parallel.</div>
+      </li>
+      <li>
+        <div class="t-date">Week of 05/04 &middot; Pre-launch comms</div>
+        <div class="t-title">SSO reclaim comms sent to all Crain staff.</div>
+        <div class="t-detail">Help Desk drafts; Sean approves. Two-week reclaim window opens for personal Claude accounts on Crain email.</div>
+      </li>
+      <li class="milestone">
+        <div class="t-date">Week of 05/18 &middot; Launch</div>
+        <div class="t-title">"Require SSO for Claude" enabled. Phase 1 seats live; first two skills shipped.</div>
+        <div class="t-detail">Builders and Users invited via SCIM group membership. Marisa + Kristy run the Cassidy &rarr; Claude transition workshop.</div>
+      </li>
+    </ol>
+    <p class="src">Source: Phase 1 rollout plan, section 8. Cassidy contract end date being re-confirmed by Sean with Mike &mdash; flagged as one critical-path risk.</p>
+  </section>
+
+  <section class="primary" id="s5">
+    <div class="kicker"><span class="sec-num">05</span>Help Desk scope</div>
+    <h2>Help Desk owns user lifecycle, identity, and the org's day-to-day.</h2>
+    <p class="lead">Engineering and Product own governance. Marisa owns Phase 1 editorial use case set-up and training.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Help Desk</th>
+          <th>Consult / co-owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="emph">
+          <td>User lifecycle</td>
+          <td>Own</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>SSO configuration</td>
+          <td>Own</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>Connector toggles (execution)</td>
+          <td>Own</td>
+          <td>Sean (policy)</td>
+        </tr>
+        <tr>
+          <td>Group management (IdP side)</td>
+          <td>Own</td>
+          <td>Sean (consult)</td>
+        </tr>
+        <tr>
+          <td>IP allowlist + tenant restrictions</td>
+          <td>Own</td>
+          <td>Anthropic Support</td>
+        </tr>
+        <tr>
+          <td>Audit log export + archive (180-day retention)</td>
+          <td>Own</td>
+          <td>DevOps (consult)</td>
+        </tr>
+        <tr>
+          <td>Renewal calendar (90-day reminder)</td>
+          <td>Own</td>
+          <td>Mike (procurement)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Interim arrangement</strong> Sean holds Primary Owner from fulfillment forward to stand the org up immediately. Ownership transfers to Help Desk once their process is locked in.
+    </div>
+    <p class="src">Source: Phase 1 rollout plan, section 4.7. Full four-column matrix in <a href="#a1">A1</a>.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/9970975-how-to-access-audit-logs" target="_blank" rel="noopener">Audit logs</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13200993-restrict-access-to-claude-with-ip-allowlisting" target="_blank" rel="noopener">IP allowlisting</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13799932-manage-groups-and-group-spend-limits-on-enterprise-plans" target="_blank" rel="noopener">Group spend limits</a><span class="sep">&middot;</span><a href="https://claude.com/resources/tutorials/claude-enterprise-administrator-guide" target="_blank" rel="noopener">Enterprise admin guide</a></p>
+  </section>
+
+  <div class="appx-break">
+    <h2>Appendix</h2>
+    <div class="sub">Ownership matrix and governance frameworks for connectors, skills, and beyond-skills patterns.</div>
+    <div class="toc-grid">
+      <ul class="toc">
+        <li><a href="#a1"><b>A1</b> Ownership matrix &mdash; full four-column RACI</a></li>
+        <li><a href="#a2"><b>A2</b> Connectors &amp; plugins governance</a></li>
+      </ul>
+      <ul class="toc">
+        <li><a href="#a3"><b>A3</b> Skills management framework</a></li>
+        <li><a href="#a4"><b>A4</b> Beyond-skills use case patterns</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="appx" id="a1">
+    <div class="kicker"><span class="sec-num">A1</span>Ownership matrix</div>
+    <h3>Help Desk owns lifecycle and identity. Engineering owns rails. Sean owns governance. Marisa owns editorial.</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Help Desk</th>
+          <th>Engineering</th>
+          <th>Product (Sean)</th>
+          <th>Marisa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>User lifecycle (invite / seat / deprovision)</td><td>Own</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>SSO configuration</td><td>Own</td><td>Consult on IdP specifics</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Connector toggles (policy + execution)</td><td>Own</td><td>Consult</td><td>Consult</td><td>&mdash;</td></tr>
+        <tr><td>Group management (IdP side)</td><td>Own</td><td>&mdash;</td><td>Consult</td><td>&mdash;</td></tr>
+        <tr><td>IP allowlist + tenant restrictions</td><td>Own (w/ Anthropic Support)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Directory hygiene</td><td>Own</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Audit log export + archive</td><td>Own</td><td>Consult (DevOps)</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Renewal calendar (90-day reminder)</td><td>Own</td><td>&mdash;</td><td>Consult</td><td>&mdash;</td></tr>
+        <tr><td>Skill review pipeline (process + tooling)</td><td>&mdash;</td><td>Co-own</td><td>Co-own</td><td>Consult</td></tr>
+        <tr><td>OAuth + custom MCP governance</td><td>&mdash;</td><td>Own (build)</td><td>Own (policy)</td><td>Consult</td></tr>
+        <tr><td>Compliance API consumer (SIEM integration)</td><td>Consult</td><td>Own</td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>Token optimization patterns</td><td>&mdash;</td><td>Own (when custom apps)</td><td>Own (P1 user-facing)</td><td>Consult</td></tr>
+        <tr><td>Governance policy (rules)</td><td>Consult</td><td>Consult</td><td>Own</td><td>Consult</td></tr>
+        <tr><td>Rollout sequencing</td><td>Consult</td><td>Consult</td><td>Own</td><td>Consult</td></tr>
+        <tr><td>Cost model / spend controls / monthly review</td><td>Consult</td><td>Consult</td><td>Own (TBD Long Term)</td><td>Consult</td></tr>
+        <tr><td>Editorial skill authoring + training</td><td>&mdash;</td><td>&mdash;</td><td>Consult</td><td>Own</td></tr>
+      </tbody>
+    </table>
+    <p class="src">Source: Phase 1 rollout plan, section 4.7. Reflects edits per 04/20/2026 IT Help Desk meeting.</p>
+  </section>
+
+  <section class="appx" id="a2">
+    <div class="kicker"><span class="sec-num">A2</span>Connectors &amp; plugins</div>
+    <h3>All connectors and plugins will be enabled on a case-by-case basis.</h3>
+
+    <h4>Native connectors</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Connector</th>
+          <th>Default</th>
+          <th>P1 need</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Microsoft 365 (SharePoint, OneDrive, Outlook, Teams)</td><td>Off</td><td>Yes</td><td>Primary KB surface. Org-wide read; write actions need approval.</td></tr>
+        <tr><td>Slack</td><td>Off</td><td>Yes</td><td>Several assistants are Slack-fronted. Enable when first Slack-bound skill is ready.</td></tr>
+        <tr><td>GitHub</td><td>Off</td><td>Yes</td><td>Engineering KB + skill repo. Engineering group only if per-group scoping works; else org-wide read-only.</td></tr>
+        <tr><td>Google Drive</td><td>Off</td><td>Narrow</td><td>AA Op-Ed Intake reads from Drive today. Scope to AA editorial group; else migrate to SharePoint.</td></tr>
+        <tr><td>Gmail / Google Calendar</td><td>Off</td><td>No</td><td>Re-examine only if a concrete editorial workflow surfaces.</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Custom MCP / bespoke connectors</h4>
+    <p>Register the candidates; don't build in Phase 1. <b>Arc XP (CMS)</b> is explicitly out of scope short and mid-term &mdash; no CMS-to-Claude connection planned. <b>Aha!, Asana, Smartsheet, Salesforce</b>, and brand-specific editorial systems are noted as "may need" &mdash; engineering scopes when a real request surfaces.</p>
+
+    <h4>Cowork plugins</h4>
+    <p>Same posture as connectors &mdash; nothing pre-installed or required at launch. The private plugin marketplace stands up later when the Git-based skill / plugin workflow matures. Group override model (available / pre-installed / required / hidden) applies once enabled.</p>
+
+    <p class="src">Source: Phase 1 rollout plan, section 5. Anthropic connector + plugin docs, pulled 04/18/2026.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities" target="_blank" rel="noopener">Use connectors</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp" target="_blank" rel="noopener">Custom connectors (MCP)</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork" target="_blank" rel="noopener">Plugins in Cowork</a></p>
+  </section>
+
+  <section class="appx" id="a3">
+    <div class="kicker"><span class="sec-num">A3</span>Skills management</div>
+    <h3>Skills flow through a Git + PR workflow. Engineering reviews; Help Desk admin-uploads.</h3>
+
+    <h4>Authoring</h4>
+    <p>Builders (the 12 P1 Builder seats) author skills. Users only build personal skills, not org-shared. Authors work in claude.ai's personal skill space or locally as <span class="mono">SKILL.md</span> + resources, then submit to Git for review. Frontmatter requires <span class="mono">name</span> (lowercase / digits / hyphens, max 64 chars) and <span class="mono">description</span> (third-person, what + when, max 1024 chars).</p>
+
+    <h4>Distribution &amp; versioning</h4>
+    <p>Repository: <span class="mono">crain-claude-skills</span> in the Crain GitHub org. Authors open PRs with eval queries (trigger / no-trigger / ambiguous) and a risk-tier declaration. On merge, a manual admin-upload pushes the skill to the Anthropic org &mdash; no public API for org provisioning. Git is the system of record; rollback = re-upload prior version. Skills do <em>not</em> sync across surfaces (claude.ai, Claude Code, API) &mdash; each is a separate upload.</p>
+
+    <h4>Governance &mdash; risk tiers</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Includes</th>
+          <th>Reviewer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Low</td><td>Prompt-only. No code, MCP, network, credentials, or filesystem writes.</td><td>Engineering approves.</td></tr>
+        <tr><td>Medium</td><td>MCP refs, network calls, filesystem reads.</td><td>Engineering reviews with added technical scrutiny.</td></tr>
+        <tr><td>High</td><td>Code execution, credentials, filesystem writes, agentic behavior.</td><td>Engineering reviews technical and policy before admin upload.</td></tr>
+      </tbody>
+    </table>
+    <p>Org-wide skill sharing stays disabled at launch &mdash; all org skills are admin-uploaded after PR review. Personal skills and "shared with you" peer skills are allowed but don't propagate to the org.</p>
+
+    <p class="src">Source: Phase 1 rollout plan, section 6. Anthropic skills enterprise docs.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization" target="_blank" rel="noopener">Provision &amp; manage skills</a><span class="sep">&middot;</span><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise" target="_blank" rel="noopener">Skills enterprise docs</a></p>
+  </section>
+
+  <section class="appx" id="a4">
+    <div class="kicker"><span class="sec-num">A4</span>Beyond-skills patterns</div>
+    <h3>Phase 1 workloads land in five Claude-native patterns &mdash; Skills are one of them.</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Use when</th>
+          <th>P1 candidates</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Projects (KB-backed conversations)</td><td>A workflow needs a stable body of reference context multiple chats draw from.</td><td>V3 User Needs Project; Crain Media Scout (26 brand folders).</td></tr>
+        <tr><td>Scheduled Cowork tasks</td><td>A workflow runs on a schedule with no user in the loop; output lands in Slack, a Project, or a file.</td><td>Private Markets Intelligence Scanner; Media Kit Change Notifications.</td></tr>
+        <tr><td>Cowork single-user workflows</td><td>A workflow needs file or shell access; runs under one user's credentials.</td><td>AA Op-Ed; Story User Needs Analysis (batch upload); Project Planning PRD.</td></tr>
+        <tr><td>Slack bots (governance TBD)</td><td>A workflow must be reachable by non-seat users in Slack.</td><td>Editing Assistant; Crain Media Scout; V3 User Needs. D7 governance call still open.</td></tr>
+        <tr><td>Custom MCP integrations</td><td>A workflow needs to hit a Crain system with no native connector.</td><td>None confirmed for P1. Arc XP explicitly out.</td></tr>
+      </tbody>
+    </table>
+    <p class="src">Source: Phase 1 rollout plan, section 7.</p>
+    <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank" rel="noopener">Projects</a><span class="sep">&middot;</span><a href="https://claude.com/blog/cowork-plugins-across-enterprise" target="_blank" rel="noopener">Cowork plugins across enterprise</a></p>
+  </section>
+
+  <footer class="endnote">
+    Prepared by Sean Bales &middot; Crain Communications &middot; Phase 1 rollout, internal use.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
