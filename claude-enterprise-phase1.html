@@ -276,9 +276,9 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
     <h2>Phase 1 is small on purpose &mdash; 22 seats, two surfaces, conservative caps.</h2>
     <div class="kpis">
       <div class="kpi featured">
-        <div class="k-label">Editorial seats <span class="chip">P1</span></div>
-        <div class="k-val">22</div>
-        <div class="k-delta">Phase 1 Licenses</div>
+        <div class="k-label">Phase 1 seats</div>
+        <div class="k-val">20</div>
+        <div class="k-delta">Starting count &middot; add as needed</div>
       </div>
       <div class="kpi">
         <div class="k-label">Spend cap, Builder</div>
@@ -291,7 +291,7 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
         <div class="k-delta">per user / month &middot; ceiling, not budget</div>
       </div>
     </div>
-    <p class="src">Source: Phase 1 rollout plan, sections 4 + 9. As of 04/18/2026. Surfaces enabled: Chat + Cowork. Claude Code off for P1.</p>
+    <p class="src">Source: Phase 1 rollout plan, sections 4 + 9. As of 04/18/2026. Surfaces enabled: Chat + Cowork. Claude Code off for P1. Billed per seat + consumption on top &mdash; the caps above are internal controls layered on vendor pricing.</p>
   </section>
 
   <section class="primary" id="s2">
@@ -310,8 +310,8 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
     <div class="ifthen">
       <div class="nn">02</div>
       <div>
-        <div class="cond">Primary Owner: Sean on an interim basis; transitions to a Help Desk-owned mailbox.</div>
-        <div class="actual"><b>Why</b> Whoever's logged in at the fulfillment URL becomes Primary Owner. Sean holds it first to stand the org up immediately. Once Help Desk's process is locked in, ownership transitions to a mailbox that doesn't depend on one person staying &mdash; whether that's a service account, a shared inbox, or a role-based mailbox is Help Desk's call.</div>
+        <div class="cond">Primary Owner: a Help Desk-owned shared mailbox.</div>
+        <div class="actual"><b>Why</b> Whoever's logged in at the fulfillment URL becomes Primary Owner. A Help Desk-owned shared mailbox takes the role from day 1 so the org root never depends on one person staying &mdash; no transfer dance required.</div>
       </div>
     </div>
 
@@ -362,10 +362,10 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
           <td>Push lag from the IdP is normal, not a bug. Triage tickets accordingly.</td>
         </tr>
         <tr>
-          <td>Groups (10)</td>
+          <td>Groups</td>
           <td>Role + brand-level scoping for skills, connectors, spend</td>
           <td>Help Desk</td>
-          <td>3 admin / role groups + 6 per-brand editorial groups + 1 engineering group. Drives custom roles and spend limits.</td>
+          <td>Sourced from the IdP via SCIM. Structure TBD &mdash; start simple and expand as workflows demand.</td>
         </tr>
         <tr>
           <td>SSO enforcement toggle</td>
@@ -386,12 +386,12 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
       <li>
         <div class="t-date">04/20/2026 &middot; This week</div>
         <div class="t-title">DevOps subscribes Claude through AWS. IT meeting + Mon/Tue editorial workshop kick off.</div>
-        <div class="t-detail">Help Desk-owned mailbox becomes Primary Owner at fulfillment. Sean and Mike added as Owners. Admins (Marisa, Mark Fischer, Gennady) invited. Workshop locks per-asset migration triage and engineering seat count.</div>
+        <div class="t-detail">Help Desk-owned shared mailbox becomes Primary Owner at fulfillment. Sean and Marisa added to the org. Workshop locks per-asset migration triage and engineering seat count.</div>
       </li>
       <li>
-        <div class="t-date">Week of 04/27 &middot; Identity</div>
+        <div class="t-date">Starting 04/21 &middot; Identity</div>
         <div class="t-title">Domain verified, SAML wired, SCIM provisioned.</div>
-        <div class="t-detail">Group scaffolding stood up in our IdP. Skills repo (<span class="mono">crain-claude-skills</span>) created in GitHub by engineering in parallel.</div>
+        <div class="t-detail">Help Desk starts SSO setup immediately so editorial onboarding isn't gated. Group scaffolding stood up in the IdP. Skills repo (<span class="mono">crain-claude-skills</span>) created in GitHub by engineering in parallel.</div>
       </li>
       <li>
         <div class="t-date">Week of 05/04 &middot; Pre-launch comms</div>
@@ -399,12 +399,12 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
         <div class="t-detail">Help Desk drafts; Sean approves. Two-week reclaim window opens for personal Claude accounts on Crain email.</div>
       </li>
       <li class="milestone">
-        <div class="t-date">Week of 05/18 &middot; Launch</div>
+        <div class="t-date">Week of 05/11 or 05/18 &middot; Launch</div>
         <div class="t-title">"Require SSO for Claude" enabled. Phase 1 seats live; first two skills shipped.</div>
-        <div class="t-detail">Builders and Users invited via SCIM group membership. Marisa + Kristy run the Cassidy &rarr; Claude transition workshop.</div>
+        <div class="t-detail">Builders and Users invited via SCIM group membership. Marisa + Kristy run the Cassidy &rarr; Claude transition workshop. Training must complete before Cassidy expires the first week of June. Help Desk gets one-off show-and-tells on each implementation as they roll out.</div>
       </li>
     </ol>
-    <p class="src">Source: Phase 1 rollout plan, section 8. Cassidy contract end date being re-confirmed by Sean with Mike &mdash; flagged as one critical-path risk.</p>
+    <p class="src">Source: Phase 1 rollout plan, section 8. Cassidy expires first week of June &mdash; the hard deadline that anchors training and launch timing.</p>
   </section>
 
   <section class="primary" id="s5">
@@ -458,9 +458,6 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
       </tbody>
     </table>
 
-    <div class="callout">
-      <strong>Interim arrangement</strong> Sean holds Primary Owner from fulfillment forward to stand the org up immediately. Ownership transfers to Help Desk once their process is locked in.
-    </div>
     <p class="src">Source: Phase 1 rollout plan, section 4.7. Full four-column matrix in <a href="#a1">A1</a>.</p>
     <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/9970975-how-to-access-audit-logs" target="_blank" rel="noopener">Audit logs</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13200993-restrict-access-to-claude-with-ip-allowlisting" target="_blank" rel="noopener">IP allowlisting</a><span class="sep">&middot;</span><a href="https://support.claude.com/en/articles/13799932-manage-groups-and-group-spend-limits-on-enterprise-plans" target="_blank" rel="noopener">Group spend limits</a><span class="sep">&middot;</span><a href="https://claude.com/resources/tutorials/claude-enterprise-administrator-guide" target="_blank" rel="noopener">Enterprise admin guide</a></p>
   </section>
@@ -517,7 +514,7 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
 
   <section class="appx" id="a2">
     <div class="kicker"><span class="sec-num">A2</span>Connectors &amp; plugins</div>
-    <h3>All connectors and plugins will be enabled on a case-by-case basis.</h3>
+    <h3>Connectors default off. A narrow editorial set gets decided at the 04/21 working session; everything else enables case-by-case as workflows surface.</h3>
 
     <h4>Native connectors</h4>
     <table>
