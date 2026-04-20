@@ -1062,7 +1062,7 @@ footer.endnote {
     </div>
 
     <div class="callout">
-      <strong>Cross-brand</strong> The same architecture lights up a newsletter on each of the next fifteen brands without per-brand re-engineering.
+      <strong>Cross-brand</strong> The same architecture stands up a newsletter on each of the next fifteen brands without per-brand re-engineering.
     </div>
 
     <p class="src">Sources: Sailthru analytics, GAM line-item data, internal ops audit. Pulled 04/2026. Universe: GenomeWeb production traffic, active sponsor campaigns, reader follow records.</p>
@@ -1369,7 +1369,7 @@ footer.endnote {
   <section class="appx" id="a1">
     <div class="kicker"><span class="sec-num">A1</span>Source-of-truth problem</div>
     <h3>Three documents describe the Topic Takeover. None of them agree.</h3>
-    <p class="lead">The 2026 media kit, the signed insertion order, and the customer-facing explainer each promise a different product. The widest gaps sit on editorial effort and newsletter framing. Alignment needed on the source of truth.</p>
+    <p class="lead">The 2026 media kit, the signed insertion order, and the customer-facing explainer each promise a different product. The widest gaps sit on editorial effort and newsletter framing. Decide which document is the source of truth.</p>
 
     <div class="sot-matrix">
       <table class="sot-table">
@@ -1440,7 +1440,7 @@ footer.endnote {
       </table>
     </div>
 
-    <div class="callout decision"><strong>Decide</strong> Is the explainer the source of truth (and the media kit + IO template need to catch up and reprice), or is it the sales collateral (and the explainer needs to be trimmed to what was actually sold)? Either direction is workable &mdash; staying in the middle is what produces unpriced editorial labor, unresolvable sponsor disputes, and ambiguity carried into the future-state migration.</div>
+    <div class="callout decision"><strong>Decide</strong> Is the explainer the source of truth (and the media kit + IO template need to catch up and reprice), or is it the sales collateral (and the explainer needs to be trimmed to what was actually sold)? Either direction works. The middle produces unpriced editorial labor, unresolvable sponsor disputes, and ambiguity carried into the migration.</div>
 
     <div class="sot-today">
       <div class="sot-today-head">Meanwhile &mdash; what sponsors and readers experience today</div>
@@ -1685,7 +1685,6 @@ footer.endnote {
         <li>Visible drift between sponsor exclusion footprints (6 vs 1 in the same month) proves the sweep isn&rsquo;t always done.</li>
         <li>Revenue Ops pulls a monthly impression and click report and forwards to the sponsor.</li>
         <li>Billing reconciles in the sales system against the original record, not GAM. Canonical revenue per campaign requires a cross-reference.</li>
-        <li>~240 hours/year human labor on ~$1.1M declining revenue. The labor cost isn&rsquo;t large in absolute terms; the fragility tax is.</li>
       </ul>
     </div>
 
@@ -2194,7 +2193,7 @@ footer.endnote {
       <ul>
         <li><strong>Explicit preferences anchor the floor.</strong> Opted-in topics stay in scope regardless of behavior.</li>
         <li><strong>Inferred signals expand the ceiling.</strong> Topics the reader consistently engages with rise in ranking even without an explicit follow. Emerging topics earn their way in without requiring discovery first.</li>
-        <li><strong>Recency and decay become available.</strong> Inferred signals carry timestamps; stale behavioral interest can decay. Explicit follows still require affirmative removal.</li>
+        <li><strong>Inferred signals carry timestamps.</strong> Stale interest decays. Explicit follows still require affirmative removal.</li>
         <li><strong>Junction passthrough does the wiring.</strong> The gateway between Arc and Sailthru already accepts arbitrary profile writes. No new gateway engineering.</li>
       </ul>
     </div>
@@ -2223,7 +2222,7 @@ footer.endnote {
       <li><b>Which reading events count as inferred signal.</b> Open: click-through, full open, scroll depth, repeat visits, on-site dwell. Function of what Arc&rsquo;s page emission exposes and what reader-privacy posture allows. Engineering scoping with privacy review.</li>
       <li><b>Transparency to the reader of inferred interests.</b> Open: whether the UI surfaces inferred interests back ("we noticed you&rsquo;re reading a lot about X &mdash; follow?"). UX decision; affects perceived trust, not the underlying mechanic.</li>
       <li><b>Cold start for new subscribers.</b> Open: whether the newsletter leans harder on explicit preferences during onboarding, falls back to flagship-style editorial picks until inferred signal accumulates, or both. Delivery-logic call.</li>
-      <li><b>Opt-in experience.</b> End-to-end opt-in experience &mdash; surface, copy, sequencing, where the prompt lands &mdash; still needs work with marketing and product. Closing the follower-vs-subscriber seam is the outcome.</li>
+      <li><b>Opt-in experience.</b> Surface, copy, sequencing, where the prompt lands &mdash; joint call with marketing and product. Closing the follower-vs-subscriber seam is the outcome.</li>
       <li><b>Topic landing page disposition.</b> Open: whether the page persists for SEO and sponsor verification value, or simplifies into a sponsor-facing dashboard. Sales-led check with sponsors paired with editorial input on SEO impact.</li>
       <li><b>Preference Center layering.</b> Tentative: topic-follow opt-in layers into the existing Preference Center at the Arc cutover, not phased later. One change, less rework, legacy preference plumbing retires. Marketing-ops + reader-lifecycle joint call.</li>
     </ul>
@@ -2391,7 +2390,7 @@ footer.endnote {
       </ul>
     </div>
 
-    <div class="callout-muted"><strong>The long tail is the point.</strong> Niche topics with small followings are exactly what the product is for; this isn&rsquo;t an argument to shrink the vocabulary aggressively. It is an argument to govern it deliberately rather than letting it accumulate by default. See <a href="#a9">A9</a> for the future-state shape.</div>
+    <div class="callout-muted"><strong>The long tail is the point.</strong> Niche topics with small followings are exactly what the product is for; this isn&rsquo;t an argument to shrink the vocabulary aggressively. It&rsquo;s an argument to govern the vocabulary deliberately, not let it accumulate by default. See <a href="#a9">A9</a> for the future-state shape.</div>
 
     <p class="src">Sources: Drupal taxonomy + applied-tag export; Sailthru segment definitions; ad ops Topic Takeover term registry. Pulled 04/2026. Universe: GenomeWeb production tag corpus (3,000 terms; 505 curated; ~12,900 stated followers).</p>
   </section>
@@ -2503,8 +2502,8 @@ footer.endnote {
       <ul>
         <li><strong>On publish.</strong> STAMP classifies; the editor confirms high-confidence classifications and overrides edge cases. Per-article time collapses.</li>
         <li><strong>Ongoing.</strong> Editorial leadership owns the governed vocabulary &mdash; adding new terms as the field evolves, retiring terms that lose load-bearing signal, reconciling alias and merge decisions.</li>
-        <li><strong>Classifier tuning.</strong> Editorial partners with engineering to adjust classifier weights and confidence thresholds as STAMP&rsquo;s behavior gets observed against the corpus. New territory.</li>
-        <li><strong>Package-level editorial ownership replaces ad-hoc per-campaign curation.</strong> Where editorial judgment genuinely adds value &mdash; defining what a package is and what it commits to &mdash; editorial owns it. Where it doesn&rsquo;t &mdash; per-send article picks &mdash; the manual layer retires.</li>
+        <li><strong>Classifier tuning.</strong> Editorial partners with engineering to adjust classifier weights and confidence thresholds once STAMP runs against the corpus. New territory.</li>
+        <li><strong>Package-level editorial ownership replaces ad-hoc per-campaign curation.</strong> Where editorial judgment adds value &mdash; defining what a package is and what it commits to &mdash; editorial owns it. Where it doesn&rsquo;t &mdash; per-send article picks &mdash; the manual layer retires.</li>
       </ul>
     </div>
 
@@ -2521,7 +2520,7 @@ footer.endnote {
       <div class="mb-head">What this enables</div>
       <ul>
         <li><strong>Consistency across editors.</strong> Two articles covering the same topic get classified the same way.</li>
-        <li><strong>Vocabulary retirement as a native concept.</strong> Terms that lose signal drop out of the governed vocabulary. The 3,000-term drift inventory stops accumulating.</li>
+        <li><strong>Vocabulary retirement has a workflow.</strong> Terms that lose signal drop out of the governed vocabulary. The 3,000-term drift inventory stops accumulating.</li>
         <li><strong>The long tail is preserved deliberately.</strong> Niche topics aren&rsquo;t dropped to chase a number; they&rsquo;re retained because the product is for niche audiences. Governance is about earned signal, not size.</li>
         <li><strong>Cross-brand portability.</strong> Same classifier architecture applies to any Crain brand. Per-brand work is the editorial golden-set and vocabulary shape, not a rebuild.</li>
       </ul>
@@ -2536,7 +2535,7 @@ footer.endnote {
       </ul>
     </div>
 
-    <div class="callout-muted"><strong>Deliberately not numbered.</strong> The future-state vocabulary size is "governed," not "~300 terms" or any specific count. The shape gets defined by editorial governance once STAMP is observed against the corpus. See <a href="#a10">A10</a> for the open questions, including the company-name inclusion question that could move the working number.</div>
+    <div class="callout-muted"><strong>Deliberately not numbered.</strong> The future-state vocabulary size is "governed," not "~300 terms" or any specific count. Editorial governance defines the shape once STAMP runs against the corpus. See <a href="#a10">A10</a> for the open questions, including the company-name inclusion question that could move the working number.</div>
 
     <p class="src">Architecture reference. Throughput economics derived from internal STAMP cost modeling against current Crain article volumes. Pulled 04/2026.</p>
   </section>
@@ -2552,7 +2551,7 @@ footer.endnote {
       <li><b>Entity tags vs topic tags governance.</b> STAMP&rsquo;s taxonomy can cover topics and entities (companies, products, people). Open: whether entity tagging follows the same governance pattern or needs a separate lane.</li>
       <li><b>Historical reclassification scope.</b> Open: whether STAMP re-runs over the pre-cutover article backlog or only tags new articles forward. Affects sponsor matching on legacy content and newsletter recommendation quality during early days.</li>
       <li><b>Company names in the controlled vocabulary.</b> Editorial flagged that 50&ndash;100 company names sit on the boundary &mdash; they appear among the most-followed terms and the highest-engagement tags, and sponsor names are used as 100% share-of-voice terms today. Open: whether company names live in the governed vocabulary, in a separate entity lane, or both. Editorial leadership&rsquo;s call.</li>
-      <li><b>Final vocabulary working number.</b> Tentative: "governed," not committed to a count. The current working hard floor is 272 load-bearing terms; the company-name decision and the ad-ops audit on which tags are live in GAM targeting could move the number meaningfully. Final shape lands once STAMP is observed against the corpus.</li>
+      <li><b>Final vocabulary working number.</b> Tentative: "governed," not committed to a count. The current working hard floor is 272 load-bearing terms; the company-name decision and the ad-ops audit on which tags are live in GAM targeting could move the number. Final shape lands once STAMP is observed against the corpus.</li>
     </ul>
   </section>
 
@@ -2561,8 +2560,8 @@ footer.endnote {
 
   <section class="appx" id="a11">
     <div class="kicker"><span class="sec-num">A11</span>Marketing-ops open questions</div>
-    <h3>Four newsletter-side items surfaced by marketing ops. Each resolvable alongside existing workstreams, not a separate scope.</h3>
-    <p class="lead">The migration touches the newsletter layer through the taxonomy consolidation and the package work. Marketing ops has flagged the following.</p>
+    <h3>Marketing ops surfaced four newsletter-side items. Each resolves inside existing workstreams, not as separate scope.</h3>
+    <p class="lead">The migration touches the newsletter layer through taxonomy consolidation and package work.</p>
 
     <ul class="data-bullets">
       <li><b>Audience-pool governance.</b> ~80k unique recipients across the portfolio; per-client pools of ~20&ndash;40k. Lists are tag-generated and mutually exclusive today. Suppression and mutual-exclusivity rules need a single home under packages.</li>
