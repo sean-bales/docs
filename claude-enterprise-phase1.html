@@ -260,17 +260,6 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
     <h1>Standing up Phase 1 of Claude Enterprise <em>for Crain.</em></h1>
   </header>
 
-  <section class="primary" id="s0">
-    <div class="kicker"><span class="sec-num">00</span>Agenda</div>
-    <h2>What we decide today.</h2>
-    <ol class="agenda">
-      <li><div><b>Confirm Help Desk holds the Anthropic org from fulfillment forward</b> <span class="clarifier">&mdash; Primary Owner mailbox is Help Desk's call.</span></div></li>
-      <li><div><b>Walk the identity stand-up</b> <span class="clarifier">&mdash; SAML SSO, SCIM provisioning, 10 groups for role + brand scoping.</span></div></li>
-      <li><div><b>Lock the SSO reclaim comms timing</b> <span class="clarifier">&mdash; Help Desk drafts; Sean approves; sends ~2 weeks before enforcement.</span></div></li>
-      <li><div><b>Scope the runbook</b> <span class="clarifier">&mdash; provisioning, cert rotation, audit-log export, support escalation, renewal calendar.</span></div></li>
-    </ol>
-  </section>
-
   <section class="primary" id="s1">
     <div class="kicker"><span class="sec-num">01</span>Phase 1 in numbers</div>
     <h2>Phase 1 is small on purpose &mdash; 22 seats, two surfaces, conservative caps.</h2>
@@ -381,34 +370,75 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
 
   <section class="primary" id="s4">
     <div class="kicker"><span class="sec-num">04</span>Critical path</div>
-    <h2>Milestones to reach for Phase One and proposed timeline.</h2>
+    <h2>Cassidy sunsets June 1 &mdash; every milestone backs into that.</h2>
     <ol class="timeline">
       <li>
         <div class="t-date">04/20/2026 &middot; This week</div>
-        <div class="t-title">DevOps subscribes Claude through AWS. IT meeting + Mon/Tue editorial workshop kick off.</div>
-        <div class="t-detail">Help Desk-owned shared mailbox becomes Primary Owner at fulfillment. Sean and Marisa added to the org. Workshop locks per-asset migration triage and engineering seat count.</div>
+        <div class="t-title">DevOps subscribes Claude through AWS. IT meeting + Marisa/Sean editorial workshop kick off.</div>
+        <div class="t-detail">Help Desk-owned shared mailbox becomes Primary Owner at fulfillment. Sean and Marisa added to the org. Workshop runs through 04/21 to triage every Cassidy asset (see <a href="#a5">A5</a>) and lock the engineering seat count.</div>
       </li>
       <li>
-        <div class="t-date">Starting 04/21 &middot; Identity</div>
-        <div class="t-title">Domain verified, SAML wired, SCIM provisioned.</div>
-        <div class="t-detail">Help Desk starts SSO setup immediately so editorial onboarding isn't gated. Group scaffolding stood up in the IdP. Skills repo (<span class="mono">crain-claude-skills</span>) created in GitHub by engineering in parallel.</div>
+        <div class="t-date">Starting 04/21 &middot; Identity + editorial decisions locked</div>
+        <div class="t-title">Domain verified, SAML wired, SCIM provisioned. Per-asset migration list finalized.</div>
+        <div class="t-detail">Help Desk starts SSO setup immediately so editorial onboarding isn't gated. Group scaffolding stood up in the IdP. Skills repo (<span class="mono">crain-claude-skills</span>) created in GitHub by engineering. Marisa + Sean lock the migration list and skills authoring kicks off.</div>
       </li>
       <li>
         <div class="t-date">Week of 05/04 &middot; Pre-launch comms</div>
-        <div class="t-title">SSO reclaim comms sent to all Crain staff.</div>
+        <div class="t-title">SSO reclaim comms sent to all Crain staff. Skills authoring continues.</div>
         <div class="t-detail">Help Desk drafts; Sean approves. Two-week reclaim window opens for personal Claude accounts on Crain email.</div>
       </li>
-      <li class="milestone">
+      <li>
         <div class="t-date">Week of 05/11 or 05/18 &middot; Launch</div>
-        <div class="t-title">"Require SSO for Claude" enabled. Phase 1 seats live; first two skills shipped.</div>
+        <div class="t-title">"Require SSO for Claude" enabled. Phase 1 seats live; first skills shipped; editorial training runs.</div>
         <div class="t-detail">Builders and Users invited via SCIM group membership. Marisa + Kristy run the Cassidy &rarr; Claude transition workshop. Training must complete before Cassidy expires the first week of June. Help Desk gets one-off show-and-tells on each implementation as they roll out.</div>
       </li>
+      <li class="milestone">
+        <div class="t-date">06/01/2026 &middot; Cassidy sunset</div>
+        <div class="t-title">Cassidy contract closes. All Phase 1 editorial workflows run on Claude.</div>
+        <div class="t-detail">No editorial workflow is left dependent on Cassidy past this date. Anything not migrated has either been retired or moved to a deferred backlog.</div>
+      </li>
     </ol>
-    <p class="src">Source: Phase 1 rollout plan, section 8. Cassidy expires first week of June &mdash; the hard deadline that anchors training and launch timing.</p>
+    <p class="src">Source: Phase 1 rollout plan, section 8. Cassidy first-week-of-June expiry is the hard anchor for the whole sequence.</p>
   </section>
 
   <section class="primary" id="s5">
-    <div class="kicker"><span class="sec-num">05</span>Help Desk scope</div>
+    <div class="kicker"><span class="sec-num">05</span>Editorial workstream</div>
+    <h2>Cassidy exits June 1; we replace the three flagship assistants and retire the long tail.</h2>
+    <p class="lead">Replace what users actually use. Retire what's deprecated. Defer what isn't Phase 1.</p>
+
+    <div class="ifthen">
+      <div class="nn">01</div>
+      <div>
+        <div class="cond">V3 User Needs Assistant</div>
+        <div class="actual"><b>What it does</b> Editorial story-check against the User Needs framework and brand voice. Top of the usage curve in Cassidy &mdash; the flagship.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">02</div>
+      <div>
+        <div class="cond">Crain Media Scout</div>
+        <div class="actual"><b>What it does</b> Brand-positioning answers across all 26 brands for sales and marketing. Backed by the brand media-kit corpus.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">03</div>
+      <div>
+        <div class="cond">Private Markets Intelligence Scanner</div>
+        <div class="actual"><b>What it does</b> Early-warning leads for P&amp;I reporters from SEC filings, LP disclosures, and earnings calls.</div>
+      </div>
+    </div>
+
+    <div class="callout decision">
+      <strong>Scope at a glance</strong> 12 assets flagged for migration &middot; 8 deferred for triage at the 04/20-04/21 workshop &middot; 6 deprecated and retiring. Full inventory in <a href="#a5">A5</a>.
+    </div>
+
+    <p class="src">Source: Phase 1 rollout plan, section 3. Per-asset decisions finalize at the 04/20-04/21 Marisa + Sean workshop.</p>
+  </section>
+
+  <section class="primary" id="s6">
+    <div class="kicker"><span class="sec-num">06</span>Help Desk scope</div>
     <h2>Help Desk owns user lifecycle, identity, and the org's day-to-day.</h2>
     <p class="lead">Engineering and Product own governance. Marisa owns Phase 1 editorial use case set-up and training.</p>
     <table>
@@ -469,10 +499,11 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
       <ul class="toc">
         <li><a href="#a1"><b>A1</b> Ownership matrix &mdash; full four-column RACI</a></li>
         <li><a href="#a2"><b>A2</b> Connectors &amp; plugins governance</a></li>
+        <li><a href="#a3"><b>A3</b> Skills management framework</a></li>
       </ul>
       <ul class="toc">
-        <li><a href="#a3"><b>A3</b> Skills management framework</a></li>
         <li><a href="#a4"><b>A4</b> Beyond-skills use case patterns</a></li>
+        <li><a href="#a5"><b>A5</b> Cassidy migration scope</a></li>
       </ul>
     </div>
   </div>
@@ -597,6 +628,44 @@ footer.endnote { margin-top: 3.5rem; padding: 1.5rem 1.75rem; background: var(--
     </table>
     <p class="src">Source: Phase 1 rollout plan, section 7.</p>
     <p class="refs"><span class="refs-label">Anthropic docs</span><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank" rel="noopener">Projects</a><span class="sep">&middot;</span><a href="https://claude.com/blog/cowork-plugins-across-enterprise" target="_blank" rel="noopener">Cowork plugins across enterprise</a></p>
+  </section>
+
+  <section class="appx" id="a5">
+    <div class="kicker"><span class="sec-num">A5</span>Cassidy migration scope</div>
+    <h3>Marisa flagged 20 assets across assistants and workflows for migration scope. Per-asset decisions finalize at the 04/20-04/21 workshop.</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Asset</th>
+          <th>Current shape</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="emph"><td>V3 User Needs Assistant</td><td>Cassidy assistant + KB</td><td>Migrating</td></tr>
+        <tr class="emph"><td>Crain Media Scout</td><td>Slack bot + n8n draft</td><td>Migrating</td></tr>
+        <tr class="emph"><td>Private Markets Intelligence Scanner</td><td>n8n + Beat Monitor</td><td>Migrating</td></tr>
+        <tr><td>AN Editing Assistant</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>AN Headline Assistant</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>AN Key Takeaways</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>MH Headline Assistant</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>Ad Age Op-Ed Intake Editor</td><td>Cassidy + Google Drive</td><td>Migrating</td></tr>
+        <tr><td>Media Kit &amp; Toolkit Change Notifications</td><td>n8n + PowerAutomate</td><td>Migrating</td></tr>
+        <tr><td>Ad Age Op-Ed workflow</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>Story User Needs Analysis (batch)</td><td>Cassidy</td><td>Migrating</td></tr>
+        <tr><td>Project Planning PRD</td><td>Personal workflow</td><td>Migrating</td></tr>
+        <tr><td>GW Headline Assistant</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>AN Script Assistant</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>Style Guide Compliance Specialist</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>General Event &amp; House Story Assistant</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>User Needs Assistant V2</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>Summarized LinkedIn Executive Activity</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>Meeting Transcript Analysis</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+        <tr><td>LinkedIn Content Caption Assistant</td><td>Cassidy</td><td>TBD at workshop</td></tr>
+      </tbody>
+    </table>
+    <p>Separately, six deprecated assistants retire outright and are not in scope to migrate: AN Supplier Distress Tracker, AN First Editor Bot, Visual Aid Designer, Reporter Source Assistant, original User Needs, Story User Needs Analysis (on-chat).</p>
+    <p class="src">Source: Phase 1 rollout plan, sections 3.2&ndash;3.5. Scope shown is the starting list Marisa flagged; per-asset decisions finalize at the 04/20-04/21 workshop.</p>
   </section>
 
   <footer class="endnote">
