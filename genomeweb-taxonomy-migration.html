@@ -760,7 +760,7 @@ ul.data-bullets > li > strong { color: var(--ink); font-weight: 600; }
 
 .toc-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0 2rem;
   margin: 1.75rem auto 0;
   text-align: left;
@@ -1011,7 +1011,7 @@ footer.endnote {
 <main>
 
   <div class="brand-strip">
-    <img class="brand-logo" src="assets/crain-logo.png" alt="Crain Communications">
+    <img class="brand-logo" src="https://sean-bales.github.io/gnw-taxonomy-deck/assets/crain-logo.png" alt="Crain Communications">
     <div class="byline">
       <b>Sean Bales</b>
       <span>04/19/2026</span>
@@ -1342,19 +1342,23 @@ footer.endnote {
         <li class="toc-group">Sponsor lifecycle</li>
         <li><a href="#a2"><b>A2</b> Today &mdash; five systems, external vendor, hand-typed exclusions</a></li>
         <li><a href="#a3"><b>A3</b> With packages &mdash; three systems, structural exclusivity</a></li>
-        <li><a href="#a4"><b>A4</b> Eight open questions</a></li>
+        <li><a href="#a4"><b>A4</b> Nine open questions</a></li>
       </ul>
       <ul class="toc">
         <li class="toc-group">Reader lifecycle</li>
         <li><a href="#a5"><b>A5</b> Today &mdash; three opt-in surfaces, follow &ne; subscribe</a></li>
         <li><a href="#a6"><b>A6</b> With inferred signal &mdash; one opt-in equals subscription</a></li>
-        <li><a href="#a7"><b>A7</b> Six open scoping calls</a></li>
+        <li><a href="#a7"><b>A7</b> Seven open scoping calls</a></li>
       </ul>
       <ul class="toc">
         <li class="toc-group">Editorial &amp; classification</li>
         <li><a href="#a8"><b>A8</b> Today &mdash; three parallel curation efforts, no source of truth</a></li>
         <li><a href="#a9"><b>A9</b> With STAMP &mdash; editorial governs, classifier classifies</a></li>
         <li><a href="#a10"><b>A10</b> Six open governance calls</a></li>
+      </ul>
+      <ul class="toc">
+        <li class="toc-group">Newsletter operations</li>
+        <li><a href="#a11"><b>A11</b> Four marketing-ops open questions</a></li>
       </ul>
     </div>
   </div>
@@ -1861,14 +1865,15 @@ footer.endnote {
 
   <section class="appx" id="a4">
     <div class="kicker"><span class="sec-num">A4</span>Sponsor open questions</div>
-    <h3>The sponsor workstream&rsquo;s eight open questions are scoping conversations, not architecture blockers.</h3>
+    <h3>The sponsor workstream&rsquo;s nine open questions are scoping conversations, not architecture blockers.</h3>
     <p class="lead">Each item is a question and, where applicable, a tentative direction. Most resolve in 2&ndash;3 week working sessions with editorial, sales, and ad ops.</p>
 
     <ul class="data-bullets">
       <li><b>Package count and structure.</b> Tentative: start from today&rsquo;s standing topical newsletters as the package shelf. 2&ndash;3 week working group with editorial and sales to define count, contents, and naming.</li>
       <li><b>Mapping current campaigns to packages.</b> Tentative: each current sponsor&rsquo;s tag list maps to whichever package&rsquo;s topic best fits. Sales and editorial co-own the mapping rules.</li>
       <li><b>Package pricing tiers.</b> Tentative: the internal rate card already directs the move from pageview-based to time-based pricing. Existing standard monthly unit holds through transition. Revenue Ops carries the detailed pricing pass.</li>
-      <li><b>Mid-flight grandfathering.</b> Tentative: every signed flight completes under current mechanics. New flights sell into packages. No contract renegotiation. Needs a simple ops rule for ad ops on which flights they&rsquo;re maintaining the old way and for how long.</li>
+      <li><b>In-flight campaign transition.</b> Every prior platform migration has required touching every active campaign at cutover &mdash; ad slots change with the new layout, so targeting rebuilds regardless. Grandfathering isn&rsquo;t mechanically possible. Package adoption aligns to cutover, not flight expiry.</li>
+      <li><b>Old-to-new tag mapping for in-flight sponsors.</b> Tentative: a mapping document applied once at cutover so sales reps don&rsquo;t re-run tag selection with every existing sponsor. Editorial + sales + marketing-ops.</li>
       <li><b>Cross-package competitor co-scheduling.</b> Within a package, exclusivity is automatic. Open: whether a thin policy is needed across packages. Ad-ops governance call for a later scoping pass.</li>
       <li><b>Sponsor perception of the topic landing page.</b> Sponsors today use the topic page as a verification surface. Open: whether the surface needs preservation, can simplify, or migrates to a sponsor-facing dashboard. Sales-led check.</li>
       <li><b>SLA for creative upload to send go-live.</b> Under bespoke assembly today, lead time is whatever the operator can manage. Under packages, a standard lead-time commitment becomes possible. Sales will want a number.</li>
@@ -2210,7 +2215,7 @@ footer.endnote {
 
   <section class="appx" id="a7">
     <div class="kicker"><span class="sec-num">A7</span>Reader open questions</div>
-    <h3>The reader workstream&rsquo;s six open questions are UX and signal-tuning calls, not architecture blockers.</h3>
+    <h3>The reader workstream&rsquo;s seven open questions are UX and signal-tuning calls, not architecture blockers.</h3>
     <p class="lead">Each item is a question and, where applicable, a tentative direction. Closing the follower-vs-subscriber seam is the only architectural outcome.</p>
 
     <ul class="data-bullets">
@@ -2220,6 +2225,7 @@ footer.endnote {
       <li><b>Cold start for new subscribers.</b> Open: whether the newsletter leans harder on explicit preferences during onboarding, falls back to flagship-style editorial picks until inferred signal accumulates, or both. Delivery-logic call.</li>
       <li><b>Opt-in experience.</b> End-to-end opt-in experience &mdash; surface, copy, sequencing, where the prompt lands &mdash; still needs work with marketing and product. Closing the follower-vs-subscriber seam is the outcome.</li>
       <li><b>Topic landing page disposition.</b> Open: whether the page persists for SEO and sponsor verification value, or simplifies into a sponsor-facing dashboard. Sales-led check with sponsors paired with editorial input on SEO impact.</li>
+      <li><b>Preference Center layering.</b> Tentative: topic-follow opt-in layers into the existing Preference Center at the Arc cutover, not phased later. One change, less rework, legacy preference plumbing retires. Marketing-ops + reader-lifecycle joint call.</li>
     </ul>
   </section>
 
@@ -2547,6 +2553,22 @@ footer.endnote {
       <li><b>Historical reclassification scope.</b> Open: whether STAMP re-runs over the pre-cutover article backlog or only tags new articles forward. Affects sponsor matching on legacy content and newsletter recommendation quality during early days.</li>
       <li><b>Company names in the controlled vocabulary.</b> Editorial flagged that 50&ndash;100 company names sit on the boundary &mdash; they appear among the most-followed terms and the highest-engagement tags, and sponsor names are used as 100% share-of-voice terms today. Open: whether company names live in the governed vocabulary, in a separate entity lane, or both. Editorial leadership&rsquo;s call.</li>
       <li><b>Final vocabulary working number.</b> Tentative: "governed," not committed to a count. The current working hard floor is 272 load-bearing terms; the company-name decision and the ad-ops audit on which tags are live in GAM targeting could move the number meaningfully. Final shape lands once STAMP is observed against the corpus.</li>
+    </ul>
+  </section>
+
+  <!-- ============ BUCKET 5: NEWSLETTER OPERATIONS ============ -->
+  <div class="appx-bucket-break"><h4>Bucket 5 &middot; Newsletter operations</h4></div>
+
+  <section class="appx" id="a11">
+    <div class="kicker"><span class="sec-num">A11</span>Marketing-ops open questions</div>
+    <h3>Four newsletter-side items surfaced by marketing ops. Each resolvable alongside existing workstreams, not a separate scope.</h3>
+    <p class="lead">The migration touches the newsletter layer through the taxonomy consolidation and the package work. Marketing ops has flagged the following.</p>
+
+    <ul class="data-bullets">
+      <li><b>Audience-pool governance.</b> ~80k unique recipients across the portfolio; per-client pools of ~20&ndash;40k. Lists are tag-generated and mutually exclusive today. Suppression and mutual-exclusivity rules need a single home under packages.</li>
+      <li><b>Ad-position layout.</b> Sponsor positions don&rsquo;t adapt cleanly when an optional newsletter section is absent. Resolve as part of the package-template work.</li>
+      <li><b>Theme alignment.</b> Existing subject-line patterns suggest natural groupings; confirm the final set as part of package definition.</li>
+      <li><b>Taxonomy remap at cutover.</b> Old-to-new value mapping captured once; applied to newsletter templates at the Arc cutover.</li>
     </ul>
   </section>
 
