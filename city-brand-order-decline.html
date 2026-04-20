@@ -1,0 +1,4763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>City Brand order decline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  /* paper + ink */
+  --paper: #ece3c9;
+  --paper-deep: #e3d8b8;
+  --card: #faf5e6;
+  --card-alt: #f5eed9;
+  --card-soft: #f7f0db;
+  --ink: #14130f;
+  --ink-soft: #3a3830;
+  --ink-mute: #6b6556;
+  --ink-faint: #9b9480;
+
+  /* rules */
+  --rule: #d2c7aa;
+  --rule-strong: #b8ad8d;
+  --rule-hair: rgba(20,19,15,0.1);
+  --rule-soft: rgba(20,19,15,0.06);
+
+  /* accents (preserved so chart SVGs stay in register) */
+  --accent: #28405a;
+  --accent-deep: #14263e;
+  --accent-wash: rgba(40,64,90,0.07);
+  --accent-line: rgba(40,64,90,0.3);
+  --neg: #8a3a3a;
+  --pos: #3a6b47;
+  --warn: #956a2a;
+
+  --tier-nd: #28405a;
+  --tier-md: #956a2a;
+  --tier-d1: #8a3a3a;
+  --tier-annual: #14263e;
+  --tier-std-mo: #28405a;
+  --tier-corp: #5c7a99;
+  --tier-trial: #3a6b47;
+
+  /* fonts — classical serif stack for display, Source Serif 4 for body */
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Serif 4', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-mono: 'JetBrains Mono', Consolas, 'SF Mono', Menlo, monospace;
+
+  /* layout */
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* quiet paper atmosphere */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,228,0.5), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(100,80,40,0.08), transparent 55%);
+  z-index: 0;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter) 6rem;
+}
+
+/* scroll progress rail */
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-deep) 100%);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+/* ---------- Typography ---------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+  text-wrap: pretty;
+}
+h2 em {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+}
+
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover {
+  text-decoration-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.005em;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Kicker ---------- */
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 4px 0.75rem;
+}
+
+/* ---------- Hero ---------- */
+
+header.hero {
+  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.75rem, 3vw, 2.75rem);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow:
+    0 1px 0 rgba(80,65,30,0.05),
+    0 4px 14px rgba(80,65,30,0.06),
+    0 18px 36px rgba(80,65,30,0.05);
+}
+header.hero .dateline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+  margin: 0 0 1.75rem;
+}
+header.hero .dateline b {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+header.hero h1 {
+  margin-bottom: 1.35rem;
+  max-width: none;
+}
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.9vw, 1.4rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  max-width: none;
+  font-style: italic;
+  letter-spacing: -0.003em;
+}
+header.hero .standfirst + .standfirst { margin-top: 0.6rem; }
+header.hero .meta-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2.25rem;
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-mute);
+}
+header.hero .meta-footer span b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- Primary section cards ---------- */
+
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow:
+    0 1px 0 rgba(80,65,30,0.05),
+    0 4px 14px rgba(80,65,30,0.06),
+    0 18px 36px rgba(80,65,30,0.05);
+}
+
+section.primary > .kicker {
+  margin-bottom: 1.5rem;
+}
+
+.slide-title { margin: 0 0 1.5rem; max-width: none; }
+.slide-title em { font-style: italic; color: var(--ink-soft); }
+section.primary h2 { margin-bottom: 1.5rem; max-width: none; }
+
+section.primary .lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.35;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  max-width: none;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.005em;
+}
+section.primary .body, section.appx .body {
+  max-width: none;
+}
+section.primary .body p, section.appx .body p {
+  font-size: 1.04rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+/* ---------- Claim bullets ---------- */
+
+.claim-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  max-width: none;
+}
+.claim-bullets > li {
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.7vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.42;
+  color: var(--ink);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  letter-spacing: -0.003em;
+}
+.claim-bullets > li:last-child { border-bottom: none; }
+.claim-bullets .num {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95em;
+  letter-spacing: -0.01em;
+}
+.claim-bullets a { color: var(--accent); }
+.claim-bullets .sub-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0 0.2rem;
+}
+.claim-bullets .sub-bullets li {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  padding: 0.22rem 0 0.22rem 1.05rem;
+  border-bottom: none;
+  position: relative;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.claim-bullets .sub-bullets li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  top: 0.08rem;
+  color: var(--ink-faint);
+  font-family: var(--font-display);
+  font-size: 1.1em;
+}
+
+/* ---------- Data bullets ---------- */
+
+.data-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.25rem;
+  max-width: none;
+}
+.data-bullets > li {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.data-bullets > li:last-child { border-bottom: none; }
+.data-bullets > li > b,
+.data-bullets > li > strong {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.data-bullets li .tag {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 0.55rem;
+}
+.data-bullets li .big {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0.1em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.data-bullets li .big.neg { color: var(--neg); }
+.data-bullets li .big.pos { color: var(--pos); }
+.data-bullets .sub-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0.55rem 0 0.1rem;
+}
+.data-bullets .sub-bullets li {
+  font-size: 0.96rem;
+  line-height: 1.55;
+  padding: 0.22rem 0 0.22rem 1.05rem;
+  border-bottom: none;
+  position: relative;
+  color: var(--ink-soft);
+}
+.data-bullets .sub-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.82rem;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.slide-dateline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.slide-dateline b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- Pull quotes ---------- */
+
+.standfirst-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.3vw, 1.7rem);
+  line-height: 1.3;
+  font-weight: 400;
+  color: var(--ink);
+  padding: 0.3rem 0 0.3rem 1.4rem;
+  border-left: 2px solid var(--accent);
+  margin: 0 0 1.5rem;
+  max-width: none;
+  font-style: italic;
+  letter-spacing: -0.008em;
+}
+.standfirst-quote cite {
+  display: block;
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 0.85rem;
+  font-weight: 500;
+}
+
+/* ---------- Callouts ---------- */
+
+.callout {
+  margin: 1.75rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--accent-wash);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: none;
+}
+.callout strong {
+  color: var(--accent-deep);
+  font-weight: 600;
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+.callout ul { padding-left: 1.2rem; }
+.callout li { padding: 0.18rem 0; }
+.callout li::marker { color: var(--accent-line); }
+
+.callout-muted {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: rgba(215,200,165,0.25);
+  border-left: 2px solid var(--ink-faint);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  font-style: italic;
+  max-width: none;
+}
+
+/* ---------- Charts ---------- */
+
+.chart-card {
+  margin: 1.5rem -0.5rem 1.75rem;
+  padding: 1.25rem 1rem 0.85rem;
+  background: var(--card-alt);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  position: relative;
+}
+.chart-card svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.5rem 0 0.25rem;
+}
+.chart-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 0 0 0.2rem 0;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+  padding: 0;
+}
+.chart-legend .swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+.chart-footnote {
+  padding: 0.5rem 0 0;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+  font-style: italic;
+  max-width: none;
+}
+
+/* ---------- Readout strip ---------- */
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin: 1.5rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.readout > div { position: relative; }
+.readout > div + div::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+.readout .r-label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 0.55rem;
+}
+.readout .r-value {
+  font-family: var(--font-display);
+  font-size: 1.95rem;
+  font-weight: 400;
+  line-height: 1.02;
+  color: var(--ink);
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.018em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.readout .r-value.neg { color: var(--neg); }
+.readout .r-value.pos { color: var(--pos); }
+.readout .r-detail {
+  font-size: 0.93rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- If-then ---------- */
+
+.ifthen {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 1.1rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ifthen:first-child { padding-top: 0.5rem; }
+.ifthen:last-of-type { border-bottom: none; padding-bottom: 0; }
+.ifthen .nn {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+.ifthen .cond {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.38;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.65rem;
+  letter-spacing: -0.003em;
+}
+.ifthen .actual {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  line-height: 1.58;
+}
+.ifthen .actual b {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  margin-right: 0.55rem;
+}
+.ifthen-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ifthen-list li {
+  font-size: 0.98rem;
+  line-height: 1.58;
+  color: var(--ink-soft);
+  padding: 0.3rem 0 0.3rem 1.05rem;
+  position: relative;
+}
+.ifthen-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.88rem;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--accent-line);
+}
+.ifthen-list li b { color: var(--ink); font-weight: 600; }
+.ifthen-close {
+  margin-top: 0.7rem;
+  font-size: 0.96rem;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+/* ---------- Tables ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 0.85rem 0 1.25rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+}
+th {
+  text-align: left;
+  padding: 0.75rem 1rem 0.6rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+td {
+  padding: 0.68rem 1rem 0.68rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num {
+  text-align: right;
+  padding-right: 0.3rem;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+td.num:last-child, th.num:last-child { padding-right: 0; }
+td.pos { color: var(--pos); font-weight: 500; }
+td.neg { color: var(--neg); font-weight: 500; }
+td.emph { font-weight: 600; color: var(--ink); }
+tr.emph td { background: var(--accent-wash); color: var(--ink); }
+tr.emph td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 0.75rem;
+}
+
+.src {
+  font-size: 0.8rem;
+  color: var(--ink-mute);
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* ---------- Appendix ---------- */
+
+.appx-break {
+  margin: 4rem auto 2rem;
+  padding: 2.5rem 0 0;
+  text-align: center;
+  position: relative;
+}
+.appx-break::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--ink);
+  margin: 0 auto 2rem;
+}
+.appx-break::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin: 0.85rem auto 0;
+}
+.appx-break h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  text-transform: none;
+  color: var(--accent);
+  margin: 0;
+}
+.appx-break .sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  margin-top: 0.65rem;
+  letter-spacing: -0.005em;
+}
+
+.appx-bucket-break {
+  margin: 2.5rem 0 1rem;
+  padding: 0;
+}
+.appx-bucket-break h4 {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+section.appx {
+  position: relative;
+  background: var(--card-soft);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+  box-shadow: 0 1px 0 rgba(80,65,30,0.04), 0 2px 8px rgba(80,65,30,0.04);
+}
+section.appx h3 {
+  margin-bottom: 1.15rem;
+  max-width: none;
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+section.appx ul > li > b:first-child {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+section.appx .kicker { margin-bottom: 0.9rem; }
+section.appx .kicker .sec-num { font-size: 1.35rem; }
+
+/* ---------- Citations ---------- */
+
+.cite {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-mute);
+  padding: 0.75rem 0 0;
+  border-top: 1px dashed var(--rule);
+  margin-top: 1.25rem;
+  letter-spacing: -0.005em;
+  line-height: 1.55;
+}
+.cite b {
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  margin-right: 0.55rem;
+}
+
+/* ---------- TOC ---------- */
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 2.5rem;
+  margin: 1.25rem 0 0;
+  text-align: left;
+}
+.toc {
+  margin: 0;
+  font-size: 0.96rem;
+  padding: 0;
+  list-style: none;
+}
+.toc li {
+  break-inside: avoid;
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted var(--rule);
+}
+.toc li.toc-group {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--ink);
+  margin-top: 1rem;
+  padding: 0.3rem 0;
+}
+.toc li.toc-group:first-child { margin-top: 0; }
+.toc li a {
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  transition: color 0.15s ease;
+}
+.toc li a:hover { color: var(--accent); }
+.toc li a span {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.toc li a b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.7rem;
+}
+
+/* ---------- Footer ---------- */
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+  max-width: none;
+  position: relative;
+}
+footer.endnote::before {
+  content: "¶";
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--accent);
+  margin-right: 0.65rem;
+  font-style: italic;
+  opacity: 0.8;
+  vertical-align: baseline;
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary, section.appx { page-break-inside: avoid; }
+  .chart-card { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 720px) {
+  body { font-size: 17px; }
+  .toc-grid { grid-template-columns: 1fr; gap: 0; }
+  .kicker .sec-num::after { display: none; }
+  .readout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .readout > div + div::before {
+    left: 0; top: -0.65rem; right: 0;
+    width: 100%; height: 1px; bottom: auto;
+  }
+  .ifthen { grid-template-columns: 1fr; gap: 0.4rem; }
+  table { font-size: 0.9rem; }
+  th, td { padding-right: 0.5rem; }
+  section.primary, section.appx, header.hero {
+    padding: clamp(1.25rem, 4vw, 1.75rem);
+  }
+  .chart-card { margin-left: 0; margin-right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail::before { transition: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+ <!-- SECTION 00 - TITLE -->
+ <section class="primary" id="s0">
+ <div class="kicker"><span class="sec-num">00</span>Order decline data review</div>
+ <h1 class="slide-title">What the data says about the City Brand order decline.</h1>
+ <p class="lead">The data shows the same pattern across AN, MH, and AA.</p>
+ <ul class="claim-bullets">
+ <li>The decline in orders is real.</li>
+ <li>City brand orders down <span class="num">&minus;53%</span> to <span class="num">&minus;59%</span> vs a late 2025 baseline, which includes pre-Arc decline trend.</li>
+ <li>Following Arc migration, daily order rate dipped <span class="num">~20%</span> across all city brands in aggregate.</li>
+ <li>Across traffic, publishing, paywall exposure, and tech migrations, the data shows only two cross-brand signals aligned with order decline &mdash; <b>the intro-rate acquisition program</b> and <b>weekly publishing volume</b>.</li>
+ </ul>
+ </section>
+
+ <!-- SECTION 01 - CITY BRANDS -->
+ <section class="primary" id="s1">
+ <div class="kicker"><span class="sec-num">01</span>City brands</div>
+ <h2>The data shows the city-brand decline started before Arc migration.</h2>
+
+ <div class="chart-card">
+ <h3 class="chart-title">City aggregate: CCB, CCL, CDB, CGR, CNY</h3>
+ <svg id="chart-city" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daily city-brand new subscription orders by tier, June 2024 through April 2026."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--tier-nd)"></span>Full-price (annual + standard monthly)</span>
+ <span><span class="swatch" style="background:var(--tier-d1)"></span>Intro-rate (all mechanisms)</span>
+ </div>
+ <div class="chart-footnote">
+ 7-day rolling average. Anomalies excluded (see <a href="#a8">A8</a>). Source: <span class="mono">cdw_02_stg.pelcro_subscriptions</span>, individual paid. 06/01/2024 through 04/16/2026.
+ </div>
+ </div>
+
+ <ul class="data-bullets">
+ <li><b>We ended the intro program on 01/15/2026. First city-brand Arc migration came five weeks later.</b>
+ <ul class="sub-bullets">
+ <li>City-brand intro orders in aggregate: <span class="num">512</span> in Dec 2025, <span class="num">54</span> in Jan 2026 after we ended the program.</li>
+ <li>First Arc migration 02/19/2026 (CCB). Last 03/24/2026 (CGR).</li>
+ </ul>
+ </li>
+ <li><b>By the day CCB flipped to Arc, city-brand orders in aggregate had already fallen from <span class="num">~85</span>/day to <span class="num">~56</span>/day &mdash; about <span class="num">65%</span> of the total decline we've seen.</b>
+ <ul class="sub-bullets">
+ <li>The remaining drop unfolded across six weeks of staggered city-brand migrations.</li>
+ <li>After Arc, CCB runs at the same rate as other Arc brands (see <a href="#a3">A3</a>).</li>
+ </ul>
+ </li>
+ <li><b>CGR is the natural control.</b>
+ <ul class="sub-bullets">
+ <li>The one city brand that structurally never offered an intro-rate program on Web &mdash; zero Web-source intro-tier subs lifetime.</li>
+ <li>The one city brand directionally up after its Arc migration &mdash; though volume is small enough that it could be noise.</li>
+ <li>See <a href="#a5">A5</a>.</li>
+ </ul>
+ </li>
+ </ul>
+ </section>
+
+ <!-- SECTION 02 - PORTFOLIO PATTERN -->
+ <section class="primary" id="s2">
+ <div class="kicker"><span class="sec-num">02</span>The same shape, three other brand groups</div>
+ <h2>The data shows the same pattern on three other brands, each with its own Arc, Piano, and Sophi launch dates.</h2>
+
+ <div class="chart-card">
+ <h3 class="chart-title">Modern Healthcare</h3>
+ <svg id="chart-mhc" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daily Modern Healthcare new subscription orders by tier, July 2024 through April 2026."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--tier-nd)"></span>Full-price</span>
+ <span><span class="swatch" style="background:var(--tier-d1)"></span>Intro-rate ($1 + $10 + DISCOUNT17)</span>
+ </div>
+ <div class="chart-footnote">Jun 2024 excluded (legacy-sub migration batch). Arc + Piano <span class="mono">06/13/2025</span> (ARC-2382). Sophi <span class="mono">01/29/2026</span>.</div>
+ </div>
+
+ <div class="chart-card">
+ <h3 class="chart-title">Automotive News</h3>
+ <svg id="chart-an" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daily Automotive News new subscription orders by tier, June 2024 through April 2026."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--tier-nd)"></span>Full-price ($249 annual + $25 monthly)</span>
+ <span><span class="swatch" style="background:var(--tier-d1)"></span>Intro-rate ($199 annual + DISCOUNT50)</span>
+ </div>
+ <div class="chart-footnote">Arc <span class="mono">10/24/2024</span> (3.5 months before the intro program). Piano V1 <span class="mono">02/10/2025</span>. Sophi <span class="mono">10/02/2025</span>. Arc came before the intro program, so AN is the cleanest test case (see <a href="#a3">A3</a>).</div>
+ </div>
+
+ <div class="chart-card">
+ <h3 class="chart-title">Ad Age</h3>
+ <svg id="chart-aa" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daily Ad Age new subscription orders by tier, June 2024 through April 2026."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--tier-nd)"></span>Full-price ($199 annual + $20 monthly)</span>
+ <span><span class="swatch" style="background:var(--tier-d1)"></span>Intro-rate ($10 + $15 + DISCOUNT10)</span>
+ </div>
+ <div class="chart-footnote">Arc + Piano <span class="mono">04/07/2025</span>, intro program launched <span class="mono">04/09/2025</span> (two days apart &mdash; April 2025 effects can't be cleanly split). Sophi <span class="mono">05/22/2025</span>.</div>
+ </div>
+
+ <ul class="data-bullets">
+ <li><b>Every brand's decline lines up with the intro program's dates.</b>
+ <ul class="sub-bullets">
+ <li>AN on Arc since 10/24/2024. AA since 04/07/2025. MHC since 06/13/2025.</li>
+ <li>Across each brand, the timing of order-volume drops aligns with the intro program's ramp-up and end &mdash; no comparable inflection appears at the Arc, Piano, or Sophi launch dates.</li>
+ </ul>
+ </li>
+ <li><b>Before vs after the intro program, total order volume is within <span class="num">2%</span> on AN and down <span class="num neg">28%</span> on AA &mdash; most of the AA drop is from the intro-rate promotions ending.</b>
+ <ul class="sub-bullets">
+ <li>AN, before vs after shutoff: total orders essentially flat (<span class="num">&minus;2%</span>). Full-price volume rose as the intro tier ended.</li>
+ <li>AA, before vs after shutoff: total down <span class="num neg">&minus;28%</span>. Full-price orders returned near pre-intro-program levels, still slightly below 2024. The <span class="num neg">&minus;28%</span> decline came almost entirely from the intro-rate promotions ending.</li>
+ <li>On city brands and MHC: full-price orders fell <span class="num neg">&minus;40%</span> and <span class="num neg">&minus;44%</span> while the program ran.</li>
+ </ul>
+ </li>
+ </ul>
+ </section>
+
+ <!-- SECTION 03 - PUBLISHING CORRELATION -->
+ <section class="primary" id="s3">
+ <div class="kicker"><span class="sec-num">03</span>Publishing volume and orders</div>
+ <h2>The data shows order volume declines when publishing volume declines.</h2>
+
+ <div class="chart-card">
+ <h3 class="chart-title">Portfolio aggregate: CCB, CCL, CDB, CGR, CNY, AA, ANG, MHC</h3>
+ <svg id="chart-pub-portfolio" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Weekly portfolio-level articles published and paid orders from June 2024 through April 2026, shown on a dual axis."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--accent)"></span>Articles published (left axis)</span>
+ <span><span class="swatch" style="background:var(--neg)"></span>Paid orders, web (right axis)</span>
+ <span><span class="swatch" style="background:#8f7a3f;opacity:0.75"></span>Holiday &amp; last-call weeks (excluded from correlation)</span>
+ </div>
+ <div class="chart-footnote">
+ Weekly totals across CCB, CDB, CCL, CNY, CGR, AA, ANG, MHC. Orders are individual paid, source = Web; Ad Age advertorial content excluded from articles. Shaded weeks (Thanksgiving, Christmas, New Year, and the 01/05/2026 last-call spike) are excluded from correlation figures. See <a href="#a4">A4</a> for per-brand detail, indexed window comparison, and methodology.
+ </div>
+ </div>
+
+ <ul class="data-bullets">
+ <li><b>Every one of the 8 brands shows publishing volume and orders moving together across the full 22 months.</b>
+ <ul class="sub-bullets">
+ <li>Strongest on the long-form city papers (CNY, CCL).</li>
+ <li>Weaker but still positive on CCB and CDB.</li>
+ <li>See <a href="#a4">A4</a> for per-brand detail.</li>
+ </ul>
+ </li>
+ <li><b>Portfolio publishing volume began declining in mid-2025 and has continued through the most recent data.</b>
+ <ul class="sub-bullets">
+ <li>Baseline (Sep 2024 &ndash; Mar 2025, normal weeks): <span class="num">~584</span> articles/week.</li>
+ <li>Summer 2025 onward: <span class="num">~490</span> articles/week (<span class="num neg">~15%</span> below baseline).</li>
+ <li>Most recent period (Jan 16 &ndash; Apr 2026, normal weeks): <span class="num">~438</span> articles/week (<span class="num neg">~25%</span> below baseline).</li>
+ </ul>
+ </li>
+ <li><b>Both publishing and order volume sit well below the pre-intro-rate-program baseline levels.</b>
+ <ul class="sub-bullets">
+ <li>Publishing: <span class="num neg">~25%</span> below baseline.</li>
+ <li>Orders: <span class="num neg">~31%</span> below baseline.</li>
+ </ul>
+ </li>
+ </ul>
+ </section>
+
+ <!-- APPENDIX -->
+ <div class="appx-break">
+ <h2>Appendix</h2>
+ <div class="sub">Decline-window data patterns, cross-brand evidence, milestones and scope.</div>
+ <div class="toc-grid">
+ <ul class="toc">
+ <li class="toc-group">Decline-window data patterns</li>
+ <li><a href="#a1"><span><b>A1</b> &nbsp; Cohort economics by tier</span></a></li>
+ <li><a href="#a2"><span><b>A2</b> &nbsp; Full-price baseline vs post-shutoff</span></a></li>
+ <li><a href="#a3"><span><b>A3</b> &nbsp; Dual-window: plan availability vs paywall exposure</span></a></li>
+ <li><a href="#a4"><span><b>A4</b> &nbsp; Publishing volume and orders &mdash; detail and methodology</span></a></li>
+ </ul>
+ <ul class="toc">
+ <li class="toc-group">Cross-brand evidence</li>
+ <li><a href="#a5"><span><b>A5</b> &nbsp; Arc-tenure correlation</span></a></li>
+ <li><a href="#a6"><span><b>A6</b> &nbsp; Milestone-impact read</span></a></li>
+ </ul>
+ <ul class="toc">
+ <li class="toc-group">Milestones, anomalies, scope</li>
+ <li><a href="#a7"><span><b>A7</b> &nbsp; Technology milestone dates</span></a></li>
+ <li><a href="#a8"><span><b>A8</b> &nbsp; Anomalies and exclusions</span></a></li>
+ <li><a href="#a9"><span><b>A9</b> &nbsp; Scope, limitations, open phases</span></a></li>
+ </ul>
+ </div>
+ </div>
+
+ <div class="appx-bucket-break"><h4>Bucket 1 &middot; Decline-window data patterns</h4></div>
+
+ <section class="appx" id="a1">
+ <div class="kicker"><span class="sec-num">A1</span>Cohort economics by tier</div>
+ <h3>The data shows per-customer lifetime revenue varies materially by the tier a customer first subscribed through.</h3>
+ <table>
+ <thead><tr><th>Entry tier</th><th class="num">Customers</th><th class="num">Took another paid sub</th><th class="num">Reached $300+ LTV</th><th class="num">Avg LTV / customer</th><th>Detail</th></tr></thead>
+ <tbody>
+ <tr><td>$1 monthly</td><td class="num">1,735</td><td class="num">22%</td><td class="num">8% (137 cust)</td><td class="num">$60</td><td>Of the 22% who took another paid sub, 42 converted to annual (~90 days after entry) and 40 to standard monthly.</td></tr>
+ <tr><td>Mid-discount ($5/$10 mo)</td><td class="num">1,485</td><td class="num">5%</td><td class="num">~2%</td><td class="num">$54</td><td>77 customers took a later non-mid-discount paid sub.</td></tr>
+ <tr><td>Standard monthly</td><td class="num">18,688</td><td class="num">3%</td><td class="num">&mdash;</td><td class="num">$175</td><td>554 customers took a later paid sub at a higher tier.</td></tr>
+ <tr><td>Annual</td><td class="num">28,020</td><td class="num">1%</td><td class="num">&mdash;</td><td class="num">$337</td><td>M12 retention ~70%.</td></tr>
+ </tbody>
+ </table>
+ <table>
+ <thead><tr><th>Era</th><th>Period (city)</th><th class="num">Subs/mo</th><th class="num">$/sub</th><th class="num">Rev/mo</th></tr></thead>
+ <tbody>
+ <tr><td>Pre-tactics</td><td>2024-04 &rarr; 2025-03</td><td class="num">2,452</td><td class="num">$104</td><td class="num">$255K</td></tr>
+ <tr><td>Discount ramp</td><td>2025-04 &rarr; 2025-07</td><td class="num">2,786</td><td class="num">$88</td><td class="num">$245K</td></tr>
+ <tr><td>Heavy peak</td><td>2025-08 &rarr; 2025-12</td><td class="num">2,730</td><td class="num">$73</td><td class="num">$200K</td></tr>
+ <tr><td>Post-shutoff</td><td>2026-01 &rarr; 2026-04</td><td class="num">1,731</td><td class="num">$105</td><td class="num">$182K</td></tr>
+ </tbody>
+ </table>
+ <ul style="max-width:46rem; padding-left:1.15rem;">
+ <li>Per-customer LTV ranks: annual <span class="num">$337</span>, standard monthly <span class="num">$175</span>, $1 monthly <span class="num">$60</span>, mid-discount <span class="num">$54</span>.</li>
+ <li>Of the <span class="num">1,735</span> customers whose first paid entry was a $1 sub, <span class="num">22%</span> later took another paid sub and <span class="num">8%</span> reached $300+ in lifetime revenue.</li>
+ <li>At the era level, revenue per acquired sub fell from <span class="num">$104</span> in the pre-tactics window to <span class="num">$73</span> during the heavy-discount peak, then returned to <span class="num">$105</span> post-shutoff at a lower monthly volume (<span class="num">1,731</span>/mo vs. <span class="num">2,730</span>/mo).</li>
+ </ul>
+ <div class="callout-muted">
+ <p style="margin:0 0 0.5rem 0;"><b>Data &amp; methodology</b></p>
+ <ul style="margin:0; padding-left:1.15rem;">
+ <li><b>Sources:</b> <code>cdw_02_stg.pelcro_subscriptions</code>, <code>cdw_02_stg.pelcro_payments</code>, <code>cdw_02_stg.pelcro_invoices</code>. Redshift, pulled 2026-04-18.</li>
+ <li><b>Universe:</b> brands CCB, CDB, CCL, CNY, CGR; <code>is_individual=TRUE</code>; <code>is_comp=FALSE</code>; subscription <code>created</code> between 2024-04-01 and 2026-04-16.</li>
+ <li><b>Excluded operational events:</b> CCL $0.01 backfill; CCB Oct 2024 $18/mo cohort (10,992 subs, 100% M2 churn &mdash; platform migration); CCB Nov 2025 $20/mo cohort (6,120 subs, 100% M2 churn &mdash; mass-promo/cancellation batch). 54,773 <code>$0/year</code> free-plan subs (non-comp) are classified as "other" and excluded from the paid-tier view.</li>
+ <li><b>Tier classification:</b> $1 monthly = plan &le; $1.50/mo. Mid-discount = $5 or $10/mo (CCL $10/mo reclassified as standard &mdash; it is CCL's primary plan). Standard monthly = $9.50&ndash;$50/mo. Annual = $30&ndash;$600/yr.</li>
+ <li><b>Customer-LTV (table 1):</b> each customer attributed to their FIRST paid-tier entry in the window. LTV = <code>&Sigma;(amount &minus; amount_refunded)</code> for <code>paid=TRUE</code> payments across ALL of that customer's subscriptions, any brand, any tier. "Took another paid sub" counts any later non-<code>is_comp</code> individual sub at a different price or interval. "$300+ LTV" is a rough "real subscriber" threshold.</li>
+ <li><b>Era economics (table 2):</b> M6-observable gross payments per acquired sub, aggregated to era totals (Phase-9 methodology, unchanged). M6 is the latest horizon fully observable for the heavy-discount cohorts.</li>
+ <li><b>Sub-level vs. customer-level:</b> an earlier version of this slide reported "$0.50 M12 rev / sub, $1,396 program lifetime revenue" for the $1 tier. That figure counts only revenue from the $1 subscription records themselves. The current table reports lifetime revenue per customer across all of their subscriptions, so downstream conversion (22% of $1 customers took another paid sub; 8% reached $300+ LTV) is included. Both views are reported for transparency.</li>
+ <li><b>Data drift vs. Phase 9 (2026-04-16):</b> $1 cohort now 2,841 subs / $1,402 sub-level revenue (Phase 9: 2,816 / $1,396). Era totals match within 1%.</li>
+ </ul>
+ </div>
+ </section>
+
+ <section class="appx" id="a2">
+ <div class="kicker"><span class="sec-num">A2</span>Full-price baseline vs post-shutoff</div>
+ <h3>Strip every intro tier. After shutoff, full-price orders are at or near pre-program levels on three of four brand groups.</h3>
+ <table>
+ <thead><tr><th>Brand</th><th class="num">Pre-program full-price /mo</th><th class="num">Intro-era trough /mo</th><th class="num">Post-shutoff (Feb-Mar 2026)</th><th>Recovery</th></tr></thead>
+ <tbody>
+ <tr><td>AN</td><td class="num">~260</td><td class="num">~80</td><td class="num">~245</td><td><span class="num pos">~94%</span>. Clean case.</td></tr>
+ <tr><td>AA</td><td class="num">~530 (Q1 2025)</td><td class="num">~120</td><td class="num">~541</td><td><span class="num pos">~100%</span>. Above pre-intro.</td></tr>
+ <tr><td>MHC</td><td class="num">~620</td><td class="num">~280</td><td class="num">~415</td><td>~67%.</td></tr>
+ <tr><td>City aggregate</td><td class="num">~2,000</td><td class="num">~1,300</td><td class="num">~1,554</td><td>~77% (includes Mar 2026 Arc window; see <a href="#a9">A9</a>).</td></tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="appx" id="a3">
+ <div class="kicker"><span class="sec-num">A3</span>Dual-window: plan availability vs paywall exposure</div>
+ <h3>Intro volume continued after the 06/16/2025 paywall pause. It stopped on 01/15/2026 when plans were removed.</h3>
+ <p style="max-width:46rem;">On AN, the Piano V1 paywall was paused on 06/16/2025 (DXO-985/986). The $199 annual plan remained in the catalog and continued to generate intro acquisitions for seven more months, until it was removed on 01/15/2026.</p>
+ <table>
+ <thead><tr><th>Window</th><th>AN days</th><th class="num">AN intro orders</th><th class="num">AN rate/day</th><th>AA days</th><th class="num">AA intro orders</th><th class="num">AA rate/day</th></tr></thead>
+ <tbody>
+ <tr><td>Paywall-exposure</td><td>127</td><td class="num">~445</td><td class="num">~3.5</td><td>69</td><td class="num">~1,140</td><td class="num">~16.5</td></tr>
+ <tr class="emph"><td>Plan-availability</td><td>340</td><td class="num">~1,850</td><td class="num">~5.4</td><td>282</td><td class="num">~5,000</td><td class="num">~17.7</td></tr>
+ </tbody>
+ </table>
+ <p style="max-width:46rem;">Per-day intro rate was higher in the plan-availability window than in the paywall-exposure window on both brands.</p>
+ </section>
+
+ <section class="appx" id="a4">
+ <div class="kicker"><span class="sec-num">A4</span>Publishing volume and orders &mdash; detail and methodology</div>
+ <h3>Weekly correlation between articles published and web-placed paid orders, by brand and portfolio.</h3>
+ <div class="chart-card">
+ <h3 class="chart-title">Indexed comparison vs. pre-intro baseline (= 100)</h3>
+ <svg id="chart-pub-windows" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grouped bar chart comparing articles and orders across five time windows, indexed to the pre-intro baseline."></svg>
+ <div class="chart-legend">
+ <span><span class="swatch" style="background:var(--accent)"></span>Articles per week (indexed)</span>
+ <span><span class="swatch" style="background:var(--neg)"></span>Orders per week (indexed)</span>
+ </div>
+ <div class="chart-footnote">
+ Normal business weeks only (holidays and the 01/05/2026 last-call spike excluded). Baseline = average articles and orders per week from 2024-09 through 2025-03 (both set to 100).
+ </div>
+ </div>
+ <div class="chart-card">
+ <svg id="chart-pub-perbrand" viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Per-brand Pearson correlation between weekly articles and weekly orders, horizontal bar chart."></svg>
+ <div class="chart-footnote">
+ Per-brand Pearson r over 2024-06-01 to 2026-04-16. Data cleaned (Ad Age advertorial content excluded). CGR shown but flagged for small sample (n=4 weeks).
+ </div>
+ </div>
+ <table>
+ <thead><tr><th>Brand</th><th class="num">Weeks</th><th class="num">r (raw)</th><th class="num">r (cleaned)</th><th class="num">r (detrended, 8-wk)</th><th class="num">Total articles</th><th class="num">Total orders</th></tr></thead>
+ <tbody>
+ <tr><td>CNY</td><td class="num">98</td><td class="num">+0.51</td><td class="num pos">+0.51</td><td class="num pos">+0.58</td><td class="num">7,213</td><td class="num">9,026</td></tr>
+ <tr><td>CCL</td><td class="num">98</td><td class="num">+0.47</td><td class="num pos">+0.47</td><td class="num pos">+0.52</td><td class="num">4,942</td><td class="num">5,177</td></tr>
+ <tr><td>CGR *</td><td class="num">4</td><td class="num">+0.48</td><td class="num">+0.48</td><td class="num">&mdash;</td><td class="num">82</td><td class="num">134</td></tr>
+ <tr><td>ANG</td><td class="num">99</td><td class="num">+0.44</td><td class="num pos">+0.44</td><td class="num pos">+0.37</td><td class="num">11,717</td><td class="num">14,661</td></tr>
+ <tr><td>AA</td><td class="num">98</td><td class="num">+0.43</td><td class="num pos">+0.41</td><td class="num pos">+0.32</td><td class="num">7,492</td><td class="num">21,227</td></tr>
+ <tr><td>MHC</td><td class="num">99</td><td class="num">+0.38</td><td class="num pos">+0.38</td><td class="num pos">+0.40</td><td class="num">3,603</td><td class="num">12,175</td></tr>
+ <tr><td>CDB</td><td class="num">99</td><td class="num">+0.29</td><td class="num">+0.29</td><td class="num pos">+0.41</td><td class="num">5,896</td><td class="num">9,132</td></tr>
+ <tr><td>CCB</td><td class="num">99</td><td class="num">+0.25</td><td class="num">+0.25</td><td class="num pos">+0.33</td><td class="num">9,823</td><td class="num">21,464</td></tr>
+ <tr class="emph"><td>Portfolio, normal weeks (n=92) &dagger;</td><td class="num">92</td><td class="num">+0.65</td><td class="num pos">+0.65</td><td class="num pos">+0.69</td><td class="num">50,768</td><td class="num">93,036</td></tr>
+ <tr><td>Portfolio, all weeks (n=99)</td><td class="num">99</td><td class="num">+0.70</td><td class="num">+0.71</td><td class="num">+0.79</td><td class="num">50,768</td><td class="num">93,036</td></tr>
+ </tbody>
+ </table>
+ <ul style="max-width:46rem; padding-left:1.15rem;">
+ <li>Every brand is positive.</li>
+ <li>Six of eight clear <span class="num">+0.30</span> on cleaned r.</li>
+ <li>All seven testable brands (CGR excluded for sample size) are positive on detrended r.</li>
+ <li>Detrending leaves the portfolio signal intact, ruling out shared-downtrend as the sole driver.</li>
+ <li>Monthly r on normal weeks = <span class="num">+0.91</span>.</li>
+ </ul>
+ <p style="max-width:46rem;">* CGR migrated to Arc 2026-03-26; only four weeks of publish data exist. Correlation shown directional only.<br>&dagger; Normal weeks exclude 7 low-activity weeks: Thanksgiving-adjacent (2024-11-25, 2025-11-24), Christmas and New Year weeks (2024-12-23, 2024-12-30, 2025-12-22, 2025-12-29), and the 2026-01-05 last-call order spike. See methodology below.</p>
+ <div class="callout-muted">
+ <p style="margin:0 0 0.5rem 0;"><b>Data &amp; methodology</b></p>
+ <ul style="margin:0; padding-left:1.15rem;">
+ <li><b>Sources:</b> Orders from <code>cdw_02_stg.pelcro_subscriptions</code>. Articles from <code>cdw_01_raw.drupal_articles</code> (pre-migration) and <code>cdw_02_stg.arc_articles</code> (post-migration). Redshift, pulled 2026-04-18.</li>
+ <li><b>Scope:</b> 8 brands &mdash; CCB, CDB, CCL, CNY, CGR (city), AA, ANG, MHC (comparable Arc-migrated).</li>
+ <li><b>Window:</b> 2024-06-01 through 2026-04-16 (22 months, ~98 weeks per brand). Selected for statistical power and to include AN's full pre/post-Arc era.</li>
+ <li><b>Orders universe:</b> <code>is_individual=TRUE</code>, <code>COALESCE(is_comp,FALSE)=FALSE</code>, <code>source IN ('Web','Website','website','web')</code>. Web-only filter is required &mdash; without it, 52% of rows are bulk import migrations and 15% are comp, which would drown out organic acquisition signal.</li>
+ <li><b>Order anomaly exclusions:</b> Same operational cohorts as <a href="#a8">A8</a> &mdash; CCB Oct-2024 $18/mo migration spike; CCB Nov-2025 $20/mo mass-promo cancel batch; CCL $0.01 backfill.</li>
+ <li><b>Articles &mdash; source reconciliation:</b> For each brand, drupal_articles used for dates before that brand's Arc migration date; arc_articles used for dates on or after. This avoids the ~2-month double-count on MHC (Drupal and Arc ran in parallel through mid-2025) and smaller overlaps on AN and AA. Brand-code remapping: content-table "MH" maps to Pelcro "MHC"; "AN" maps to "ANG".</li>
+ <li><b>Content filter:</b> AA <code>content_type='Work'</code> (Drupal) and <code>subtype='work'</code> (Arc) excluded. This content is ad-campaign showcases published on behalf of clients, not reported editorial. Verified against the content KPI tables: in Drupal era, Work was 20% of AA's article count but drove 0.08% of total order finish-assists; in Arc era, Work was 11% of articles but drove 3.8% of finish-assists. Per-visit conversion rate 31%/47% of Article rate. 1,005 AA records excluded (587 Drupal + 418 Arc). No equivalent content category exists on other brands.</li>
+ <li><b>Aggregation:</b> Weekly, using <code>date_trunc('week', d)::date</code> (Monday-start). Per-brand effective window constrained to the range where article data exists for that brand (CGR Arc-only, 4 weeks).</li>
+ <li><b>Pearson r:</b> Computed manually (Redshift has no CORR function) with float casts to prevent integer overflow in SUM-of-squares.</li>
+ <li><b>Detrending:</b> 8-week centered rolling-mean residuals on both series. Published values minus 8-week rolling mean (4 weeks each side where available). 4-week also computed as a robustness check.</li>
+ <li><b>Tests run:</b>
+ <ol style="padding-left:1.2rem; margin-top:0.4rem;">
+ <li>Per-brand raw weekly r over full window.</li>
+ <li>Per-brand cleaned weekly r (AA Work filter applied).</li>
+ <li>Per-brand detrended r (8-week rolling residuals).</li>
+ <li>Per-brand lagged r at 1, 2, 4, 8 weeks (publishing leading orders).</li>
+ <li>Portfolio aggregate (all 8 brands summed per week): raw, cleaned, detrended, monthly.</li>
+ <li>Cross-brand Spearman rank correlation on % change pre-shutoff (2025-04-01 to 2025-07-31) vs post-shutoff (2025-12-01 to 2026-03-31).</li>
+ <li>Pre/post-Arc shock (90-day windows) for AN, AA, MHC &mdash; the three brands with enough post-Arc history to test.</li>
+ </ol>
+ </li>
+ <li><b>Normal-weeks filter:</b> The reported headline portfolio numbers exclude 7 non-representative weeks to keep the comparison on routine business activity. All weeks remain plotted in the chart; the footnote in Section <a href="#s3">03</a> makes this explicit. Excluded weeks:
+ <ul style="padding-left:1.2rem; margin-top:0.4rem;">
+ <li><b>2024-11-25, 2025-11-24</b> &mdash; Thanksgiving week (4-day US holiday schedule depresses both article and order activity).</li>
+ <li><b>2024-12-23, 2024-12-30, 2025-12-22, 2025-12-29</b> &mdash; Christmas and New Year weeks (widely depressed activity).</li>
+ <li><b>2026-01-05</b> &mdash; last-call rush. Orders spiked to 1,235 as subscribers grabbed the intro plans before the 01/15 shutoff. Not representative of underlying demand.</li>
+ </ul>
+ Both all-weeks and normal-weeks figures are computed for transparency (all weeks: r = <span class="num">+0.71</span> weekly, <span class="num">+0.79</span> detrended, <span class="num">+0.89</span> monthly; normal weeks: r = <span class="num">+0.65</span> weekly, <span class="num">+0.69</span> detrended, <span class="num">+0.91</span> monthly). The framing in Sections <a href="#s0">00</a> and <a href="#s3">03</a> uses normal weeks as the headline because the masking narrative (indexed windows) requires steady-state comparisons.
+ </li>
+ <li><b>What the data supports:</b> Week-to-week co-movement between publishing volume and paid-order volume. Signal is positive on every brand tested, strengthens after detrending (ruling out shared-trend artifact), and is very strong at the portfolio level (r = <span class="num">+0.65</span> weekly cleaned, <span class="num">+0.69</span> detrended, <span class="num">+0.91</span> monthly, normal weeks). Indexed window comparison (Section <a href="#s3">03</a>) shows orders held near baseline during the intro era while articles had already declined <span class="num">~15%</span>-<span class="num">18%</span>; post-shutoff, orders landed <span class="num">~6</span> points below articles at <span class="num">69</span> / <span class="num">75</span> of baseline &mdash; beneath the pre-intro line.</li>
+ <li><b>Discrete event vs longer horizon:</b> At the 01/15/2026 shutoff specifically, weekly orders dropped <span class="num">&minus;19%</span> and weekly articles dropped only <span class="num">&minus;3%</span> in the matched pre/post window (2025-12 to 2026-01-12 vs 2026-01-19 to 2026-02-23, normal weeks only). The cliff itself is mechanical &mdash; removing plans does not affect editorial cadence. Over longer horizons the series co-move. The two observations are compatible because the correlation captures week-to-week rhythm, not event-driven shocks to the order side.</li>
+ <li><b>What the data does not support:</b> A causal claim that publishing volume change drives order change. Three reasons:
+ <ol style="padding-left:1.2rem; margin-top:0.4rem;">
+ <li>Lagged correlations are weak and inconsistent across brands. Concurrent r dominates. If publishing drove orders, we would expect a peak at lag +1 to +4 weeks; instead peak is at lag 0.</li>
+ <li>Cross-brand rank test on pre-shutoff vs post-shutoff % change: Spearman &rho; = <span class="num">+0.25</span>. Brands with bigger publishing drops tend to have bigger order drops, but modestly.</li>
+ <li>Per-brand pre/post-Arc shock test (90-day windows): all three testable brands directionally disagree with the hypothesis. MHC articles <span class="num neg">&minus;26%</span> / orders <span class="num pos">+16%</span>. ANG articles <span class="num pos">+11%</span> / orders <span class="num neg">&minus;4%</span>. AA articles <span class="num neg">&minus;1%</span> / orders <span class="num neg">&minus;19%</span>.</li>
+ </ol>
+ The signal is consistent with both series responding to shared portfolio-level forces (seasonal audience cycles, macro news flow) rather than publishing directly driving subscription behavior.
+ </li>
+ <li><b>Prior exploratory run:</b> An earlier exploratory correlation produced lower per-brand r values (e.g., ANG <span class="num">+0.24</span> vs this run's <span class="num">+0.44</span>). Root cause identified: prior run used na&iuml;ve UNION of drupal_articles and arc_articles without per-brand migration-date deduplication, which double-counted the Drupal/Arc overlap during each brand's migration window. This read uses strict migration-date cutoff; the higher r values reflect elimination of overlap noise, not a methodological divergence in the other direction.</li>
+ <li><b>Reproducibility:</b> Script and data at <code>a8-correlation-analysis-2026-04-18/</code> in the repo root. <code>analyze.py</code> runs the per-brand pipeline from the saved JSON queries. <code>aggregate.py</code> produces the all-weeks portfolio figures. <code>normal-weeks-only.py</code> produces the normal-weeks portfolio figures and the indexed-window table used in Section <a href="#s3">03</a>.</li>
+ </ul>
+ </div>
+ </section>
+
+ <div class="appx-bucket-break"><h4>Bucket 2 &middot; Cross-brand evidence</h4></div>
+
+ <section class="appx" id="a5">
+ <div class="kicker"><span class="sec-num">A5</span>Arc-tenure correlation</div>
+ <h3>B&rarr;C order change by Arc tenure. No correlation (Spearman &rho; = &minus;0.01, p = 0.97).</h3>
+ <table>
+ <thead><tr><th>Brand</th><th class="num">Months on Arc</th><th class="num">B&rarr;C non-$1 daily rate</th></tr></thead>
+ <tbody>
+ <tr><td>ANG</td><td class="num">18.0</td><td class="num pos">+12%</td></tr>
+ <tr><td>AA</td><td class="num">12.4</td><td class="num neg">&minus;36%</td></tr>
+ <tr><td>MHC</td><td class="num">10.2</td><td class="num neg">&minus;29%</td></tr>
+ <tr><td>HE</td><td class="num">7.0</td><td class="num neg">&minus;14%</td></tr>
+ <tr><td>PN</td><td class="num">5.0</td><td class="num pos">+26%</td></tr>
+ <tr><td>RN</td><td class="num">5.4</td><td class="num neg">&minus;43%</td></tr>
+ <tr><td>TB</td><td class="num">4.5</td><td class="num neg">&minus;32%</td></tr>
+ <tr class="emph"><td>CCB / CCL / CDB / CNY</td><td class="num">1.2-1.9</td><td class="num neg">&minus;21% to &minus;27%</td></tr>
+ <tr class="emph"><td>CGR</td><td class="num">0.8</td><td class="num pos">+23%</td></tr>
+ </tbody>
+ </table>
+ <ul style="max-width:46rem; padding-left:1.15rem;">
+ <li>No consistent relationship between Arc tenure and B&rarr;C order change.</li>
+ <li>Spearman &rho; = <span class="num">&minus;0.01</span> (p = <span class="num">0.97</span>).</li>
+ <li>Brands are up and down across the tenure range.</li>
+ <li>City-brand declines sit inside the non-city distribution, not outside it.</li>
+ <li>CGR's <span class="num pos">+23%</span> on a 19-day window has a 95% CI that straddles zero; directional, not statistically significant on its own.</li>
+ </ul>
+ </section>
+
+ <section class="appx" id="a6">
+ <div class="kicker"><span class="sec-num">A6</span>Milestone-impact read</div>
+ <h3>30-day pre vs post for each milestone on each brand group.</h3>
+ <table>
+ <thead><tr><th>Brand</th><th>Milestone</th><th>Date</th><th class="num">Total paid DTC<br>30d pre</th><th class="num">30d post</th><th>Read</th></tr></thead>
+ <tbody>
+ <tr><td>AN</td><td>Arc</td><td>10/24/2024</td><td class="num">~22/d</td><td class="num">~24/d</td><td>No step.</td></tr>
+ <tr><td>AN</td><td>Piano V2</td><td>05/01/2025</td><td class="num">~22/d</td><td class="num">~22/d</td><td>No step.</td></tr>
+ <tr><td>AN</td><td>Sophi</td><td>10/02/2025</td><td class="num">~10/d</td><td class="num">~10/d</td><td>No step.</td></tr>
+ <tr class="emph"><td>AN</td><td>Intro-rate end</td><td>01/15/2026</td><td class="num">~9/d</td><td class="num">~8/d</td><td>Total flat. Full-price <span class="num pos">+248%</span> (Redshift mirror, deck-wide source) / <span class="num pos">+85%</span> (Pelcro-live; classifier catches ~400 more subs as intro-discount via <span class="mono">discount_id</span> vs <span class="mono">coupon_code</span>). Direction consistent across both — intro tier releases demand into full-price.</td></tr>
+ <tr><td>AA</td><td>Arc + Piano + intro</td><td>04/07-09/2025</td><td class="num">~20/d</td><td class="num">~18/d</td><td>Three-event confound.</td></tr>
+ <tr><td>AA</td><td>Sophi</td><td>05/22/2025</td><td class="num">~21/d</td><td class="num">~23/d</td><td>No step.</td></tr>
+ <tr class="emph"><td>AA</td><td>Intro-rate end</td><td>01/15/2026</td><td class="num">~22/d</td><td class="num">~21/d</td><td>Total flat. Full-price <span class="num pos">+128%</span>.</td></tr>
+ <tr><td>MHC</td><td>Sophi</td><td>01/29/2026</td><td class="num">~18/d</td><td class="num">~16/d</td><td>No step.</td></tr>
+ <tr class="emph"><td>City</td><td>Intro-rate end</td><td>01/15/2026</td><td class="num">~76/d</td><td class="num">~59/d</td><td>Total <span class="num neg">&minus;22%</span>.</td></tr>
+ <tr><td>City</td><td>Arc (first)</td><td>02/19/2026</td><td class="num">~57/d</td><td class="num">~50/d</td><td>Small continued drift (Arc SEO; see <a href="#a9">A9</a>).</td></tr>
+ </tbody>
+ </table>
+ <p style="max-width:46rem;">The intro rate end row is the only one with a consistent signal across brand groups: on AN and AA the total stays flat while full-price reabsorbs the demand released by the intro tier; on city the total steps down <span class="num neg">&minus;22%</span>. Arc, Piano V2, and Sophi rows are flat or up on 30-day averages. The city Arc row shows a smaller continued drift consistent with the SEO cost noted in A9 rather than a checkout or paywall regression.</p>
+ <div class="cite"><b>Cite</b>Derived from the daily datasets plotted in Sections 01 and 02.</div>
+ </section>
+
+ <div class="appx-bucket-break"><h4>Bucket 3 &middot; Milestones, anomalies, scope</h4></div>
+
+ <section class="appx" id="a7">
+ <div class="kicker"><span class="sec-num">A7</span>Technology milestone dates</div>
+ <h3>Jira-canonical dates. Marked on every chart in Sections 01 and 02.</h3>
+ <table>
+ <thead><tr><th>Brand</th><th>Arc</th><th>Piano</th><th>Sophi</th><th>Intro start</th><th>Intro end</th></tr></thead>
+ <tbody>
+ <tr><td>AN</td><td>10/24/2024 <span class="mono">ARC-1458</span></td><td>05/01/2025 (V2); V1 02/10/2025, paused 06/16/2025</td><td>10/02/2025 <span class="mono">ARC-2748</span></td><td>02/10/2025</td><td>01/15/2026 <span class="mono">PRMO-I-55</span></td></tr>
+ <tr><td>AA</td><td>04/07/2025 <span class="mono">ARC-1783</span></td><td>04/07/2025</td><td>05/22/2025 <span class="mono">ARC-1978</span></td><td>04/09/2025</td><td>01/15/2026 <span class="mono">PRMO-I-54</span></td></tr>
+ <tr><td>MHC</td><td>06/13/2025 <span class="mono">ARC-2382</span></td><td>06/13/2025</td><td>01/29/2026 <span class="mono">ARC-2902</span></td><td>04/29/2025</td><td>01/15/2026</td></tr>
+ <tr class="emph"><td>City (5 brands)</td><td>02/19/2026 to 03/24/2026</td><td>Same as Arc, per brand</td><td>04/16/2026 <span class="mono">ARC-3518</span></td><td>04/29/2025 (CNY pilot 01/28/2025)</td><td>01/15/2026</td></tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="appx" id="a8">
+ <div class="kicker"><span class="sec-num">A8</span>Anomalies and exclusions</div>
+ <h3>Operational events filtered from charts and baselines.</h3>
+ <table>
+ <thead><tr><th>Brand</th><th>Anomaly</th><th>Why excluded</th></tr></thead>
+ <tbody>
+ <tr><td>AN</td><td>May 2024 Pelcro migration (45K subs across 2 days)</td><td>Legacy import. All May 2024 excluded.</td></tr>
+ <tr><td>AA</td><td>May 2024 Pelcro migration (25K on 05/31/2024)</td><td>Legacy import. All May 2024 excluded.</td></tr>
+ <tr><td>AA</td><td>Aug 2024 free_trial = 16,302</td><td>Operational batch.</td></tr>
+ <tr><td>AA</td><td>Plan 52366 on 02/11/2026 (567 subs) and 44707 on 01/08/2026 (170)</td><td>Single-day batches.</td></tr>
+ <tr><td>MHC</td><td>Jun 2024 Pelcro migration (17K legacy subs)</td><td>Legacy import. Jun 2024 excluded.</td></tr>
+ <tr><td>City (CCB)</td><td>Plan 27968 $18/mo on 10/06, 10/08, 10/09, 10/10 of 2024 (10,810 subs)</td><td>Platform batch.</td></tr>
+ <tr><td>City (CCB)</td><td>Plan 27970 entirely (Nov 2025 mass-promo cancel batch)</td><td>Not acquisition.</td></tr>
+ <tr><td>City (CCL)</td><td>Print $0.01/yr 05/15-16/2025 (2,002 subs)</td><td>Migration backfill; annual not monthly.</td></tr>
+ <tr><td>All</td><td>comp_source tier (~17K city lifetime)</td><td>Operational bulk loads, not organic.</td></tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="appx" id="a9">
+ <div class="kicker"><span class="sec-num">A9</span>Scope, limitations, open phases</div>
+ <h3>What this read can and can't carry.</h3>
+ <ul class="data-bullets">
+ <li><b>AA Arc confound.</b> Arc launch and intro rate authorization are two days apart (04/07/2025 vs 04/09/2025). April 2025 effects on AA cannot be cleanly separated into Arc attributable vs intro attributable. AN is used as the isolation case; AA carries the confound caveat.</li>
+ <li><b>Arc migration SEO cost on city brands.</b> Separate from the order volume question. Organic sessions &minus;26% to &minus;37% and social &minus;37% to &minus;58% on city brands in Window C. A reindexing signature consistent with a site migration.</li>
+ <li><b>Sessions vs. unique visitors.</b> Phase 2 used sessions per brand. Adversarial validation pulled UVs for direct reach and found it rose on four of five city brands B&rarr;C. Organic and social UVs have not been pulled yet. Before extending an SEO framing to AN and AA, UV-by-channel should be pulled for those brands.</li>
+ <li><b>What hasn't been tested.</b> Paid-marketing spend alignment to the event windows (Phase 7). Qualitative confirmation from the subscriptions team on the Dec 2025 shutoff intent (Phase 8). Sailthru deliverability and list-health (Phase 6). Coupon-intro cohort retention separate from the $1-plan retention already covered in <a href="#a1">A1</a>.</li>
+ <li><b>Pre-2024 baseline.</b> This read uses May 2024 onward. 2023 data wasn't pulled. If 2023 rates were materially different, the pre-intro baseline may shift.</li>
+ </ul>
+ </section>
+
+</main>
+
+<script>
+/* Stacked-area chart renderer, daily, 7-day rolling average. Based on v1 pattern. */
+(function(){
+
+const CSV_CITY = `2024-06-01,23,0,0
+2024-06-02,19,0,0
+2024-06-03,140,0,6
+2024-06-04,86,0,3
+2024-06-05,110,0,7
+2024-06-06,103,0,0
+2024-06-07,92,0,3
+2024-06-08,22,0,0
+2024-06-09,21,0,0
+2024-06-10,125,0,2
+2024-06-11,102,0,2
+2024-06-12,102,0,3
+2024-06-13,112,0,3
+2024-06-14,83,0,5
+2024-06-15,27,0,0
+2024-06-16,17,0,0
+2024-06-17,98,0,1
+2024-06-18,92,0,2
+2024-06-19,91,1,1
+2024-06-20,112,0,1
+2024-06-21,84,0,3
+2024-06-22,22,0,0
+2024-06-23,17,0,1
+2024-06-24,114,0,3
+2024-06-25,86,0,6
+2024-06-26,109,0,5
+2024-06-27,106,0,3
+2024-06-28,66,0,1
+2024-06-29,14,0,0
+2024-06-30,18,0,0
+2024-07-01,67,1,4
+2024-07-02,88,0,4
+2024-07-03,75,0,4
+2024-07-04,18,0,0
+2024-07-05,24,0,0
+2024-07-06,8,0,0
+2024-07-07,11,0,0
+2024-07-08,70,0,0
+2024-07-09,92,0,0
+2024-07-10,94,0,1
+2024-07-11,92,0,4
+2024-07-12,71,0,0
+2024-07-13,19,0,0
+2024-07-14,14,0,0
+2024-07-15,99,0,2
+2024-07-16,86,0,2
+2024-07-17,81,0,7
+2024-07-18,103,2,1
+2024-07-19,62,2,0
+2024-07-20,20,0,0
+2024-07-21,17,0,0
+2024-07-22,93,0,3
+2024-07-23,74,0,8
+2024-07-24,91,1,2
+2024-07-25,96,1,4
+2024-07-26,62,0,0
+2024-07-27,17,0,0
+2024-07-28,19,0,0
+2024-07-29,96,0,3
+2024-07-30,104,0,1
+2024-07-31,75,1,4
+2024-08-01,99,1,3
+2024-08-02,68,0,0
+2024-08-03,25,0,0
+2024-08-04,17,0,0
+2024-08-05,82,1,0
+2024-08-06,75,0,4
+2024-08-07,100,0,2
+2024-08-08,77,0,3
+2024-08-09,74,1,1
+2024-08-10,28,0,0
+2024-08-11,21,0,2
+2024-08-12,64,0,2
+2024-08-13,81,0,2
+2024-08-14,92,1,1
+2024-08-15,89,0,1
+2024-08-16,86,0,0
+2024-08-17,46,0,0
+2024-08-18,12,0,0
+2024-08-19,90,1,6
+2024-08-20,110,0,6
+2024-08-21,86,1,9
+2024-08-22,84,0,0
+2024-08-23,68,1,2
+2024-08-24,17,0,0
+2024-08-25,24,0,0
+2024-08-26,106,0,5
+2024-08-27,83,0,3
+2024-08-28,115,0,4
+2024-08-29,73,0,4
+2024-08-30,53,0,5
+2024-08-31,23,0,0
+2024-09-01,13,0,0
+2024-09-02,15,0,0
+2024-09-03,90,0,1
+2024-09-04,93,0,3
+2024-09-05,78,0,2
+2024-09-06,68,0,1
+2024-09-07,28,0,0
+2024-09-08,29,0,0
+2024-09-09,126,0,6
+2024-09-10,106,0,7
+2024-09-11,77,0,7
+2024-09-12,88,0,4
+2024-09-13,65,0,0
+2024-09-14,19,0,0
+2024-09-15,15,0,0
+2024-09-16,131,0,3
+2024-09-17,99,0,6
+2024-09-18,110,0,5
+2024-09-19,92,0,3
+2024-09-20,85,0,3
+2024-09-21,21,1,0
+2024-09-22,23,0,0
+2024-09-23,97,0,2
+2024-09-24,102,0,1
+2024-09-25,84,0,6
+2024-09-26,80,0,4
+2024-09-27,74,0,2
+2024-09-28,22,0,0
+2024-09-29,17,0,0
+2024-09-30,98,0,2
+2024-10-01,118,0,1
+2024-10-02,94,0,7
+2024-10-03,79,0,5
+2024-10-04,62,0,6
+2024-10-05,14,0,0
+2024-10-06,20,0,0
+2024-10-07,101,0,1
+2024-10-08,103,0,2
+2024-10-09,80,0,3
+2024-10-10,76,0,1
+2024-10-11,70,0,2
+2024-10-12,17,0,0
+2024-10-13,15,0,1
+2024-10-14,64,0,1
+2024-10-15,97,0,4
+2024-10-16,75,0,3
+2024-10-17,79,0,3
+2024-10-18,85,0,5
+2024-10-19,26,0,0
+2024-10-20,19,0,0
+2024-10-21,122,0,1
+2024-10-22,106,0,24
+2024-10-23,108,0,1
+2024-10-24,87,0,3
+2024-10-25,81,0,1
+2024-10-26,22,0,0
+2024-10-27,20,0,0
+2024-10-28,96,0,1
+2024-10-29,70,0,1
+2024-10-30,107,0,0
+2024-10-31,68,0,15
+2024-11-01,81,0,2
+2024-11-02,23,0,2
+2024-11-03,25,2,0
+2024-11-04,98,0,12
+2024-11-05,88,0,4
+2024-11-06,85,0,0
+2024-11-07,75,0,5
+2024-11-08,76,0,1
+2024-11-09,23,0,1
+2024-11-10,10,0,0
+2024-11-11,74,0,6
+2024-11-12,91,0,0
+2024-11-13,87,0,3
+2024-11-14,81,0,4
+2024-11-15,83,0,0
+2024-11-16,16,0,0
+2024-11-17,20,0,0
+2024-11-18,117,0,4
+2024-11-19,83,0,2
+2024-11-20,119,1,9
+2024-11-21,90,0,4
+2024-11-22,77,0,6
+2024-11-23,30,0,0
+2024-11-24,8,0,0
+2024-11-25,86,0,1
+2024-11-26,71,0,3
+2024-11-27,46,0,0
+2024-11-28,10,0,0
+2024-11-29,15,0,0
+2024-11-30,12,0,0
+2024-12-01,15,0,0
+2024-12-02,102,0,0
+2024-12-03,93,0,23
+2024-12-04,97,0,10
+2024-12-05,59,0,4
+2024-12-06,62,0,4
+2024-12-07,32,0,0
+2024-12-08,18,0,1
+2024-12-09,86,0,6
+2024-12-10,93,0,4
+2024-12-11,72,0,8
+2024-12-12,82,0,3
+2024-12-13,95,0,1
+2024-12-14,26,0,0
+2024-12-15,21,0,0
+2024-12-16,77,0,10
+2024-12-17,82,0,1
+2024-12-18,120,0,2
+2024-12-19,184,0,11
+2024-12-20,147,0,0
+2024-12-21,39,0,0
+2024-12-22,22,0,14
+2024-12-23,93,0,0
+2024-12-24,42,0,5
+2024-12-25,26,0,0
+2024-12-26,40,0,0
+2024-12-27,48,0,0
+2024-12-28,38,0,0
+2024-12-29,21,0,0
+2024-12-30,62,0,0
+2024-12-31,37,0,6
+2025-01-01,35,0,0
+2025-01-02,137,0,3
+2025-01-03,118,0,1
+2025-01-04,33,0,0
+2025-01-05,20,0,0
+2025-01-06,151,0,6
+2025-01-07,159,0,9
+2025-01-08,238,0,12
+2025-01-09,158,0,1
+2025-01-10,100,0,3
+2025-01-11,41,0,0
+2025-01-12,33,0,0
+2025-01-13,103,0,10
+2025-01-14,183,0,9
+2025-01-15,154,0,17
+2025-01-16,122,0,47
+2025-01-17,113,0,6
+2025-01-18,43,0,0
+2025-01-19,24,0,0
+2025-01-20,46,0,0
+2025-01-21,104,0,0
+2025-01-22,141,0,2
+2025-01-23,117,0,8
+2025-01-24,120,0,0
+2025-01-25,31,0,0
+2025-01-26,18,0,2
+2025-01-27,100,0,3
+2025-01-28,136,1,2
+2025-01-29,85,4,7
+2025-01-30,87,4,2
+2025-01-31,83,2,2
+2025-02-01,38,1,0
+2025-02-02,19,2,0
+2025-02-03,134,4,6
+2025-02-04,114,2,1
+2025-02-05,110,5,14
+2025-02-06,90,4,4
+2025-02-07,76,1,2
+2025-02-08,28,1,0
+2025-02-09,15,1,0
+2025-02-10,93,2,1
+2025-02-11,105,2,3
+2025-02-12,124,2,5
+2025-02-13,110,2,2
+2025-02-14,70,1,3
+2025-02-15,16,2,5
+2025-02-16,32,0,19
+2025-02-17,49,0,0
+2025-02-18,102,3,8
+2025-02-19,85,3,4
+2025-02-20,88,0,4
+2025-02-21,74,3,0
+2025-02-22,24,0,0
+2025-02-23,20,0,0
+2025-02-24,113,1,11
+2025-02-25,99,4,2
+2025-02-26,99,4,1
+2025-02-27,88,6,10
+2025-02-28,61,4,4
+2025-03-01,21,2,0
+2025-03-02,16,2,0
+2025-03-03,280,7,3
+2025-03-04,117,6,2
+2025-03-05,99,7,5
+2025-03-06,106,4,4
+2025-03-07,81,5,0
+2025-03-08,22,3,0
+2025-03-09,19,0,0
+2025-03-10,86,7,4
+2025-03-11,93,2,6
+2025-03-12,113,5,14
+2025-03-13,92,5,16
+2025-03-14,79,6,57
+2025-03-15,43,3,0
+2025-03-16,18,5,0
+2025-03-17,86,6,1
+2025-03-18,105,6,7
+2025-03-19,94,2,0
+2025-03-20,103,8,10
+2025-03-21,70,4,2
+2025-03-22,50,1,0
+2025-03-23,16,0,0
+2025-03-24,80,6,1
+2025-03-25,92,2,3
+2025-03-26,75,2,3
+2025-03-27,95,8,6
+2025-03-28,62,3,3
+2025-03-29,29,1,0
+2025-03-30,27,1,0
+2025-03-31,98,5,2
+2025-04-01,147,1,3
+2025-04-02,109,3,3
+2025-04-03,119,4,3
+2025-04-04,123,3,3
+2025-04-05,20,2,0
+2025-04-06,22,1,0
+2025-04-07,149,3,9
+2025-04-08,148,5,7
+2025-04-09,140,3,1
+2025-04-10,178,4,16
+2025-04-11,198,0,6
+2025-04-12,278,0,1
+2025-04-13,103,0,0
+2025-04-14,122,0,3
+2025-04-15,103,7,5
+2025-04-16,111,10,9
+2025-04-17,106,11,11
+2025-04-18,102,12,12
+2025-04-19,21,3,0
+2025-04-20,15,2,0
+2025-04-21,108,15,3
+2025-04-22,103,22,10
+2025-04-23,91,13,5
+2025-04-24,82,20,4
+2025-04-25,84,13,5
+2025-04-26,18,4,0
+2025-04-27,27,3,0
+2025-04-28,79,8,2
+2025-04-29,86,22,9
+2025-04-30,61,22,5
+2025-05-01,91,44,5
+2025-05-02,104,23,2
+2025-05-03,34,23,0
+2025-05-04,26,12,0
+2025-05-05,95,42,1
+2025-05-06,88,33,10
+2025-05-07,175,36,9
+2025-05-08,89,43,6
+2025-05-09,66,24,5
+2025-05-10,22,8,0
+2025-05-11,10,9,0
+2025-05-12,53,18,4
+2025-05-13,68,29,3
+2025-05-14,69,35,2
+2025-05-15,69,25,17
+2025-05-16,52,23,1987
+2025-05-17,10,11,0
+2025-05-18,11,3,0
+2025-05-19,72,31,2
+2025-05-20,73,48,2
+2025-05-21,83,41,1
+2025-05-22,70,41,5
+2025-05-23,54,26,2
+2025-05-24,11,7,0
+2025-05-25,11,9,0
+2025-05-26,11,2,0
+2025-05-27,53,31,1
+2025-05-28,73,46,3
+2025-05-29,52,40,3
+2025-05-30,52,28,1
+2025-05-31,10,10,0
+2025-06-01,15,15,0
+2025-06-02,92,31,4
+2025-06-03,90,38,3
+2025-06-04,69,35,2
+2025-06-05,63,31,2
+2025-06-06,54,30,2
+2025-06-07,20,17,0
+2025-06-08,10,11,0
+2025-06-09,70,48,2
+2025-06-10,93,41,1
+2025-06-11,66,41,2
+2025-06-12,68,37,0
+2025-06-13,65,30,3
+2025-06-14,16,12,0
+2025-06-15,9,7,0
+2025-06-16,50,36,2
+2025-06-17,65,33,3
+2025-06-18,45,45,4
+2025-06-19,50,42,2
+2025-06-20,41,40,4
+2025-06-21,10,12,0
+2025-06-22,10,13,0
+2025-06-23,36,42,2
+2025-06-24,65,52,3
+2025-06-25,53,67,1
+2025-06-26,48,73,0
+2025-06-27,36,50,3
+2025-06-28,15,17,0
+2025-06-29,5,23,0
+2025-06-30,49,52,4
+2025-07-01,60,69,5
+2025-07-02,80,49,1
+2025-07-03,39,34,0
+2025-07-04,9,7,1
+2025-07-05,12,11,0
+2025-07-06,5,14,0
+2025-07-07,49,55,0
+2025-07-08,45,58,6
+2025-07-09,51,51,0
+2025-07-10,58,73,3
+2025-07-11,37,36,0
+2025-07-12,9,24,1
+2025-07-13,12,12,0
+2025-07-14,62,49,0
+2025-07-15,52,62,2
+2025-07-16,72,55,0
+2025-07-17,47,69,2
+2025-07-18,28,92,4
+2025-07-19,8,187,0
+2025-07-20,12,15,0
+2025-07-21,53,40,1
+2025-07-22,51,43,8
+2025-07-23,56,69,2
+2025-07-24,51,69,3
+2025-07-25,48,41,4
+2025-07-26,14,20,0
+2025-07-27,9,8,0
+2025-07-28,44,66,1
+2025-07-29,78,145,1
+2025-07-30,62,44,0
+2025-07-31,66,49,4
+2025-08-01,60,77,1
+2025-08-02,22,16,1
+2025-08-03,9,13,0
+2025-08-04,85,38,1
+2025-08-05,83,36,0
+2025-08-06,71,43,0
+2025-08-07,83,39,1
+2025-08-08,65,55,0
+2025-08-09,20,20,0
+2025-08-10,18,17,0
+2025-08-11,80,32,0
+2025-08-12,92,42,0
+2025-08-13,89,54,0
+2025-08-14,77,59,1
+2025-08-15,53,28,4
+2025-08-16,18,10,0
+2025-08-17,17,22,0
+2025-08-18,67,27,3
+2025-08-19,89,43,9
+2025-08-20,71,61,3
+2025-08-21,90,88,6
+2025-08-22,58,43,2
+2025-08-23,24,34,0
+2025-08-24,16,15,0
+2025-08-25,80,23,3
+2025-08-26,71,113,0
+2025-08-27,75,53,1
+2025-08-28,70,35,3
+2025-08-29,55,32,0
+2025-08-30,17,11,0
+2025-08-31,11,7,0
+2025-09-01,18,7,0
+2025-09-02,86,37,3
+2025-09-03,73,30,2
+2025-09-04,97,66,13
+2025-09-05,63,42,2
+2025-09-06,21,9,1
+2025-09-07,24,5,0
+2025-09-08,75,19,2
+2025-09-09,94,30,5
+2025-09-10,87,31,1
+2025-09-11,83,40,3
+2025-09-12,75,24,3
+2025-09-13,18,9,0
+2025-09-14,19,10,0
+2025-09-15,90,22,4
+2025-09-16,79,38,1
+2025-09-17,70,37,1
+2025-09-18,69,34,3
+2025-09-19,62,22,0
+2025-09-20,18,6,0
+2025-09-21,22,10,0
+2025-09-22,69,28,4
+2025-09-23,70,32,2
+2025-09-24,86,35,1
+2025-09-25,82,42,0
+2025-09-26,75,24,0
+2025-09-27,23,12,0
+2025-09-28,12,6,0
+2025-09-29,56,16,1
+2025-09-30,105,29,5
+2025-10-01,74,27,6
+2025-10-02,73,34,2
+2025-10-03,81,24,2
+2025-10-04,23,10,0
+2025-10-05,22,7,0
+2025-10-06,90,45,0
+2025-10-07,103,56,3
+2025-10-08,90,49,5
+2025-10-09,83,25,3
+2025-10-10,53,22,0
+2025-10-11,17,16,0
+2025-10-12,17,12,0
+2025-10-13,72,20,3
+2025-10-14,107,28,1
+2025-10-15,81,30,2
+2025-10-16,101,34,0
+2025-10-17,48,40,2
+2025-10-18,15,18,1
+2025-10-19,37,62,0
+2025-10-20,51,80,2
+2025-10-21,60,70,2
+2025-10-22,110,38,11
+2025-10-23,81,33,3
+2025-10-24,69,34,6
+2025-10-25,22,15,0
+2025-10-26,13,6,0
+2025-10-27,70,37,5
+2025-10-28,69,29,0
+2025-10-29,93,31,1
+2025-10-30,88,20,4
+2025-10-31,83,27,1
+2025-11-01,21,5,0
+2025-11-02,23,17,0
+2025-11-03,120,51,0
+2025-11-04,87,56,2
+2025-11-05,99,25,8
+2025-11-06,82,33,1
+2025-11-07,70,43,1
+2025-11-08,25,10,1
+2025-11-09,17,31,0
+2025-11-10,77,25,2
+2025-11-11,87,35,1
+2025-11-12,79,23,1
+2025-11-13,89,54,0
+2025-11-14,100,38,0
+2025-11-15,58,77,2
+2025-11-16,14,11,0
+2025-11-17,110,71,4
+2025-11-18,86,73,2
+2025-11-19,69,79,3
+2025-11-20,59,75,1
+2025-11-21,55,58,1
+2025-11-22,27,9,0
+2025-11-23,16,8,2
+2025-11-24,66,43,21
+2025-11-25,74,15,9
+2025-11-26,51,21,1
+2025-11-27,16,12,0
+2025-11-28,40,13,0
+2025-11-29,12,10,0
+2025-11-30,11,6,0
+2025-12-01,84,21,1
+2025-12-02,96,22,2
+2025-12-03,105,12,0
+2025-12-04,93,24,4
+2025-12-05,79,32,3
+2025-12-06,27,25,4
+2025-12-07,21,4,0
+2025-12-08,64,25,8
+2025-12-09,95,16,3
+2025-12-10,67,15,16
+2025-12-11,89,33,5
+2025-12-12,63,14,2
+2025-12-13,34,10,0
+2025-12-14,12,7,0
+2025-12-15,77,66,1
+2025-12-16,76,16,1
+2025-12-17,106,30,2
+2025-12-18,86,26,1
+2025-12-19,48,25,0
+2025-12-20,35,11,0
+2025-12-21,38,10,0
+2025-12-22,33,22,1
+2025-12-23,55,17,0
+2025-12-24,25,4,0
+2025-12-25,19,0,0
+2025-12-26,29,5,0
+2025-12-27,18,3,0
+2025-12-28,30,2,0
+2025-12-29,44,7,0
+2025-12-30,53,4,1
+2025-12-31,21,4,0
+2026-01-01,18,4,0
+2026-01-02,42,1,0
+2026-01-03,16,0,0
+2026-01-04,12,3,0
+2026-01-05,100,5,0
+2026-01-06,110,4,3
+2026-01-07,125,5,6
+2026-01-08,120,10,6
+2026-01-09,89,9,2
+2026-01-10,27,3,0
+2026-01-11,13,2,0
+2026-01-12,76,2,3
+2026-01-13,82,0,8
+2026-01-14,96,1,6
+2026-01-15,82,0,3
+2026-01-16,84,0,2
+2026-01-17,31,1,0
+2026-01-18,16,0,0
+2026-01-19,22,0,0
+2026-01-20,67,0,10
+2026-01-21,66,0,1
+2026-01-22,85,0,0
+2026-01-23,89,1,2
+2026-01-24,38,1,0
+2026-01-25,20,0,0
+2026-01-26,76,0,2
+2026-01-27,84,0,5
+2026-01-28,60,1,9
+2026-01-29,65,0,2
+2026-01-30,76,1,5
+2026-01-31,19,0,0
+2026-02-01,20,3,0
+2026-02-02,86,0,5
+2026-02-03,86,4,6
+2026-02-04,83,3,3
+2026-02-05,62,0,2
+2026-02-06,84,1,3
+2026-02-07,24,1,0
+2026-02-08,18,0,0
+2026-02-09,84,1,5
+2026-02-10,63,1,1
+2026-02-11,78,0,0
+2026-02-12,75,0,1
+2026-02-13,81,0,1
+2026-02-14,17,0,0
+2026-02-15,13,0,0
+2026-02-16,29,0,4
+2026-02-17,59,1,11
+2026-02-18,65,2,3
+2026-02-19,101,0,8
+2026-02-20,60,2,5
+2026-02-21,21,1,0
+2026-02-22,16,0,0
+2026-02-23,76,3,2
+2026-02-24,84,0,3
+2026-02-25,74,1,16
+2026-02-26,101,2,6
+2026-02-27,51,1,2
+2026-02-28,15,1,0
+2026-03-01,20,0,0
+2026-03-02,66,2,1
+2026-03-03,60,0,4
+2026-03-04,57,2,3
+2026-03-05,68,1,3
+2026-03-06,81,1,6
+2026-03-07,18,0,1
+2026-03-08,10,0,0
+2026-03-09,70,0,8
+2026-03-10,68,1,3
+2026-03-11,68,1,2
+2026-03-12,89,2,13
+2026-03-13,53,1,5
+2026-03-14,11,1,0
+2026-03-15,12,0,0
+2026-03-16,58,0,2
+2026-03-17,58,0,4
+2026-03-18,71,1,1
+2026-03-19,59,1,7
+2026-03-20,48,0,1
+2026-03-21,15,0,0
+2026-03-22,9,0,0
+2026-03-23,40,0,4
+2026-03-24,65,0,4
+2026-03-25,45,0,5
+2026-03-26,52,0,2
+2026-03-27,63,0,0
+2026-03-28,15,0,1
+2026-03-29,10,0,0
+2026-03-30,54,0,4
+2026-03-31,68,0,1
+2026-04-01,63,0,6
+2026-04-02,64,0,5
+2026-04-03,39,0,21
+2026-04-04,15,0,0
+2026-04-05,20,0,0
+2026-04-06,75,0,3
+2026-04-07,50,0,4
+2026-04-08,57,1,0
+2026-04-09,75,0,3
+2026-04-10,57,0,2
+2026-04-11,10,0,0
+2026-04-12,10,0,0
+2026-04-13,54,0,4
+2026-04-14,65,0,2
+2026-04-15,68,0,3
+2026-04-16,59,0,4`;
+const CSV_MHC = `2024-07-01,21,0,0
+2024-07-02,42,0,0
+2024-07-03,31,0,4
+2024-07-04,5,0,0
+2024-07-05,19,0,0
+2024-07-06,3,0,0
+2024-07-07,3,0,0
+2024-07-08,35,0,1
+2024-07-09,24,0,0
+2024-07-10,34,0,4
+2024-07-11,24,0,2
+2024-07-12,28,0,2
+2024-07-13,10,0,0
+2024-07-14,1,0,0
+2024-07-15,28,0,0
+2024-07-16,20,0,3
+2024-07-17,17,0,2
+2024-07-18,18,0,0
+2024-07-19,20,0,0
+2024-07-20,5,0,0
+2024-07-22,24,0,6
+2024-07-23,25,0,5
+2024-07-24,28,0,1
+2024-07-25,29,0,5
+2024-07-26,33,0,1
+2024-07-27,4,0,0
+2024-07-28,2,0,0
+2024-07-29,30,0,1
+2024-07-30,16,0,2
+2024-07-31,30,0,1
+2024-08-01,28,0,0
+2024-08-02,20,0,0
+2024-08-03,3,0,0
+2024-08-04,4,0,0
+2024-08-05,34,0,0
+2024-08-06,29,0,1
+2024-08-07,34,0,0
+2024-08-08,20,0,1
+2024-08-09,21,0,1
+2024-08-10,7,0,0
+2024-08-11,6,0,1
+2024-08-12,24,0,1
+2024-08-13,26,0,4
+2024-08-14,24,0,1
+2024-08-15,21,0,0
+2024-08-16,27,0,0
+2024-08-17,4,0,0
+2024-08-18,4,0,0
+2024-08-19,30,0,1
+2024-08-20,18,0,2
+2024-08-21,27,0,2
+2024-08-22,16,0,1
+2024-08-23,16,0,0
+2024-08-24,4,0,0
+2024-08-25,2,0,0
+2024-08-26,20,0,2
+2024-08-27,25,0,0
+2024-08-28,32,0,0
+2024-08-29,20,0,0
+2024-08-30,16,0,2
+2024-08-31,5,0,0
+2024-09-01,1,0,0
+2024-09-02,5,0,0
+2024-09-03,29,0,1
+2024-09-04,51,0,2
+2024-09-05,35,0,1
+2024-09-06,20,0,2
+2024-09-07,5,0,0
+2024-09-08,5,0,0
+2024-09-09,22,2,3
+2024-09-10,39,0,4
+2024-09-11,31,0,0
+2024-09-12,24,1,0
+2024-09-13,17,1,0
+2024-09-14,3,0,0
+2024-09-15,4,0,0
+2024-09-16,15,0,0
+2024-09-17,19,0,0
+2024-09-18,15,0,0
+2024-09-19,28,0,0
+2024-09-20,33,0,0
+2024-09-21,4,0,0
+2024-09-22,3,0,0
+2024-09-23,33,0,2
+2024-09-24,17,0,0
+2024-09-25,25,0,3
+2024-09-26,27,0,1
+2024-09-27,40,1,0
+2024-09-28,24,0,0
+2024-09-29,11,0,0
+2024-09-30,49,0,2
+2024-10-01,30,0,1
+2024-10-02,44,0,0
+2024-10-03,21,0,3
+2024-10-04,26,0,1
+2024-10-05,7,0,0
+2024-10-06,6,0,0
+2024-10-07,31,0,1
+2024-10-08,35,0,2
+2024-10-09,30,0,0
+2024-10-10,36,0,0
+2024-10-11,41,0,0
+2024-10-12,10,0,0
+2024-10-13,4,0,0
+2024-10-14,27,0,1
+2024-10-15,38,0,0
+2024-10-16,34,0,1
+2024-10-17,21,0,0
+2024-10-18,20,0,1
+2024-10-19,4,0,0
+2024-10-20,6,0,0
+2024-10-21,20,0,2
+2024-10-22,27,0,2
+2024-10-23,40,0,1
+2024-10-24,22,1,0
+2024-10-25,22,0,0
+2024-10-26,8,0,0
+2024-10-27,2,0,0
+2024-10-28,14,0,1
+2024-10-29,27,0,2
+2024-10-30,21,0,0
+2024-10-31,23,0,1
+2024-11-01,17,0,4
+2024-11-02,2,0,0
+2024-11-03,3,0,0
+2024-11-04,22,0,4
+2024-11-05,27,0,0
+2024-11-06,21,0,2
+2024-11-07,18,0,1
+2024-11-08,19,0,0
+2024-11-09,11,0,0
+2024-11-10,6,0,0
+2024-11-11,26,0,2
+2024-11-12,29,0,0
+2024-11-13,30,0,0
+2024-11-14,30,0,0
+2024-11-15,20,0,1
+2024-11-16,8,0,0
+2024-11-17,5,0,0
+2024-11-18,28,0,0
+2024-11-19,28,0,1
+2024-11-20,26,0,1
+2024-11-21,20,0,3
+2024-11-22,16,0,1
+2024-11-23,3,0,0
+2024-11-24,2,0,0
+2024-11-25,17,0,1
+2024-11-26,28,0,1
+2024-11-27,10,0,1
+2024-11-28,4,0,0
+2024-11-29,5,0,0
+2024-11-30,2,0,0
+2024-12-01,5,0,3
+2024-12-02,25,0,0
+2024-12-03,26,0,2
+2024-12-04,41,0,2
+2024-12-05,10,0,1
+2024-12-06,17,0,0
+2024-12-07,5,0,0
+2024-12-08,4,0,0
+2024-12-09,55,0,1
+2024-12-10,36,0,2
+2024-12-11,23,0,3
+2024-12-12,23,0,7
+2024-12-13,22,0,3
+2024-12-14,6,0,0
+2024-12-15,5,0,0
+2024-12-16,20,0,0
+2024-12-17,22,0,4
+2024-12-18,17,0,5
+2024-12-19,29,0,12
+2024-12-20,20,0,0
+2024-12-21,8,0,0
+2024-12-22,1,0,0
+2024-12-23,16,0,0
+2024-12-24,8,0,9
+2024-12-25,1,0,0
+2024-12-26,15,0,0
+2024-12-27,16,0,0
+2024-12-28,5,0,0
+2024-12-29,3,0,0
+2024-12-30,18,0,0
+2024-12-31,15,0,0
+2025-01-01,5,0,0
+2025-01-02,40,0,0
+2025-01-03,25,0,0
+2025-01-04,4,0,0
+2025-01-05,6,0,0
+2025-01-06,38,0,0
+2025-01-07,29,0,1
+2025-01-08,50,0,2
+2025-01-09,36,0,0
+2025-01-10,31,0,1
+2025-01-11,9,0,2
+2025-01-12,4,0,0
+2025-01-13,29,0,2
+2025-01-14,42,0,2
+2025-01-15,34,0,0
+2025-01-16,24,0,2
+2025-01-17,31,0,2
+2025-01-18,7,0,0
+2025-01-19,4,0,0
+2025-01-20,15,0,0
+2025-01-21,31,0,1
+2025-01-22,46,0,1
+2025-01-23,27,0,1
+2025-01-24,27,0,0
+2025-01-25,5,0,0
+2025-01-26,4,0,0
+2025-01-27,31,0,1
+2025-01-28,26,0,3
+2025-01-29,28,0,1
+2025-01-30,26,0,0
+2025-01-31,19,0,0
+2025-02-01,5,0,0
+2025-02-02,8,0,0
+2025-02-03,28,0,1
+2025-02-04,21,0,2
+2025-02-05,27,0,3
+2025-02-06,18,0,5
+2025-02-07,35,0,2
+2025-02-08,8,0,0
+2025-02-09,2,0,0
+2025-02-10,42,0,0
+2025-02-11,38,0,0
+2025-02-12,28,0,2
+2025-02-13,37,0,0
+2025-02-14,28,1,3
+2025-02-15,6,0,0
+2025-02-16,6,0,1
+2025-02-17,12,0,0
+2025-02-18,27,0,1
+2025-02-19,22,0,0
+2025-02-20,22,0,2
+2025-02-21,33,0,0
+2025-02-22,6,0,0
+2025-02-23,6,0,0
+2025-02-24,34,0,3
+2025-02-25,27,0,1
+2025-02-26,38,0,0
+2025-02-27,30,0,2
+2025-02-28,14,0,0
+2025-03-01,7,0,0
+2025-03-02,1,0,0
+2025-03-03,56,0,0
+2025-03-04,37,0,0
+2025-03-05,39,0,0
+2025-03-06,27,0,0
+2025-03-07,17,0,0
+2025-03-08,2,0,0
+2025-03-09,8,0,0
+2025-03-10,40,0,0
+2025-03-11,23,0,0
+2025-03-12,26,0,4
+2025-03-13,21,0,4
+2025-03-14,21,2,3
+2025-03-15,3,0,0
+2025-03-16,5,0,0
+2025-03-17,25,0,1
+2025-03-18,40,0,13
+2025-03-19,28,0,0
+2025-03-20,24,0,1
+2025-03-21,24,0,0
+2025-03-22,4,0,0
+2025-03-23,5,0,0
+2025-03-24,11,0,2
+2025-03-25,26,0,1
+2025-03-26,29,0,1
+2025-03-27,18,0,1
+2025-03-28,21,0,0
+2025-03-29,4,0,0
+2025-03-30,6,0,0
+2025-03-31,21,0,5
+2025-04-01,19,0,1
+2025-04-02,20,0,0
+2025-04-03,31,0,1
+2025-04-04,28,0,0
+2025-04-05,8,0,0
+2025-04-06,7,0,0
+2025-04-07,25,2,2
+2025-04-08,35,0,9
+2025-04-09,17,0,0
+2025-04-10,18,0,5
+2025-04-11,24,1,0
+2025-04-12,9,0,0
+2025-04-13,5,0,0
+2025-04-14,18,0,2
+2025-04-15,27,0,1
+2025-04-16,33,0,2
+2025-04-17,16,0,2
+2025-04-18,10,0,1
+2025-04-19,2,0,0
+2025-04-20,1,0,0
+2025-04-21,11,0,1
+2025-04-22,29,0,0
+2025-04-23,22,0,1
+2025-04-24,24,0,4
+2025-04-25,10,0,3
+2025-04-26,6,0,0
+2025-04-27,1,0,0
+2025-04-28,28,0,1
+2025-04-29,39,4,5
+2025-04-30,23,9,1
+2025-05-01,19,14,0
+2025-05-02,13,7,0
+2025-05-03,1,1,0
+2025-05-04,2,1,0
+2025-05-05,14,7,0
+2025-05-06,16,6,4
+2025-05-07,98,6,0
+2025-05-08,15,4,2
+2025-05-09,8,7,1
+2025-05-11,3,1,0
+2025-05-12,28,11,0
+2025-05-13,23,24,2
+2025-05-14,21,11,1
+2025-05-15,22,2,0
+2025-05-16,15,11,0
+2025-05-17,4,4,0
+2025-05-18,3,2,0
+2025-05-19,18,6,0
+2025-05-20,18,8,2
+2025-05-21,13,7,3
+2025-05-22,27,14,0
+2025-05-23,13,5,0
+2025-05-24,2,1,0
+2025-05-26,0,1,0
+2025-05-27,14,8,1
+2025-05-28,16,11,3
+2025-05-29,25,17,4
+2025-05-30,11,12,0
+2025-05-31,3,3,0
+2025-06-01,5,3,0
+2025-06-02,16,7,0
+2025-06-03,13,7,0
+2025-06-04,14,8,1
+2025-06-05,18,6,2
+2025-06-06,15,11,0
+2025-06-07,3,3,0
+2025-06-08,3,2,0
+2025-06-09,26,10,2
+2025-06-10,15,7,0
+2025-06-11,20,6,2
+2025-06-12,21,6,5
+2025-06-13,11,4,0
+2025-06-14,2,2,0
+2025-06-15,1,5,0
+2025-06-16,9,15,2
+2025-06-17,5,8,1
+2025-06-18,12,15,1
+2025-06-19,9,20,2
+2025-06-20,11,16,1
+2025-06-21,3,3,0
+2025-06-22,0,2,0
+2025-06-23,12,23,0
+2025-06-24,12,17,0
+2025-06-25,11,15,0
+2025-06-26,8,14,1
+2025-06-27,8,14,0
+2025-06-28,2,5,0
+2025-06-29,1,1,0
+2025-06-30,11,11,0
+2025-07-01,11,24,0
+2025-07-02,11,15,0
+2025-07-03,5,15,0
+2025-07-04,0,7,0
+2025-07-05,1,1,0
+2025-07-06,0,2,0
+2025-07-07,9,19,0
+2025-07-08,7,14,2
+2025-07-09,8,15,0
+2025-07-10,14,11,0
+2025-07-11,6,18,0
+2025-07-12,1,3,0
+2025-07-13,1,2,0
+2025-07-14,13,14,2
+2025-07-15,5,19,1
+2025-07-16,14,21,2
+2025-07-17,8,21,1
+2025-07-18,10,16,0
+2025-07-19,0,7,0
+2025-07-20,0,2,0
+2025-07-21,4,21,2
+2025-07-22,12,18,2
+2025-07-23,35,17,0
+2025-07-24,15,10,0
+2025-07-25,16,12,3
+2025-07-26,4,2,0
+2025-07-27,4,4,0
+2025-07-28,10,13,0
+2025-07-29,11,13,1
+2025-07-30,15,10,2
+2025-07-31,18,6,2
+2025-08-01,19,10,0
+2025-08-02,6,3,1
+2025-08-03,9,1,0
+2025-08-04,13,6,1
+2025-08-05,20,8,0
+2025-08-06,11,10,0
+2025-08-07,21,7,1
+2025-08-08,19,14,0
+2025-08-09,8,8,0
+2025-08-10,3,0,0
+2025-08-11,20,8,19
+2025-08-12,25,5,1
+2025-08-13,22,14,1
+2025-08-14,26,16,1
+2025-08-15,19,10,1
+2025-08-16,4,4,0
+2025-08-17,6,1,0
+2025-08-18,13,6,0
+2025-08-19,28,11,5
+2025-08-20,40,16,0
+2025-08-21,22,6,1
+2025-08-22,20,13,2
+2025-08-23,13,4,0
+2025-08-24,8,2,0
+2025-08-25,25,21,0
+2025-08-26,17,32,1
+2025-08-27,19,6,3
+2025-08-28,10,14,1
+2025-08-29,11,10,1
+2025-08-30,4,3,0
+2025-08-31,8,0,0
+2025-09-01,7,0,0
+2025-09-02,22,5,0
+2025-09-03,23,13,4
+2025-09-04,26,13,6
+2025-09-05,21,8,0
+2025-09-06,6,3,1
+2025-09-07,5,1,0
+2025-09-08,15,5,0
+2025-09-09,19,9,0
+2025-09-10,29,12,2
+2025-09-11,18,8,0
+2025-09-12,10,2,1
+2025-09-13,4,3,0
+2025-09-14,8,0,0
+2025-09-15,19,8,3
+2025-09-16,23,8,0
+2025-09-17,22,14,0
+2025-09-18,22,10,6
+2025-09-19,16,6,1
+2025-09-20,4,1,0
+2025-09-21,5,1,0
+2025-09-22,13,4,2
+2025-09-23,22,7,0
+2025-09-24,17,7,1
+2025-09-25,18,11,1
+2025-09-26,21,10,0
+2025-09-27,12,8,0
+2025-09-28,3,0,0
+2025-09-29,16,11,0
+2025-09-30,17,7,1
+2025-10-01,26,18,3
+2025-10-02,15,12,1
+2025-10-03,15,4,0
+2025-10-04,3,1,0
+2025-10-05,1,1,0
+2025-10-06,29,9,1
+2025-10-07,17,7,0
+2025-10-08,20,16,0
+2025-10-09,20,16,0
+2025-10-10,19,14,0
+2025-10-11,9,6,0
+2025-10-12,2,7,0
+2025-10-13,18,9,2
+2025-10-14,11,8,1
+2025-10-15,18,3,1
+2025-10-16,18,12,0
+2025-10-17,5,15,2
+2025-10-18,2,7,0
+2025-10-19,2,5,0
+2025-10-20,4,13,1
+2025-10-21,4,20,0
+2025-10-22,16,14,0
+2025-10-23,11,8,1
+2025-10-24,16,11,0
+2025-10-25,2,4,0
+2025-10-26,2,3,0
+2025-10-27,27,14,0
+2025-10-28,19,11,0
+2025-10-29,22,10,2
+2025-10-30,20,14,1
+2025-10-31,16,9,1
+2025-11-01,4,4,0
+2025-11-02,3,1,0
+2025-11-03,25,11,3
+2025-11-04,25,10,2
+2025-11-05,9,9,1
+2025-11-06,21,13,2
+2025-11-07,14,11,0
+2025-11-08,6,5,0
+2025-11-09,4,3,0
+2025-11-10,23,18,0
+2025-11-11,19,11,1
+2025-11-12,25,14,0
+2025-11-13,24,5,0
+2025-11-14,17,8,0
+2025-11-15,4,1,0
+2025-11-16,2,7,0
+2025-11-17,10,22,3
+2025-11-18,14,13,3
+2025-11-19,6,16,0
+2025-11-20,10,19,0
+2025-11-21,4,17,0
+2025-11-22,2,3,0
+2025-11-23,6,2,0
+2025-11-24,22,10,5
+2025-11-25,18,4,0
+2025-11-26,16,6,0
+2025-11-27,3,4,0
+2025-11-28,5,4,0
+2025-11-29,4,1,0
+2025-11-30,2,0,0
+2025-12-01,22,3,0
+2025-12-02,19,2,3
+2025-12-03,30,4,6
+2025-12-04,24,11,2
+2025-12-05,12,6,1
+2025-12-06,3,0,0
+2025-12-07,3,0,0
+2025-12-08,55,0,1
+2025-12-09,26,1,1
+2025-12-10,25,0,0
+2025-12-11,18,0,1
+2025-12-12,22,0,4
+2025-12-13,6,0,0
+2025-12-14,4,0,0
+2025-12-15,16,0,1
+2025-12-16,25,0,0
+2025-12-17,21,0,2
+2025-12-18,25,1,0
+2025-12-19,16,0,2
+2025-12-20,3,1,0
+2025-12-21,3,0,0
+2025-12-22,10,0,0
+2025-12-23,6,0,0
+2025-12-24,3,0,0
+2025-12-25,2,0,0
+2025-12-26,6,0,0
+2025-12-27,4,0,0
+2025-12-28,1,0,0
+2025-12-29,18,0,0
+2025-12-30,16,0,0
+2025-12-31,9,0,0
+2026-01-01,4,0,0
+2026-01-02,6,0,0
+2026-01-03,1,0,0
+2026-01-04,1,0,0
+2026-01-05,31,0,4
+2026-01-06,20,0,0
+2026-01-07,26,0,5
+2026-01-08,16,0,1
+2026-01-09,16,1,0
+2026-01-10,2,0,0
+2026-01-11,2,0,0
+2026-01-12,50,0,1
+2026-01-13,39,0,0
+2026-01-14,25,0,3
+2026-01-15,29,0,1
+2026-01-16,15,0,0
+2026-01-17,6,0,0
+2026-01-18,4,0,0
+2026-01-19,5,0,0
+2026-01-20,37,0,1
+2026-01-21,21,0,3
+2026-01-22,5,0,0
+2026-01-23,18,0,0
+2026-01-24,8,0,0
+2026-01-25,2,0,0
+2026-01-26,11,0,6
+2026-01-27,26,0,0
+2026-01-28,32,0,4
+2026-01-29,19,0,1
+2026-01-30,16,0,0
+2026-01-31,9,0,0
+2026-02-01,7,0,0
+2026-02-02,21,0,3
+2026-02-03,19,0,2
+2026-02-04,20,1,1
+2026-02-05,20,0,0
+2026-02-06,26,0,0
+2026-02-07,8,0,0
+2026-02-08,2,0,0
+2026-02-09,30,0,4
+2026-02-10,26,0,1
+2026-02-11,20,0,1
+2026-02-12,18,1,0
+2026-02-13,25,0,2
+2026-02-14,2,1,0
+2026-02-15,4,0,0
+2026-02-16,13,0,0
+2026-02-17,24,0,0
+2026-02-18,23,0,1
+2026-02-19,12,1,2
+2026-02-20,9,0,1
+2026-02-21,3,0,0
+2026-02-22,4,0,0
+2026-02-23,15,0,0
+2026-02-24,17,0,2
+2026-02-25,14,0,4
+2026-02-26,31,0,4
+2026-02-27,22,0,0
+2026-02-28,9,0,0
+2026-03-01,6,1,0
+2026-03-02,26,0,0
+2026-03-03,24,0,2
+2026-03-04,16,0,1
+2026-03-05,22,0,1
+2026-03-06,19,0,0
+2026-03-07,4,0,0
+2026-03-08,1,0,0
+2026-03-09,28,1,5
+2026-03-10,19,0,0
+2026-03-11,23,0,1
+2026-03-12,12,0,0
+2026-03-13,13,0,0
+2026-03-14,1,0,0
+2026-03-15,2,0,0
+2026-03-16,10,1,1
+2026-03-17,14,0,1
+2026-03-18,17,1,0
+2026-03-19,16,0,0
+2026-03-20,4,0,2
+2026-03-21,1,0,0
+2026-03-22,4,0,0
+2026-03-23,8,0,0
+2026-03-24,27,0,3
+2026-03-25,14,0,0
+2026-03-26,12,0,2
+2026-03-27,15,0,0
+2026-03-30,16,0,1
+2026-03-31,11,0,0
+2026-04-01,16,0,0
+2026-04-02,13,0,0
+2026-04-03,17,0,1
+2026-04-04,2,0,0
+2026-04-05,2,0,0
+2026-04-06,10,0,2
+2026-04-07,20,0,0
+2026-04-08,18,0,0
+2026-04-09,12,0,1
+2026-04-10,5,0,2
+2026-04-11,1,0,0
+2026-04-12,2,0,0
+2026-04-13,26,0,1
+2026-04-14,23,0,1
+2026-04-15,19,0,2
+2026-04-16,11,0,1`;
+const CSV_AN = `2024-06-01,3,0,16
+2024-06-02,1,0,2
+2024-06-03,15,2,35
+2024-06-04,13,0,28
+2024-06-05,8,1,30
+2024-06-06,10,1,45
+2024-06-07,6,0,20
+2024-06-08,0,0,5
+2024-06-09,0,0,4
+2024-06-10,4,0,33
+2024-06-11,3,0,22
+2024-06-12,11,0,29
+2024-06-13,10,1,26
+2024-06-14,14,0,30
+2024-06-15,1,0,2
+2024-06-16,3,0,3
+2024-06-17,11,0,24
+2024-06-18,9,0,28
+2024-06-19,42,2,69
+2024-06-20,27,0,56
+2024-06-21,34,6,58
+2024-06-22,11,0,17
+2024-06-23,3,0,13
+2024-06-24,12,0,63
+2024-06-25,14,1,55
+2024-06-26,16,0,63
+2024-06-27,8,0,39
+2024-06-28,14,1,40
+2024-06-29,4,0,11
+2024-06-30,0,0,7
+2024-07-01,7,0,49
+2024-07-02,12,0,41
+2024-07-03,3,1,31
+2024-07-04,5,0,5
+2024-07-05,3,0,8
+2024-07-06,1,0,6
+2024-07-07,2,0,8
+2024-07-08,14,1,32
+2024-07-09,10,0,28
+2024-07-10,8,0,33
+2024-07-11,9,0,41
+2024-07-12,7,0,43
+2024-07-13,2,0,8
+2024-07-14,2,0,2
+2024-07-15,8,1,36
+2024-07-16,9,1,25
+2024-07-17,6,0,27
+2024-07-18,6,1,24
+2024-07-19,6,0,20
+2024-07-20,2,0,3
+2024-07-21,2,0,5
+2024-07-22,7,1,52
+2024-07-23,5,0,49
+2024-07-24,8,1,23
+2024-07-25,8,0,39
+2024-07-26,7,0,27
+2024-07-27,3,0,6
+2024-07-28,2,0,3
+2024-07-29,16,1,42
+2024-07-30,9,1,42
+2024-07-31,16,1,37
+2024-08-01,9,0,30
+2024-08-02,11,0,28
+2024-08-03,4,0,3
+2024-08-04,3,0,13
+2024-08-05,12,1,35
+2024-08-06,5,0,28
+2024-08-07,6,2,29
+2024-08-08,5,0,21
+2024-08-09,5,0,18
+2024-08-10,3,0,8
+2024-08-11,0,1,17
+2024-08-12,11,1,26
+2024-08-13,11,0,30
+2024-08-14,11,1,37
+2024-08-15,15,1,30
+2024-08-16,7,1,18
+2024-08-17,9,0,10
+2024-08-18,5,0,6
+2024-08-19,9,2,49
+2024-08-20,17,2,31
+2024-08-21,8,0,27
+2024-08-22,7,2,23
+2024-08-23,8,0,19
+2024-08-24,4,0,5
+2024-08-25,5,0,4
+2024-08-26,8,0,51
+2024-08-27,8,0,39
+2024-08-28,9,0,24
+2024-08-29,7,0,24
+2024-08-30,6,1,23
+2024-08-31,2,0,1
+2024-09-01,0,0,3
+2024-09-02,5,0,8
+2024-09-03,12,1,35
+2024-09-04,8,1,23
+2024-09-05,8,1,19
+2024-09-06,5,0,18
+2024-09-07,4,0,5
+2024-09-08,1,0,6
+2024-09-09,11,1,38
+2024-09-10,10,0,17
+2024-09-11,12,0,23
+2024-09-12,17,0,20
+2024-09-13,10,0,13
+2024-09-14,1,0,1
+2024-09-15,5,0,4
+2024-09-16,9,0,27
+2024-09-17,6,2,15
+2024-09-18,15,1,18
+2024-09-19,11,2,14
+2024-09-20,7,0,15
+2024-09-21,0,0,4
+2024-09-22,0,0,6
+2024-09-23,14,1,23
+2024-09-24,10,0,33
+2024-09-25,7,0,36
+2024-09-26,8,0,11
+2024-09-27,8,0,20
+2024-09-28,1,0,4
+2024-09-29,2,0,3
+2024-09-30,16,0,14
+2024-10-01,20,3,23
+2024-10-02,16,0,25
+2024-10-03,9,0,23
+2024-10-04,14,1,28
+2024-10-05,3,0,3
+2024-10-06,3,0,3
+2024-10-07,12,0,15
+2024-10-08,13,1,30
+2024-10-09,18,0,16
+2024-10-10,15,0,13
+2024-10-11,14,0,21
+2024-10-12,3,0,2
+2024-10-13,3,0,2
+2024-10-14,10,0,16
+2024-10-15,7,0,24
+2024-10-16,10,0,17
+2024-10-17,8,0,12
+2024-10-18,13,1,18
+2024-10-19,1,0,3
+2024-10-20,3,0,3
+2024-10-21,12,0,20
+2024-10-22,19,0,19
+2024-10-23,15,0,16
+2024-10-24,17,0,14
+2024-10-25,12,0,20
+2024-10-26,4,0,5
+2024-10-27,3,0,4
+2024-10-28,22,1,21
+2024-10-29,11,1,13
+2024-10-30,11,2,12
+2024-10-31,7,0,19
+2024-11-01,8,2,26
+2024-11-02,5,0,4
+2024-11-03,6,0,1
+2024-11-04,20,3,17
+2024-11-05,4,0,25
+2024-11-06,17,0,20
+2024-11-07,13,0,23
+2024-11-08,16,0,22
+2024-11-09,4,0,3
+2024-11-10,4,0,3
+2024-11-11,12,1,23
+2024-11-12,13,1,31
+2024-11-13,7,1,24
+2024-11-14,7,0,12
+2024-11-15,13,1,19
+2024-11-16,1,0,5
+2024-11-17,5,0,5
+2024-11-18,9,1,17
+2024-11-19,7,0,20
+2024-11-20,7,0,15
+2024-11-21,7,0,35
+2024-11-22,13,0,13
+2024-11-23,1,0,4
+2024-11-24,0,0,4
+2024-11-25,12,0,16
+2024-11-26,6,0,12
+2024-11-27,8,0,20
+2024-11-28,6,0,5
+2024-11-29,1,0,4
+2024-11-30,4,0,2
+2024-12-01,5,0,7
+2024-12-02,18,3,15
+2024-12-03,13,0,20
+2024-12-04,9,0,22
+2024-12-05,10,0,24
+2024-12-06,6,0,16
+2024-12-07,2,0,0
+2024-12-08,4,0,3
+2024-12-09,15,0,22
+2024-12-10,10,1,34
+2024-12-11,12,0,28
+2024-12-12,5,0,9
+2024-12-13,8,0,11
+2024-12-14,3,0,4
+2024-12-15,3,0,2
+2024-12-16,16,0,20
+2024-12-17,17,1,13
+2024-12-18,7,0,26
+2024-12-19,22,2,49
+2024-12-20,11,0,37
+2024-12-21,5,0,11
+2024-12-22,3,0,7
+2024-12-23,14,0,34
+2024-12-24,3,0,4
+2024-12-25,2,1,3
+2024-12-26,5,0,8
+2024-12-27,6,0,13
+2024-12-28,5,0,4
+2024-12-29,1,0,3
+2024-12-30,10,0,15
+2024-12-31,6,0,6
+2025-01-01,2,0,3
+2025-01-02,25,1,21
+2025-01-03,24,1,34
+2025-01-04,7,0,10
+2025-01-05,3,0,10
+2025-01-06,23,1,36
+2025-01-07,20,1,52
+2025-01-08,52,0,63
+2025-01-09,20,0,27
+2025-01-10,11,0,23
+2025-01-11,1,0,10
+2025-01-12,1,0,2
+2025-01-13,17,1,30
+2025-01-14,30,0,32
+2025-01-15,19,0,19
+2025-01-16,12,0,29
+2025-01-17,8,0,28
+2025-01-18,2,0,6
+2025-01-19,5,0,6
+2025-01-20,11,0,5
+2025-01-21,12,0,23
+2025-01-22,22,0,27
+2025-01-23,14,0,20
+2025-01-24,16,0,16
+2025-01-25,9,0,3
+2025-01-26,5,0,5
+2025-01-27,35,0,46
+2025-01-28,18,0,37
+2025-01-29,22,1,26
+2025-01-30,20,1,16
+2025-01-31,23,0,22
+2025-02-01,4,0,6
+2025-02-02,16,0,13
+2025-02-03,37,0,33
+2025-02-04,18,0,21
+2025-02-05,33,1,32
+2025-02-06,16,0,20
+2025-02-07,8,0,28
+2025-02-08,2,0,5
+2025-02-09,2,0,3
+2025-02-10,10,0,29
+2025-02-11,26,1,28
+2025-02-12,11,5,30
+2025-02-13,21,2,26
+2025-02-14,14,2,23
+2025-02-15,6,0,7
+2025-02-16,2,0,3
+2025-02-17,9,2,13
+2025-02-18,10,1,31
+2025-02-19,13,2,29
+2025-02-20,12,1,34
+2025-02-21,10,1,22
+2025-02-22,3,0,0
+2025-02-23,2,0,10
+2025-02-24,13,2,34
+2025-02-25,17,3,21
+2025-02-26,15,1,17
+2025-02-27,13,3,28
+2025-02-28,12,1,20
+2025-03-01,6,0,6
+2025-03-02,2,0,3
+2025-03-03,77,2,39
+2025-03-04,22,1,33
+2025-03-05,22,0,31
+2025-03-06,16,0,25
+2025-03-07,7,0,25
+2025-03-08,7,0,4
+2025-03-09,5,0,8
+2025-03-10,11,0,16
+2025-03-11,8,0,24
+2025-03-12,20,0,25
+2025-03-13,7,1,22
+2025-03-14,6,0,30
+2025-03-15,4,0,4
+2025-03-16,2,1,3
+2025-03-17,16,0,36
+2025-03-18,12,1,26
+2025-03-19,23,0,34
+2025-03-20,13,0,13
+2025-03-21,14,0,22
+2025-03-22,2,0,6
+2025-03-23,1,0,6
+2025-03-24,22,0,31
+2025-03-25,14,0,32
+2025-03-26,28,0,18
+2025-03-27,19,0,33
+2025-03-28,15,0,31
+2025-03-29,3,0,7
+2025-03-30,8,0,23
+2025-03-31,25,0,109
+2025-04-01,23,4,63
+2025-04-02,22,0,44
+2025-04-03,28,0,69
+2025-04-04,36,0,51
+2025-04-05,8,0,7
+2025-04-06,1,0,10
+2025-04-07,25,1,49
+2025-04-08,22,0,31
+2025-04-09,18,0,43
+2025-04-10,18,0,25
+2025-04-11,20,0,31
+2025-04-12,5,0,3
+2025-04-13,4,0,3
+2025-04-14,11,0,34
+2025-04-15,11,10,32
+2025-04-16,11,10,11
+2025-04-17,9,14,11
+2025-04-18,5,9,18
+2025-04-19,0,2,2
+2025-04-20,1,0,2
+2025-04-21,8,17,25
+2025-04-22,8,18,15
+2025-04-23,7,15,18
+2025-04-24,6,7,11
+2025-04-25,4,13,13
+2025-04-26,3,2,4
+2025-04-27,3,1,2
+2025-04-28,14,13,18
+2025-04-29,7,14,20
+2025-04-30,4,16,20
+2025-05-01,9,15,11
+2025-05-02,22,9,14
+2025-05-03,2,5,5
+2025-05-04,2,3,4
+2025-05-05,17,19,18
+2025-05-06,12,14,24
+2025-05-07,16,11,149
+2025-05-08,5,10,22
+2025-05-09,7,5,5
+2025-05-10,0,5,4
+2025-05-11,1,2,1
+2025-05-12,3,17,12
+2025-05-13,10,14,12
+2025-05-14,4,13,14
+2025-05-15,7,16,15
+2025-05-16,5,10,18
+2025-05-17,0,4,4
+2025-05-18,2,2,0
+2025-05-19,6,15,13
+2025-05-20,9,16,22
+2025-05-21,10,17,12
+2025-05-22,2,12,15
+2025-05-23,6,4,11
+2025-05-24,1,1,0
+2025-05-25,1,0,1
+2025-05-26,4,4,1
+2025-05-27,3,18,9
+2025-05-28,6,16,10
+2025-05-29,4,16,22
+2025-05-30,4,5,14
+2025-05-31,0,3,5
+2025-06-01,1,2,1
+2025-06-02,25,11,23
+2025-06-03,8,9,11
+2025-06-04,8,14,8
+2025-06-05,4,8,21
+2025-06-06,2,8,13
+2025-06-07,0,2,5
+2025-06-08,2,1,3
+2025-06-09,4,20,21
+2025-06-10,6,13,14
+2025-06-11,6,10,11
+2025-06-12,3,8,8
+2025-06-13,2,6,9
+2025-06-14,1,3,2
+2025-06-15,0,0,1
+2025-06-16,7,10,17
+2025-06-17,5,13,25
+2025-06-18,6,9,23
+2025-06-19,6,7,19
+2025-06-20,2,5,7
+2025-06-21,0,3,0
+2025-06-22,1,0,3
+2025-06-23,6,8,24
+2025-06-24,7,10,15
+2025-06-25,8,3,22
+2025-06-26,3,6,20
+2025-06-27,6,6,23
+2025-06-28,2,0,6
+2025-06-29,0,0,2
+2025-06-30,3,8,14
+2025-07-01,3,17,13
+2025-07-02,24,10,7
+2025-07-03,9,7,13
+2025-07-04,2,2,3
+2025-07-05,1,3,3
+2025-07-06,1,1,1
+2025-07-07,10,10,25
+2025-07-08,4,8,12
+2025-07-09,3,19,7
+2025-07-10,8,12,11
+2025-07-11,2,7,13
+2025-07-12,1,4,3
+2025-07-13,0,6,4
+2025-07-14,5,20,17
+2025-07-15,8,11,11
+2025-07-16,7,12,9
+2025-07-17,3,10,4
+2025-07-18,2,15,22
+2025-07-19,0,2,1
+2025-07-20,2,3,4
+2025-07-21,9,10,31
+2025-07-22,12,6,28
+2025-07-23,6,5,25
+2025-07-24,7,9,27
+2025-07-25,4,7,22
+2025-07-26,1,0,2
+2025-07-27,3,2,1
+2025-07-28,3,11,16
+2025-07-29,6,6,14
+2025-07-30,5,8,12
+2025-07-31,5,10,11
+2025-08-01,2,7,9
+2025-08-02,1,1,4
+2025-08-03,2,1,7
+2025-08-04,24,14,16
+2025-08-05,4,13,20
+2025-08-06,7,14,16
+2025-08-07,5,6,12
+2025-08-08,2,9,14
+2025-08-09,3,3,5
+2025-08-10,1,4,2
+2025-08-11,6,5,13
+2025-08-12,5,14,15
+2025-08-13,2,8,13
+2025-08-14,4,8,12
+2025-08-15,2,8,21
+2025-08-16,2,0,5
+2025-08-17,1,4,5
+2025-08-18,4,5,12
+2025-08-19,6,10,21
+2025-08-20,2,7,15
+2025-08-21,3,3,19
+2025-08-22,4,9,9
+2025-08-23,2,4,5
+2025-08-24,2,2,2
+2025-08-25,0,3,14
+2025-08-26,8,2,25
+2025-08-27,4,1,31
+2025-08-28,3,1,34
+2025-08-29,1,1,17
+2025-08-30,2,0,4
+2025-08-31,0,0,5
+2025-09-01,4,4,8
+2025-09-02,2,9,12
+2025-09-03,3,3,10
+2025-09-04,4,9,24
+2025-09-05,2,7,9
+2025-09-06,2,2,2
+2025-09-07,1,1,2
+2025-09-08,4,7,16
+2025-09-09,2,12,12
+2025-09-10,3,4,7
+2025-09-11,3,9,19
+2025-09-12,0,7,12
+2025-09-13,0,2,3
+2025-09-14,1,1,0
+2025-09-15,1,5,32
+2025-09-16,4,4,30
+2025-09-17,4,2,20
+2025-09-18,6,8,28
+2025-09-19,1,5,14
+2025-09-20,2,2,5
+2025-09-21,0,2,2
+2025-09-22,3,8,11
+2025-09-23,2,6,13
+2025-09-24,5,6,8
+2025-09-25,4,11,13
+2025-09-26,5,4,11
+2025-09-27,1,0,2
+2025-09-28,0,3,0
+2025-09-29,5,7,18
+2025-09-30,3,7,20
+2025-10-01,4,11,11
+2025-10-02,3,8,14
+2025-10-03,3,8,24
+2025-10-04,1,1,7
+2025-10-05,2,2,1
+2025-10-06,4,10,18
+2025-10-07,2,10,11
+2025-10-08,5,8,15
+2025-10-09,2,12,12
+2025-10-10,3,20,16
+2025-10-11,3,2,5
+2025-10-12,2,5,4
+2025-10-13,4,7,15
+2025-10-14,3,11,17
+2025-10-15,5,11,8
+2025-10-16,4,15,23
+2025-10-17,6,8,12
+2025-10-18,1,1,1
+2025-10-19,0,1,1
+2025-10-20,3,9,21
+2025-10-21,0,11,5
+2025-10-22,1,4,4
+2025-10-23,2,13,13
+2025-10-24,5,10,10
+2025-10-25,2,6,6
+2025-10-26,0,1,4
+2025-10-27,5,8,9
+2025-10-28,3,10,26
+2025-10-29,1,14,7
+2025-10-30,8,5,21
+2025-10-31,2,2,11
+2025-11-01,3,3,0
+2025-11-02,1,0,2
+2025-11-03,5,10,22
+2025-11-04,2,13,10
+2025-11-05,4,9,14
+2025-11-06,4,13,11
+2025-11-07,3,3,10
+2025-11-08,3,0,4
+2025-11-09,2,4,2
+2025-11-10,1,10,15
+2025-11-11,4,5,11
+2025-11-12,2,11,18
+2025-11-13,2,0,10
+2025-11-14,3,8,8
+2025-11-15,5,3,8
+2025-11-16,1,2,4
+2025-11-17,3,14,16
+2025-11-18,2,8,13
+2025-11-19,10,11,14
+2025-11-20,7,10,11
+2025-11-21,2,3,8
+2025-11-22,0,5,2
+2025-11-23,2,2,3
+2025-11-24,2,5,13
+2025-11-25,3,7,13
+2025-11-26,1,6,2
+2025-11-27,0,7,3
+2025-11-28,2,1,1
+2025-11-29,2,0,0
+2025-11-30,0,1,2
+2025-12-01,4,4,16
+2025-12-02,4,10,15
+2025-12-03,6,15,24
+2025-12-04,3,13,11
+2025-12-05,2,11,10
+2025-12-06,1,3,1
+2025-12-07,0,1,2
+2025-12-08,4,6,12
+2025-12-09,8,10,8
+2025-12-10,2,4,29
+2025-12-11,1,10,9
+2025-12-12,3,4,15
+2025-12-13,3,0,1
+2025-12-14,1,1,6
+2025-12-15,3,10,19
+2025-12-16,2,14,11
+2025-12-17,1,7,10
+2025-12-18,4,14,11
+2025-12-19,3,14,12
+2025-12-20,0,1,3
+2025-12-21,0,4,3
+2025-12-22,2,13,14
+2025-12-23,4,2,11
+2025-12-24,2,2,2
+2025-12-25,0,2,0
+2025-12-26,1,4,3
+2025-12-27,2,4,3
+2025-12-28,0,2,3
+2025-12-29,2,2,4
+2025-12-30,1,2,7
+2025-12-31,1,5,1
+2026-01-01,2,1,4
+2026-01-02,4,0,2
+2026-01-03,0,3,6
+2026-01-04,0,2,3
+2026-01-05,1,23,14
+2026-01-06,10,12,34
+2026-01-07,5,12,12
+2026-01-08,2,12,14
+2026-01-09,1,10,12
+2026-01-10,3,2,2
+2026-01-11,2,2,2
+2026-01-12,9,1,19
+2026-01-13,9,2,14
+2026-01-14,10,1,24
+2026-01-15,14,0,17
+2026-01-16,9,0,21
+2026-01-17,1,0,6
+2026-01-18,3,0,3
+2026-01-19,11,0,17
+2026-01-20,10,1,15
+2026-01-21,12,0,11
+2026-01-22,8,0,15
+2026-01-23,11,1,12
+2026-01-24,3,0,3
+2026-01-25,1,0,5
+2026-01-26,18,1,9
+2026-01-27,13,0,20
+2026-01-28,11,0,17
+2026-01-29,4,1,17
+2026-01-30,16,2,7
+2026-01-31,6,0,6
+2026-02-01,5,0,2
+2026-02-02,15,0,19
+2026-02-03,21,0,19
+2026-02-04,12,0,13
+2026-02-05,10,2,15
+2026-02-06,7,0,20
+2026-02-07,3,0,8
+2026-02-08,6,0,3
+2026-02-09,9,1,14
+2026-02-10,7,1,13
+2026-02-11,9,0,14
+2026-02-12,15,1,16
+2026-02-13,7,0,12
+2026-02-14,4,0,8
+2026-02-15,2,0,5
+2026-02-16,7,0,6
+2026-02-17,8,1,25
+2026-02-18,6,1,15
+2026-02-19,11,0,18
+2026-02-20,19,1,18
+2026-02-21,4,0,3
+2026-02-22,5,0,2
+2026-02-23,11,1,16
+2026-02-24,10,0,19
+2026-02-25,12,1,24
+2026-02-26,13,0,15
+2026-02-27,6,0,7
+2026-02-28,4,0,4
+2026-03-01,2,0,4
+2026-03-02,7,2,17
+2026-03-03,8,0,27
+2026-03-04,13,0,9
+2026-03-05,9,0,14
+2026-03-06,12,0,21
+2026-03-07,4,0,4
+2026-03-08,2,0,5
+2026-03-09,3,1,13
+2026-03-10,10,0,18
+2026-03-11,9,0,14
+2026-03-12,13,0,16
+2026-03-13,11,0,10
+2026-03-14,3,0,6
+2026-03-15,1,0,1
+2026-03-16,11,0,17
+2026-03-17,8,0,20
+2026-03-18,13,0,10
+2026-03-19,15,0,22
+2026-03-20,15,1,8
+2026-03-21,5,0,4
+2026-03-22,3,0,1
+2026-03-23,10,1,9
+2026-03-24,9,2,16
+2026-03-25,13,0,9
+2026-03-26,4,0,6
+2026-03-27,11,2,11
+2026-03-28,1,0,3
+2026-03-29,1,0,3
+2026-03-30,10,1,19
+2026-03-31,6,0,30
+2026-04-01,16,1,26
+2026-04-02,11,1,14
+2026-04-03,3,0,15
+2026-04-04,3,0,2
+2026-04-05,3,0,0
+2026-04-06,7,0,24
+2026-04-07,9,0,19
+2026-04-08,19,0,20
+2026-04-09,9,1,20
+2026-04-10,4,0,14
+2026-04-11,9,0,1
+2026-04-12,3,0,15
+2026-04-13,25,0,42
+2026-04-14,12,1,24
+2026-04-15,12,0,17
+2026-04-16,17,0,29`;
+const CSV_AA = `2024-06-01,5,0,2
+2024-06-02,2,0,1
+2024-06-03,43,0,22
+2024-06-04,44,0,14
+2024-06-05,39,0,24
+2024-06-06,48,0,11
+2024-06-07,32,0,10
+2024-06-08,4,0,3
+2024-06-09,7,0,1
+2024-06-10,50,0,13
+2024-06-11,57,0,19
+2024-06-12,39,0,9
+2024-06-13,48,0,23
+2024-06-14,40,0,18
+2024-06-15,8,0,5
+2024-06-16,12,0,4
+2024-06-17,31,0,19
+2024-06-18,36,0,14
+2024-06-19,25,0,10
+2024-06-20,35,0,8
+2024-06-21,96,0,33
+2024-06-22,21,0,6
+2024-06-23,13,0,2
+2024-06-24,39,0,23
+2024-06-25,46,0,25
+2024-06-26,49,0,29
+2024-06-27,30,0,27
+2024-06-28,20,0,14
+2024-06-29,8,0,1
+2024-06-30,7,0,2
+2024-07-01,27,1,8
+2024-07-02,33,0,16
+2024-07-03,23,0,24
+2024-07-04,7,0,3
+2024-07-05,8,0,4
+2024-07-06,5,0,1
+2024-07-07,4,0,3
+2024-07-08,22,0,21
+2024-07-09,20,0,14
+2024-07-10,38,0,30
+2024-07-11,38,1,17
+2024-07-12,26,0,13
+2024-07-13,6,0,8
+2024-07-14,7,0,3
+2024-07-15,42,0,15
+2024-07-16,24,0,16
+2024-07-17,37,0,8
+2024-07-18,41,5,11
+2024-07-19,32,4,3
+2024-07-20,2,0,2
+2024-07-21,5,1,3
+2024-07-22,52,1,16
+2024-07-23,26,3,13
+2024-07-24,43,2,19
+2024-07-25,51,7,19
+2024-07-26,24,5,7
+2024-07-27,6,0,0
+2024-07-28,8,0,2
+2024-07-29,26,1,10
+2024-07-30,37,4,13
+2024-07-31,24,4,9
+2024-08-01,36,2,22
+2024-08-02,21,1,11
+2024-08-03,7,0,0
+2024-08-04,2,0,2
+2024-08-05,24,1,10
+2024-08-06,31,1,15
+2024-08-07,40,0,10
+2024-08-08,19,0,13
+2024-08-09,9,0,5
+2024-08-10,4,0,2
+2024-08-11,7,0,24
+2024-08-12,43,0,19
+2024-08-13,34,0,11
+2024-08-14,29,0,15
+2024-08-15,36,1,18
+2024-08-16,31,0,14
+2024-08-17,9,0,1
+2024-08-18,7,0,1
+2024-08-19,35,0,17
+2024-08-20,37,1,17
+2024-08-21,32,0,20
+2024-08-22,39,1,12
+2024-08-23,24,0,9
+2024-08-24,8,0,3
+2024-08-25,6,0,6
+2024-08-26,31,1,25
+2024-08-27,28,0,22
+2024-08-28,25,0,26
+2024-08-29,21,0,16
+2024-08-30,22,0,13
+2024-08-31,9,0,3
+2024-09-01,9,0,4
+2024-09-02,11,0,4
+2024-09-03,29,0,29
+2024-09-04,42,0,20
+2024-09-05,33,0,18
+2024-09-06,19,0,19
+2024-09-07,10,0,8
+2024-09-08,9,0,6
+2024-09-09,30,0,24
+2024-09-10,27,0,26
+2024-09-11,31,0,23
+2024-09-12,22,0,26
+2024-09-13,15,0,14
+2024-09-14,8,0,3
+2024-09-15,5,0,4
+2024-09-16,26,1,17
+2024-09-17,20,0,17
+2024-09-18,29,0,18
+2024-09-19,30,1,12
+2024-09-20,20,0,13
+2024-09-21,4,0,3
+2024-09-22,5,0,3
+2024-09-23,16,0,18
+2024-09-24,30,0,15
+2024-09-25,20,0,13
+2024-09-26,35,0,10
+2024-09-27,15,0,12
+2024-09-28,8,0,5
+2024-09-29,11,0,4
+2024-09-30,40,0,23
+2024-10-01,29,0,19
+2024-10-02,24,0,22
+2024-10-03,18,1,20
+2024-10-04,23,0,9
+2024-10-05,6,0,9
+2024-10-06,12,0,10
+2024-10-07,34,0,49
+2024-10-08,27,0,23
+2024-10-09,30,0,15
+2024-10-10,31,0,12
+2024-10-11,19,0,17
+2024-10-12,7,0,1
+2024-10-13,10,0,8
+2024-10-14,23,0,21
+2024-10-15,36,0,22
+2024-10-16,34,0,19
+2024-10-17,28,1,27
+2024-10-18,24,0,18
+2024-10-19,4,0,3
+2024-10-20,13,0,2
+2024-10-21,59,0,38
+2024-10-22,38,0,14
+2024-10-23,41,0,19
+2024-10-24,26,0,10
+2024-10-25,16,0,12
+2024-10-26,2,0,3
+2024-10-27,7,0,3
+2024-10-28,24,0,22
+2024-10-29,46,0,28
+2024-10-30,43,1,27
+2024-10-31,25,2,12
+2024-11-01,23,1,14
+2024-11-02,5,0,3
+2024-11-03,5,0,6
+2024-11-04,21,0,34
+2024-11-05,30,0,36
+2024-11-06,23,0,12
+2024-11-07,22,1,18
+2024-11-08,30,0,22
+2024-11-09,6,0,3
+2024-11-10,4,0,0
+2024-11-11,27,2,8
+2024-11-12,37,0,43
+2024-11-13,33,0,18
+2024-11-14,39,0,27
+2024-11-15,18,1,14
+2024-11-16,6,0,5
+2024-11-17,8,2,4
+2024-11-18,27,2,20
+2024-11-19,18,1,13
+2024-11-20,27,2,14
+2024-11-21,25,1,9
+2024-11-22,31,0,13
+2024-11-23,2,0,4
+2024-11-24,2,0,0
+2024-11-25,19,2,17
+2024-11-26,20,3,17
+2024-11-27,18,0,11
+2024-11-28,7,1,4
+2024-11-29,3,0,5
+2024-11-30,4,0,1
+2024-12-01,9,1,6
+2024-12-02,22,1,14
+2024-12-03,28,1,17
+2024-12-04,21,0,17
+2024-12-05,33,3,27
+2024-12-06,18,0,22
+2024-12-07,10,0,4
+2024-12-08,6,0,10
+2024-12-09,31,2,38
+2024-12-10,37,0,33
+2024-12-11,24,1,28
+2024-12-12,40,3,37
+2024-12-13,21,0,21
+2024-12-14,4,0,5
+2024-12-15,6,0,6
+2024-12-16,17,0,12
+2024-12-17,24,1,19
+2024-12-18,25,0,20
+2024-12-19,15,0,20
+2024-12-20,22,1,18
+2024-12-21,8,0,3
+2024-12-22,5,0,4
+2024-12-23,6,0,3
+2024-12-24,4,0,0
+2024-12-25,3,0,1
+2024-12-26,4,0,4
+2024-12-27,6,0,7
+2024-12-28,5,1,1
+2024-12-29,3,0,2
+2024-12-30,10,0,5
+2024-12-31,9,0,3
+2025-01-01,3,0,1
+2025-01-02,26,0,11
+2025-01-03,22,0,20
+2025-01-04,9,1,4
+2025-01-05,7,1,3
+2025-01-06,36,0,49
+2025-01-07,37,2,49
+2025-01-08,59,3,58
+2025-01-09,25,1,47
+2025-01-10,27,0,43
+2025-01-11,6,0,8
+2025-01-12,6,2,7
+2025-01-13,42,1,49
+2025-01-14,38,1,35
+2025-01-15,41,4,52
+2025-01-16,32,5,45
+2025-01-17,14,3,30
+2025-01-18,14,7,16
+2025-01-19,9,5,9
+2025-01-20,8,5,17
+2025-01-21,14,6,32
+2025-01-22,30,7,39
+2025-01-23,18,3,37
+2025-01-24,16,3,28
+2025-01-25,5,3,7
+2025-01-26,1,2,13
+2025-01-27,25,5,25
+2025-01-28,26,5,27
+2025-01-29,20,10,29
+2025-01-30,20,6,26
+2025-01-31,14,4,27
+2025-02-01,7,2,8
+2025-02-02,9,3,6
+2025-02-03,30,7,34
+2025-02-04,29,3,20
+2025-02-05,51,0,31
+2025-02-06,40,2,22
+2025-02-07,43,1,18
+2025-02-08,11,0,10
+2025-02-09,11,0,9
+2025-02-10,44,0,53
+2025-02-11,25,4,39
+2025-02-12,15,7,49
+2025-02-13,16,7,34
+2025-02-14,8,7,21
+2025-02-15,0,2,6
+2025-02-16,5,2,10
+2025-02-17,8,5,13
+2025-02-18,13,13,33
+2025-02-19,9,5,38
+2025-02-20,14,10,28
+2025-02-21,12,9,22
+2025-02-22,3,2,5
+2025-02-23,2,3,4
+2025-02-24,15,6,53
+2025-02-25,15,9,22
+2025-02-26,11,3,21
+2025-02-27,17,7,22
+2025-02-28,18,4,14
+2025-03-01,0,5,3
+2025-03-02,3,4,4
+2025-03-03,29,10,34
+2025-03-04,15,6,32
+2025-03-05,34,0,25
+2025-03-06,30,0,17
+2025-03-07,12,0,8
+2025-03-08,4,0,2
+2025-03-09,1,1,2
+2025-03-10,46,0,41
+2025-03-11,25,1,24
+2025-03-12,18,0,30
+2025-03-13,27,0,19
+2025-03-14,23,0,21
+2025-03-15,3,0,3
+2025-03-16,5,0,1
+2025-03-17,8,0,20
+2025-03-18,15,0,31
+2025-03-19,23,0,23
+2025-03-20,17,0,21
+2025-03-21,15,0,15
+2025-03-22,3,0,7
+2025-03-23,4,0,3
+2025-03-24,17,0,26
+2025-03-25,11,0,23
+2025-03-26,16,0,17
+2025-03-27,26,0,13
+2025-03-28,11,0,11
+2025-03-29,4,0,0
+2025-03-30,1,0,4
+2025-03-31,14,0,20
+2025-04-01,19,0,21
+2025-04-02,18,0,13
+2025-04-03,7,0,16
+2025-04-04,12,0,10
+2025-04-05,3,0,1
+2025-04-06,4,0,2
+2025-04-07,17,0,38
+2025-04-08,20,0,26
+2025-04-09,12,0,16
+2025-04-10,13,0,14
+2025-04-11,19,0,12
+2025-04-12,3,0,3
+2025-04-13,6,0,2
+2025-04-14,21,2,20
+2025-04-15,8,21,26
+2025-04-16,4,17,26
+2025-04-17,9,18,11
+2025-04-18,5,15,11
+2025-04-19,0,7,2
+2025-04-20,1,3,2
+2025-04-21,3,14,22
+2025-04-22,13,21,13
+2025-04-23,8,26,12
+2025-04-24,11,25,13
+2025-04-25,4,13,19
+2025-04-26,2,10,5
+2025-04-27,1,7,7
+2025-04-28,7,12,20
+2025-04-29,11,20,29
+2025-04-30,8,22,19
+2025-05-01,9,14,16
+2025-05-02,8,18,17
+2025-05-03,2,3,7
+2025-05-04,3,1,2
+2025-05-05,12,21,19
+2025-05-06,25,21,36
+2025-05-07,37,19,39
+2025-05-08,8,11,13
+2025-05-09,5,27,13
+2025-05-10,0,7,5
+2025-05-11,2,1,1
+2025-05-12,8,24,8
+2025-05-13,7,17,15
+2025-05-14,13,21,17
+2025-05-15,6,20,16
+2025-05-16,4,14,8
+2025-05-17,0,2,2
+2025-05-18,1,3,3
+2025-05-19,7,10,15
+2025-05-20,6,19,21
+2025-05-21,9,23,22
+2025-05-22,7,25,9
+2025-05-23,4,15,8
+2025-05-24,1,8,4
+2025-05-25,2,5,1
+2025-05-26,2,5,2
+2025-05-27,12,20,19
+2025-05-28,6,21,19
+2025-05-29,7,16,17
+2025-05-30,6,11,19
+2025-05-31,1,4,3
+2025-06-01,0,4,4
+2025-06-02,11,11,11
+2025-06-03,7,12,9
+2025-06-04,10,30,20
+2025-06-05,15,29,12
+2025-06-06,3,23,20
+2025-06-07,2,2,6
+2025-06-08,0,3,3
+2025-06-09,12,30,11
+2025-06-10,14,37,24
+2025-06-11,11,15,23
+2025-06-12,8,57,10
+2025-06-13,6,15,19
+2025-06-14,1,10,4
+2025-06-15,0,3,2
+2025-06-16,13,15,15
+2025-06-17,10,13,8
+2025-06-18,11,11,17
+2025-06-19,7,12,15
+2025-06-20,12,9,7
+2025-06-21,4,3,2
+2025-06-22,1,5,3
+2025-06-23,9,12,18
+2025-06-24,7,9,18
+2025-06-25,11,9,15
+2025-06-26,19,21,21
+2025-06-27,11,15,9
+2025-06-28,1,2,1
+2025-06-29,1,3,1
+2025-06-30,13,13,18
+2025-07-01,1,21,13
+2025-07-02,8,14,18
+2025-07-03,5,13,11
+2025-07-04,1,7,3
+2025-07-05,0,4,2
+2025-07-06,1,4,0
+2025-07-07,14,19,18
+2025-07-08,6,22,15
+2025-07-09,9,19,13
+2025-07-10,7,15,13
+2025-07-11,7,14,13
+2025-07-13,0,3,7
+2025-07-14,10,35,19
+2025-07-15,10,22,29
+2025-07-16,7,25,16
+2025-07-17,7,17,17
+2025-07-18,3,7,10
+2025-07-19,1,6,2
+2025-07-20,0,7,3
+2025-07-21,8,21,14
+2025-07-22,8,27,15
+2025-07-23,8,22,17
+2025-07-24,7,27,19
+2025-07-25,4,25,11
+2025-07-26,0,2,2
+2025-07-27,1,7,4
+2025-07-28,9,26,6
+2025-07-29,10,14,8
+2025-07-30,7,32,14
+2025-07-31,4,28,10
+2025-08-01,5,14,4
+2025-08-02,1,4,0
+2025-08-03,1,7,3
+2025-08-04,9,26,11
+2025-08-05,5,30,7
+2025-08-06,9,25,5
+2025-08-07,4,26,5
+2025-08-08,6,17,5
+2025-08-09,1,7,1
+2025-08-10,2,6,2
+2025-08-11,7,27,5
+2025-08-12,3,22,9
+2025-08-13,7,35,6
+2025-08-14,5,23,4
+2025-08-15,4,22,10
+2025-08-16,2,4,2
+2025-08-17,0,9,1
+2025-08-18,4,31,5
+2025-08-19,7,36,16
+2025-08-20,5,22,9
+2025-08-21,7,24,8
+2025-08-22,2,22,10
+2025-08-23,2,7,0
+2025-08-24,0,7,2
+2025-08-25,4,17,6
+2025-08-26,4,15,5
+2025-08-27,8,15,5
+2025-08-28,3,15,4
+2025-08-29,3,17,5
+2025-08-30,1,4,1
+2025-08-31,1,4,1
+2025-09-01,3,13,1
+2025-09-02,7,24,6
+2025-09-03,6,22,21
+2025-09-04,5,24,13
+2025-09-05,4,14,5
+2025-09-06,2,5,2
+2025-09-07,0,7,1
+2025-09-08,3,18,3
+2025-09-09,5,22,14
+2025-09-10,5,16,4
+2025-09-11,2,33,14
+2025-09-12,3,15,6
+2025-09-13,1,7,2
+2025-09-14,2,2,1
+2025-09-15,5,35,7
+2025-09-16,11,38,9
+2025-09-17,6,37,15
+2025-09-18,6,37,9
+2025-09-19,7,35,4
+2025-09-20,0,4,0
+2025-09-21,0,4,2
+2025-09-22,8,41,44
+2025-09-23,5,38,35
+2025-09-24,4,32,25
+2025-09-25,8,23,18
+2025-09-26,4,25,23
+2025-09-27,0,1,1
+2025-09-28,1,7,0
+2025-09-29,6,35,10
+2025-09-30,7,31,12
+2025-10-01,4,20,10
+2025-10-02,4,23,11
+2025-10-03,4,33,4
+2025-10-04,1,8,4
+2025-10-05,1,8,1
+2025-10-06,6,18,7
+2025-10-07,4,27,6
+2025-10-08,7,24,5
+2025-10-09,5,25,6
+2025-10-10,3,27,2
+2025-10-11,1,9,2
+2025-10-12,1,6,1
+2025-10-13,2,22,5
+2025-10-14,7,30,9
+2025-10-15,6,28,13
+2025-10-16,4,34,6
+2025-10-17,3,21,6
+2025-10-18,2,11,0
+2025-10-19,4,7,3
+2025-10-20,5,64,15
+2025-10-21,6,35,3
+2025-10-22,9,38,4
+2025-10-23,6,42,10
+2025-10-24,1,16,9
+2025-10-25,1,6,2
+2025-10-26,0,7,0
+2025-10-27,4,43,2
+2025-10-28,4,41,4
+2025-10-29,8,29,4
+2025-10-30,5,27,3
+2025-10-31,4,23,113
+2025-11-01,1,6,0
+2025-11-02,0,9,0
+2025-11-03,7,31,9
+2025-11-04,5,23,8
+2025-11-05,7,36,13
+2025-11-06,6,36,8
+2025-11-07,2,21,9
+2025-11-08,0,2,0
+2025-11-09,0,9,1
+2025-11-10,3,22,10
+2025-11-11,4,19,7
+2025-11-12,9,25,7
+2025-11-13,6,30,12
+2025-11-14,7,33,5
+2025-11-15,1,6,0
+2025-11-16,0,16,1
+2025-11-17,9,23,6
+2025-11-18,8,29,6
+2025-11-19,3,26,9
+2025-11-20,5,31,4
+2025-11-21,5,22,1
+2025-11-22,1,7,1
+2025-11-23,0,3,0
+2025-11-24,4,30,9
+2025-11-25,3,23,7
+2025-11-26,4,20,3
+2025-11-27,1,12,1
+2025-11-28,0,7,2
+2025-11-29,0,4,1
+2025-11-30,0,6,1
+2025-12-01,9,75,10
+2025-12-02,12,43,10
+2025-12-03,7,26,15
+2025-12-04,2,18,13
+2025-12-05,10,28,3
+2025-12-06,3,10,0
+2025-12-07,1,8,0
+2025-12-08,9,40,7
+2025-12-09,7,23,4
+2025-12-10,7,31,4
+2025-12-11,8,26,14
+2025-12-12,5,13,3
+2025-12-13,1,3,2
+2025-12-14,1,7,0
+2025-12-15,5,25,9
+2025-12-16,2,23,6
+2025-12-17,2,21,2
+2025-12-18,9,28,10
+2025-12-19,6,19,1
+2025-12-20,1,4,0
+2025-12-21,0,8,0
+2025-12-22,5,16,4
+2025-12-23,6,10,1
+2025-12-24,0,4,1
+2025-12-25,1,3,0
+2025-12-26,3,6,0
+2025-12-27,0,4,0
+2025-12-28,0,3,2
+2025-12-29,3,6,1
+2025-12-30,2,12,5
+2025-12-31,6,5,1
+2026-01-01,1,0,1
+2026-01-02,5,10,1
+2026-01-03,1,6,1
+2026-01-04,1,7,1
+2026-01-05,11,40,24
+2026-01-06,10,28,28
+2026-01-07,8,42,30
+2026-01-09,9,34,7
+2026-01-10,2,5,1
+2026-01-11,0,8,5
+2026-01-12,26,2,16
+2026-01-13,27,0,7
+2026-01-14,18,0,7
+2026-01-15,27,0,11
+2026-01-16,19,0,12
+2026-01-17,4,0,0
+2026-01-18,3,0,2
+2026-01-19,9,1,2
+2026-01-20,30,0,22
+2026-01-21,33,1,5
+2026-01-22,25,1,5
+2026-01-23,19,0,6
+2026-01-24,7,0,0
+2026-01-25,8,0,4
+2026-01-26,23,0,6
+2026-01-27,20,0,8
+2026-01-28,23,1,5
+2026-01-29,12,0,11
+2026-01-30,20,1,7
+2026-01-31,3,0,2
+2026-02-01,10,0,5
+2026-02-02,30,0,13
+2026-02-03,38,0,12
+2026-02-04,26,1,14
+2026-02-05,29,0,6
+2026-02-06,25,0,7
+2026-02-07,2,0,2
+2026-02-08,23,0,3
+2026-02-09,43,0,5
+2026-02-10,26,0,2
+2026-02-12,25,0,2
+2026-02-13,16,0,17
+2026-02-14,3,1,0
+2026-02-15,6,0,1
+2026-02-16,8,0,12
+2026-02-17,19,0,4
+2026-02-18,16,0,6
+2026-02-19,22,0,5
+2026-02-20,15,0,4
+2026-02-21,8,0,1
+2026-02-22,5,0,2
+2026-02-23,16,0,4
+2026-02-24,27,1,9
+2026-02-25,16,1,9
+2026-02-26,21,0,8
+2026-02-27,18,0,4
+2026-02-28,4,0,0
+2026-03-01,5,0,0
+2026-03-02,27,0,5
+2026-03-03,22,0,9
+2026-03-04,19,0,8
+2026-03-05,16,0,1
+2026-03-06,22,0,11
+2026-03-07,4,0,1
+2026-03-08,3,0,1
+2026-03-09,53,0,9
+2026-03-10,28,0,0
+2026-03-11,26,2,6
+2026-03-12,20,2,3
+2026-03-13,14,1,5
+2026-03-14,2,1,0
+2026-03-15,1,1,0
+2026-03-16,14,0,10
+2026-03-17,52,0,14
+2026-03-18,26,0,7
+2026-03-19,24,0,8
+2026-03-20,15,0,2
+2026-03-21,5,0,2
+2026-03-22,6,0,1
+2026-03-23,20,0,3
+2026-03-24,25,0,6
+2026-03-25,27,0,4
+2026-03-26,16,0,8
+2026-03-27,18,0,5
+2026-03-28,6,0,1
+2026-03-29,6,1,1
+2026-03-30,16,0,3
+2026-03-31,23,0,2
+2026-04-01,27,0,4
+2026-04-02,20,0,3
+2026-04-03,15,0,2
+2026-04-04,5,0,1
+2026-04-05,2,0,2
+2026-04-06,17,0,14
+2026-04-07,17,0,6
+2026-04-08,20,0,4
+2026-04-09,19,0,5
+2026-04-10,14,0,2
+2026-04-11,2,0,0
+2026-04-12,2,0,0
+2026-04-13,15,0,2
+2026-04-14,15,0,5
+2026-04-15,14,0,15
+2026-04-16,22,0,0`;
+
+function parseCsv(csv) {
+  return csv.trim().split(/\r?\n/).map(line => {
+    const p = line.split(',');
+    return { date: p[0], nd: +p[1], d1: +p[2], md: +p[3] };
+  });
+}
+
+function rollingAvg(rows, W) {
+  const half = Math.floor(W / 2);
+  for (let i = 0; i < rows.length; i++) {
+    let sn=0, sd=0, sm=0, c=0;
+    for (let j = Math.max(0, i-half); j <= Math.min(rows.length-1, i+half); j++) {
+      sn += rows[j].nd; sd += rows[j].d1; sm += rows[j].md; c++;
+    }
+    rows[i].rn = sn/c; rows[i].rd = sd/c; rows[i].rm = sm/c;
+  }
+}
+
+function render(svgId, csv, milestones) {
+  const rows = parseCsv(csv);
+  rollingAvg(rows, 7);
+
+  const W_SVG = 1200, H_SVG = 560;
+  const M = { t: 130, r: 30, b: 100, l: 64 };
+  const plotW = W_SVG - M.l - M.r;
+  const plotH = H_SVG - M.t - M.b;
+
+  // Fixed time axis across all charts: 2024-06-01 through 2026-04-16
+  const t0 = new Date('2024-06-01T00:00:00Z').getTime();
+  const t1 = new Date('2026-04-16T00:00:00Z').getTime();
+  const tSpan = t1 - t0;
+  const xFor = d => M.l + ((new Date(d+'T00:00:00Z').getTime() - t0) / tSpan) * plotW;
+
+  let yMax = 0;
+  rows.forEach(r => { const s = r.rn + r.rd; if (s > yMax) yMax = s; });
+  const niceStep = (mx) => {
+    const pow = Math.pow(10, Math.floor(Math.log10(mx)));
+    const frac = mx / pow;
+    if (frac <= 2) return pow/2;
+    if (frac <= 5) return pow;
+    return pow*2;
+  };
+  const step = niceStep(yMax);
+  const yTop = Math.ceil(yMax / step) * step;
+  const yFor = v => M.t + plotH - (v / yTop) * plotH;
+
+  // Stacked areas (bottom up): non-promo, intro, other
+  function areaPath(bottomFn, topFn) {
+    let top = '';
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      top += (i ? ' L ' : 'M ') + xFor(r.date).toFixed(1) + ',' + topFn(r).toFixed(1);
+    }
+    let bot = '';
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      bot += ' L ' + xFor(r.date).toFixed(1) + ',' + bottomFn(r).toFixed(1);
+    }
+    return top + bot + ' Z';
+  }
+
+  const pNd = areaPath(r => yFor(0), r => yFor(r.rn));
+  const pD1 = areaPath(r => yFor(r.rn), r => yFor(r.rn + r.rd));
+
+  const parts = [];
+  parts.push('<g font-family="-apple-system, \'Segoe UI\', sans-serif" font-size="16">');
+
+  // Gridlines + y labels
+  for (let v = 0; v <= yTop; v += step) {
+    const y = yFor(v);
+    parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#d9cfb4" stroke-width="1" stroke-dasharray="'+(v===0?'0':'2 3')+'" />');
+    parts.push('<text x="'+(M.l-12)+'" y="'+(y+6).toFixed(1)+'" text-anchor="end" fill="#7a7264" font-size="14">'+v+'</text>');
+  }
+
+  // Month x labels (every 2 months)
+  const axisMonths = ['2024-08','2024-10','2024-12','2025-02','2025-04','2025-06','2025-08','2025-10','2025-12','2026-02','2026-04'];
+  const monthLbl = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+  axisMonths.forEach(ym => {
+    const x = xFor(ym + '-01');
+    const m = +ym.split('-')[1];
+    parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH+7)+'" stroke="#8f8668" />');
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(M.t+plotH+25)+'" text-anchor="middle" fill="#7a7264" font-size="14">'+monthLbl[m]+'</text>');
+  });
+  parts.push('<text x="'+xFor('2024-09-15').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2024</text>');
+  parts.push('<text x="'+xFor('2025-07-01').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2025</text>');
+  parts.push('<text x="'+xFor('2026-02-15').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2026</text>');
+
+  // Band rects for range milestones
+  milestones.forEach(ev => {
+    if (ev.m2) {
+      const x0 = xFor(ev.m);
+      const x1 = xFor(ev.m2);
+      parts.push('<rect x="'+x0.toFixed(1)+'" y="'+M.t+'" width="'+(x1-x0).toFixed(1)+'" height="'+plotH+'" fill="#c9c1ae" fill-opacity="0.32" />');
+    }
+  });
+
+  // Stacked areas
+  parts.push('<path d="'+pNd+'" fill="#28405a" fill-opacity="0.82" />');
+  parts.push('<path d="'+pD1+'" fill="#8a3a3a" fill-opacity="0.9" />');
+
+  // Plot border
+  parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+  parts.push('<line x1="'+M.l+'" x2="'+M.l+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+
+  // Milestone labels and verticals
+  const rowLabelY = [M.t - 28, M.t - 78];
+  const rowSubY = [M.t - 12, M.t - 62];
+  const rowLineTopY = [M.t - 46, M.t - 96];
+  milestones.forEach(ev => {
+    if (ev.m2) {
+      const x0 = xFor(ev.m), x1 = xFor(ev.m2), xm = (x0+x1)/2;
+      parts.push('<line x1="'+x0.toFixed(1)+'" x2="'+x0.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />');
+      parts.push('<line x1="'+x1.toFixed(1)+'" x2="'+x1.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />');
+      parts.push('<text x="'+xm.toFixed(1)+'" y="'+rowLabelY[ev.row||0]+'" text-anchor="middle" fill="#1a1813" font-weight="600" font-size="15">'+ev.label+'</text>');
+      if (ev.sub) parts.push('<text x="'+xm.toFixed(1)+'" y="'+rowSubY[ev.row||0]+'" text-anchor="middle" fill="#36332b" font-style="italic" font-size="13">'+ev.sub+'</text>');
+    } else {
+      const x = xFor(ev.m);
+      const anchor = ev.anchor || 'middle';
+      let lx = x;
+      if (anchor === 'end') lx = x - 5;
+      if (anchor === 'start') lx = x + 6;
+      parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.65" />');
+      parts.push('<circle cx="'+x.toFixed(1)+'" cy="'+M.t+'" r="4" fill="#1a1813" />');
+      parts.push('<text x="'+lx.toFixed(1)+'" y="'+rowLabelY[ev.row||0]+'" text-anchor="'+anchor+'" fill="#1a1813" font-weight="600" font-size="15">'+ev.label+'</text>');
+      if (ev.sub) parts.push('<text x="'+lx.toFixed(1)+'" y="'+rowSubY[ev.row||0]+'" text-anchor="'+anchor+'" fill="#36332b" font-style="italic" font-size="13">'+ev.sub+'</text>');
+    }
+  });
+
+  parts.push('<text x="'+(M.l-46)+'" y="'+(M.t-10)+'" fill="#1a1813" font-weight="600" font-size="13" letter-spacing="0.12em">DAILY ORDERS</text>');
+  parts.push('</g>');
+  const el = document.getElementById(svgId);
+  if (el) el.innerHTML = parts.join('');
+}
+
+// Render 4 charts
+render('chart-city', CSV_CITY, [
+  { m:'2025-04-29', row:0, label:'Intro start', sub:'DISCOUNT17 scaled', anchor:'start' },
+  { m:'2026-01-15', row:1, label:'Intro end', sub:'Plans removed', anchor:'end' },
+  { m:'2026-02-19', m2:'2026-03-24', row:0, label:'Arc + Piano', sub:'5 brands' },
+  { m:'2026-04-16', row:1, label:'Sophi', sub:'ARC-3518', anchor:'end' }
+]);
+render('chart-mhc', CSV_MHC, [
+  { m:'2025-04-29', row:0, label:'Intro start', anchor:'start' },
+  { m:'2025-06-13', row:1, label:'Arc + Piano', sub:'ARC-2382', anchor:'start' },
+  { m:'2026-01-15', row:0, label:'Intro end', anchor:'end' },
+  { m:'2026-01-29', row:1, label:'Sophi', anchor:'start' }
+]);
+render('chart-an', CSV_AN, [
+  { m:'2024-10-24', row:0, label:'Arc', sub:'ARC-1458', anchor:'start' },
+  { m:'2025-02-10', row:1, label:'Piano + Intro promo launch', anchor:'start' },
+  { m:'2025-10-02', row:1, label:'Sophi', anchor:'start' },
+  { m:'2026-01-15', row:0, label:'Intro end', anchor:'end' }
+]);
+render('chart-aa', CSV_AA, [
+  { m:'2025-04-07', row:0, label:'Arc + Piano', sub:'+ Intro (2-day confound)', anchor:'start' },
+  { m:'2025-05-22', row:1, label:'Sophi', anchor:'start' },
+  { m:'2026-01-15', row:0, label:'Intro end', anchor:'end' }
+]);
+
+})();
+</script>
+
+<script>
+/* Publishing correlation charts: dual-axis weekly time series + per-brand r bar chart. */
+(function(){
+
+const CSV_PUB_PORTFOLIO = `week_start,articles,orders
+2024-05-27,21,42
+2024-06-03,552,930
+2024-06-10,612,930
+2024-06-17,609,1128
+2024-06-24,634,1131
+2024-07-01,340,629
+2024-07-08,544,896
+2024-07-15,589,837
+2024-07-22,610,1015
+2024-07-29,574,943
+2024-08-05,543,855
+2024-08-12,559,967
+2024-08-19,544,923
+2024-08-26,518,907
+2024-09-02,430,865
+2024-09-09,555,939
+2024-09-16,619,900
+2024-09-23,549,887
+2024-09-30,557,941
+2024-10-07,570,891
+2024-10-14,547,824
+2024-10-21,613,931
+2024-10-28,643,884
+2024-11-04,590,871
+2024-11-11,651,903
+2024-11-18,614,858
+2024-11-25,386,502
+2024-12-02,562,851
+2024-12-09,618,971
+2024-12-16,596,1059
+2024-12-23,121,475
+2024-12-30,242,761
+2025-01-06,580,1587
+2025-01-13,656,1427
+2025-01-20,621,1091
+2025-01-27,660,1162
+2025-02-03,617,1135
+2025-02-10,584,1173
+2025-02-17,456,894
+2025-02-24,508,960
+2025-03-03,570,1352
+2025-03-10,655,1018
+2025-03-17,548,937
+2025-03-24,575,929
+2025-03-31,597,1257
+2025-04-07,756,1662
+2025-04-14,569,984
+2025-04-21,558,1029
+2025-04-28,626,1109
+2025-05-05,576,1060
+2025-05-12,536,910
+2025-05-19,543,965
+2025-05-26,440,811
+2025-06-02,470,1000
+2025-06-09,483,1073
+2025-06-16,522,863
+2025-06-23,520,979
+2025-06-30,394,822
+2025-07-07,466,973
+2025-07-14,449,1256
+2025-07-21,513,1077
+2025-07-28,495,1142
+2025-08-04,454,1103
+2025-08-11,460,1131
+2025-08-18,474,1184
+2025-08-25,483,1026
+2025-09-01,417,924
+2025-09-08,522,956
+2025-09-15,513,1077
+2025-09-22,444,1096
+2025-09-29,506,992
+2025-10-06,475,1132
+2025-10-13,525,1064
+2025-10-20,567,1104
+2025-10-27,517,1036
+2025-11-03,570,1160
+2025-11-10,540,1157
+2025-11-17,483,1140
+2025-11-24,273,627
+2025-12-01,473,1135
+2025-12-08,433,903
+2025-12-15,511,961
+2025-12-22,168,429
+2025-12-29,86,373
+2026-01-05,424,1235
+2026-01-12,499,851
+2026-01-19,459,688
+2026-01-26,471,736
+2026-02-02,515,902
+2026-02-09,517,988
+2026-02-16,393,650
+2026-02-23,421,716
+2026-03-02,392,660
+2026-03-09,467,682
+2026-03-16,382,647
+2026-03-23,374,568
+2026-03-30,451,636
+2026-04-06,417,621
+2026-04-13,441,623`;
+
+const PER_BRAND_R = [
+  { brand: 'CNY',  r: 0.51, flag: null },
+  { brand: 'CGR',  r: 0.48, flag: '*' },
+  { brand: 'CCL',  r: 0.47, flag: null },
+  { brand: 'ANG',  r: 0.44, flag: null },
+  { brand: 'AA',   r: 0.41, flag: null },
+  { brand: 'MHC',  r: 0.38, flag: null },
+  { brand: 'CDB',  r: 0.29, flag: null },
+  { brand: 'CCB',  r: 0.25, flag: null }
+];
+
+function parsePubCsv(csv) {
+  const lines = csv.trim().split(/\r?\n/);
+  lines.shift(); // header
+  return lines.map(line => {
+    const p = line.split(',');
+    return { date: p[0], articles: +p[1], orders: +p[2] };
+  });
+}
+
+function niceTop(mx) {
+  const pow = Math.pow(10, Math.floor(Math.log10(mx)));
+  const frac = mx / pow;
+  let step;
+  if (frac <= 2) step = pow/2;
+  else if (frac <= 5) step = pow;
+  else step = pow*2;
+  return Math.ceil(mx / step) * step;
+}
+
+function niceStep(mx) {
+  const pow = Math.pow(10, Math.floor(Math.log10(mx)));
+  const frac = mx / pow;
+  if (frac <= 2) return pow/2;
+  if (frac <= 5) return pow;
+  return pow*2;
+}
+
+function renderPubPortfolio(svgId, csv, milestones) {
+  const rows = parsePubCsv(csv);
+
+  const W_SVG = 1200, H_SVG = 520;
+  const M = { t: 110, r: 70, b: 90, l: 70 };
+  const plotW = W_SVG - M.l - M.r;
+  const plotH = H_SVG - M.t - M.b;
+
+  const t0 = new Date('2024-05-27T00:00:00Z').getTime();
+  const t1 = new Date('2026-04-16T00:00:00Z').getTime();
+  const tSpan = t1 - t0;
+  const xFor = d => M.l + ((new Date(d+'T00:00:00Z').getTime() - t0) / tSpan) * plotW;
+
+  // Drop the lone 2024-05-27 short week from plotting range (~21 articles, 42 orders) to avoid anchoring the y-max on a partial week.
+  const plotRows = rows.filter(r => r.date !== '2024-05-27');
+
+  let aMax = 0, oMax = 0;
+  plotRows.forEach(r => { if (r.articles > aMax) aMax = r.articles; if (r.orders > oMax) oMax = r.orders; });
+  const aTop = niceTop(aMax);
+  const oTop = niceTop(oMax);
+  const aStep = niceStep(aMax);
+  const oStep = niceStep(oMax);
+  const yForA = v => M.t + plotH - (v / aTop) * plotH;
+  const yForO = v => M.t + plotH - (v / oTop) * plotH;
+
+  const parts = [];
+  parts.push('<g font-family="-apple-system, \'Segoe UI\', sans-serif" font-size="16">');
+
+  // Gridlines + left (articles) labels
+  for (let v = 0; v <= aTop; v += aStep) {
+    const y = yForA(v);
+    parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#d9cfb4" stroke-width="1" stroke-dasharray="'+(v===0?'0':'2 3')+'" />');
+    parts.push('<text x="'+(M.l-12)+'" y="'+(y+5).toFixed(1)+'" text-anchor="end" fill="#28405a" font-size="14">'+v+'</text>');
+  }
+  // Right (orders) labels
+  for (let v = 0; v <= oTop; v += oStep) {
+    const y = yForO(v);
+    parts.push('<text x="'+(W_SVG-M.r+12)+'" y="'+(y+5).toFixed(1)+'" text-anchor="start" fill="#8a3a3a" font-size="14">'+v+'</text>');
+  }
+
+  // Axis labels
+  parts.push('<text x="'+(M.l-46)+'" y="'+(M.t-10)+'" fill="#28405a" font-weight="600" font-size="13" letter-spacing="0.12em">ARTICLES / WK</text>');
+  parts.push('<text x="'+(W_SVG-M.r+46)+'" y="'+(M.t-10)+'" text-anchor="end" fill="#8a3a3a" font-weight="600" font-size="13" letter-spacing="0.12em">ORDERS / WK</text>');
+
+  // Month x labels (every 2 months)
+  const axisMonths = ['2024-08','2024-10','2024-12','2025-02','2025-04','2025-06','2025-08','2025-10','2025-12','2026-02','2026-04'];
+  const monthLbl = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+  axisMonths.forEach(ym => {
+    const x = xFor(ym + '-01');
+    const m = +ym.split('-')[1];
+    parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH+7)+'" stroke="#8f8668" />');
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(M.t+plotH+25)+'" text-anchor="middle" fill="#7a7264" font-size="14">'+monthLbl[m]+'</text>');
+  });
+  parts.push('<text x="'+xFor('2024-09-15').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2024</text>');
+  parts.push('<text x="'+xFor('2025-07-01').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2025</text>');
+  parts.push('<text x="'+xFor('2026-02-15').toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">2026</text>');
+
+  // Band rects (all entries flagged band:true)
+  milestones.filter(m => m.band).forEach(b => {
+    const x0 = xFor(b.m);
+    const x1 = xFor(b.m2);
+    parts.push('<rect x="'+x0.toFixed(1)+'" y="'+M.t+'" width="'+(x1-x0).toFixed(1)+'" height="'+plotH+'" fill="#c9c1ae" fill-opacity="0.32" />');
+  });
+
+  // Anomaly weeks (holidays + last-call spike) — excluded from normal-weeks correlation.
+  // Drawn as thin strip at top of plot area to stay visually distinct from the intro-era band.
+  const anomalies = ['2024-11-25','2024-12-23','2024-12-30','2025-11-24','2025-12-22','2025-12-29','2026-01-05'];
+  const anomStripH = 14;
+  anomalies.forEach(d => {
+    const x0 = xFor(d);
+    const x1 = xFor(d) + (plotW / ((t1 - t0) / (7 * 86400000)));
+    parts.push('<rect x="'+x0.toFixed(1)+'" y="'+M.t+'" width="'+(x1-x0).toFixed(1)+'" height="'+anomStripH+'" fill="#8f7a3f" fill-opacity="0.55" />');
+  });
+
+  // Plot border
+  parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+  parts.push('<line x1="'+M.l+'" x2="'+M.l+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#28405a" stroke-width="1.2" />');
+  parts.push('<line x1="'+(W_SVG-M.r)+'" x2="'+(W_SVG-M.r)+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#8a3a3a" stroke-width="1.2" />');
+
+  // Articles line
+  let aPath = '';
+  for (let i = 0; i < plotRows.length; i++) {
+    const r = plotRows[i];
+    aPath += (i ? ' L ' : 'M ') + xFor(r.date).toFixed(1) + ',' + yForA(r.articles).toFixed(1);
+  }
+  parts.push('<path d="'+aPath+'" fill="none" stroke="#28405a" stroke-width="1.8" stroke-opacity="0.85" stroke-linejoin="round" />');
+
+  // Orders line
+  let oPath = '';
+  for (let i = 0; i < plotRows.length; i++) {
+    const r = plotRows[i];
+    oPath += (i ? ' L ' : 'M ') + xFor(r.date).toFixed(1) + ',' + yForO(r.orders).toFixed(1);
+  }
+  parts.push('<path d="'+oPath+'" fill="none" stroke="#8a3a3a" stroke-width="1.8" stroke-opacity="0.92" stroke-linejoin="round" />');
+
+  // Milestone verticals + labels (supports labeled ranges via m2)
+  const rowLabelY = [M.t - 28, M.t - 78];
+  const rowSubY = [M.t - 12, M.t - 62];
+  const rowLineTopY = [M.t - 46, M.t - 96];
+  milestones.forEach(ev => {
+    if (ev.band) {
+      // Band: rect already drawn. Add centered label inside the block if provided.
+      // Paint-order trick gives text a cream halo so it stays readable where data lines cross through.
+      if (ev.label) {
+        const xm = (xFor(ev.m) + xFor(ev.m2)) / 2;
+        const ym = M.t + plotH / 2 - 6;
+        parts.push('<text x="'+xm.toFixed(1)+'" y="'+ym.toFixed(1)+'" text-anchor="middle" fill="#1a1813" stroke="#faf5e6" stroke-width="4" paint-order="stroke" font-weight="700" font-size="16" letter-spacing="0.02em">'+ev.label+'</text>');
+        if (ev.sub) parts.push('<text x="'+xm.toFixed(1)+'" y="'+(ym+20).toFixed(1)+'" text-anchor="middle" fill="#36332b" stroke="#faf5e6" stroke-width="3" paint-order="stroke" font-style="italic" font-size="13">'+ev.sub+'</text>');
+      }
+      return;
+    }
+    if (ev.m2) {
+      // Labeled range: dashed verticals at each end, label centered above plot
+      const x0 = xFor(ev.m), x1 = xFor(ev.m2), xm = (x0+x1)/2;
+      parts.push('<line x1="'+x0.toFixed(1)+'" x2="'+x0.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />');
+      parts.push('<line x1="'+x1.toFixed(1)+'" x2="'+x1.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />');
+      parts.push('<text x="'+xm.toFixed(1)+'" y="'+rowLabelY[ev.row||0]+'" text-anchor="middle" fill="#1a1813" font-weight="600" font-size="15">'+ev.label+'</text>');
+      if (ev.sub) parts.push('<text x="'+xm.toFixed(1)+'" y="'+rowSubY[ev.row||0]+'" text-anchor="middle" fill="#36332b" font-style="italic" font-size="13">'+ev.sub+'</text>');
+    } else {
+      const x = xFor(ev.m);
+      const anchor = ev.anchor || 'middle';
+      let lx = x;
+      if (anchor === 'end') lx = x - 5;
+      if (anchor === 'start') lx = x + 6;
+      parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+rowLineTopY[ev.row||0]+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="3 3" opacity="0.65" />');
+      parts.push('<circle cx="'+x.toFixed(1)+'" cy="'+M.t+'" r="4" fill="#1a1813" />');
+      parts.push('<text x="'+lx.toFixed(1)+'" y="'+rowLabelY[ev.row||0]+'" text-anchor="'+anchor+'" fill="#1a1813" font-weight="600" font-size="15">'+ev.label+'</text>');
+      if (ev.sub) parts.push('<text x="'+lx.toFixed(1)+'" y="'+rowSubY[ev.row||0]+'" text-anchor="'+anchor+'" fill="#36332b" font-style="italic" font-size="13">'+ev.sub+'</text>');
+    }
+  });
+
+  parts.push('</g>');
+  const el = document.getElementById(svgId);
+  if (el) el.innerHTML = parts.join('');
+}
+
+function renderPerBrandBars(svgId, data) {
+  const W_SVG = 1200, H_SVG = 460;
+  const M = { t: 60, r: 60, b: 70, l: 120 };
+  const plotW = W_SVG - M.l - M.r;
+  const plotH = H_SVG - M.t - M.b;
+
+  const rMax = 0.60; // fixed scale to frame all brands consistently
+  const xFor = v => M.l + (v / rMax) * plotW;
+
+  const bandH = plotH / data.length;
+  const barH = Math.min(34, bandH * 0.62);
+
+  function colorFor(r) {
+    if (r >= 0.40) return '#28405a';
+    if (r >= 0.30) return '#5c7a99';
+    return '#a9b8c7';
+  }
+
+  const parts = [];
+  parts.push('<g font-family="-apple-system, \'Segoe UI\', sans-serif" font-size="16">');
+
+  // Vertical gridlines at 0.1 intervals
+  for (let v = 0; v <= rMax + 0.001; v += 0.10) {
+    const x = xFor(v);
+    parts.push('<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#d9cfb4" stroke-width="1" stroke-dasharray="'+(v===0?'0':'2 3')+'" />');
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(M.t+plotH+22)+'" text-anchor="middle" fill="#7a7264" font-size="14">+'+v.toFixed(2)+'</text>');
+  }
+  parts.push('<text x="'+(M.l + plotW/2).toFixed(1)+'" y="'+(M.t+plotH+48)+'" text-anchor="middle" fill="#1a1813" font-weight="600" letter-spacing="0.14em" font-size="12">PEARSON r (WEEKLY, CLEANED)</text>');
+
+  // Bars
+  data.forEach((d, i) => {
+    const yCenter = M.t + i * bandH + bandH / 2;
+    const yTop = yCenter - barH / 2;
+    const x0 = xFor(0);
+    const x1 = xFor(d.r);
+    const col = colorFor(d.r);
+    // Brand label
+    parts.push('<text x="'+(M.l-14)+'" y="'+(yCenter+5).toFixed(1)+'" text-anchor="end" fill="#1a1813" font-weight="600" font-size="16">'+d.brand+(d.flag||'')+'</text>');
+    // Bar
+    parts.push('<rect x="'+x0+'" y="'+yTop.toFixed(1)+'" width="'+(x1-x0).toFixed(1)+'" height="'+barH+'" fill="'+col+'" fill-opacity="0.88" />');
+    // Value label at bar end
+    parts.push('<text x="'+(x1+8).toFixed(1)+'" y="'+(yCenter+5).toFixed(1)+'" text-anchor="start" fill="#1a1813" font-weight="500" font-size="15">+'+d.r.toFixed(2)+'</text>');
+  });
+
+  // Baseline at r=0
+  parts.push('<line x1="'+M.l+'" x2="'+M.l+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+  parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+
+  // Legend (tier swatches)
+  const legendY = M.t - 32;
+  const legend = [
+    { col: '#28405a', label: 'r \u2265 +0.40' },
+    { col: '#5c7a99', label: '+0.30 to +0.40' },
+    { col: '#a9b8c7', label: 'r < +0.30' }
+  ];
+  let lx = M.l;
+  legend.forEach(item => {
+    parts.push('<rect x="'+lx+'" y="'+(legendY-12)+'" width="14" height="14" fill="'+item.col+'" fill-opacity="0.88" />');
+    parts.push('<text x="'+(lx+20)+'" y="'+(legendY-0)+'" fill="#1a1813" font-size="14">'+item.label+'</text>');
+    lx += 14 + 8 + item.label.length * 8 + 24;
+  });
+
+  // * footnote
+  parts.push('<text x="'+(W_SVG-M.r)+'" y="'+(M.t-16)+'" text-anchor="end" fill="#6b6556" font-style="italic" font-size="13">* CGR n=4 weeks; directional only</text>');
+
+  parts.push('</g>');
+  const el = document.getElementById(svgId);
+  if (el) el.innerHTML = parts.join('');
+}
+
+renderPubPortfolio('chart-pub-portfolio', CSV_PUB_PORTFOLIO, [
+  { m:'2025-04-29', m2:'2026-01-15', band:true, label:'Intro-rate program', sub:'Apr 2025 \u2013 Jan 15 2026' },
+  { m:'2024-10-24', row:0, label:'AN Arc', anchor:'start' },
+  { m:'2025-04-07', m2:'2025-06-13', row:0, label:'AA + MHC Arc' },
+  { m:'2026-02-19', m2:'2026-03-24', row:0, label:'City Brands Arc' }
+]);
+
+const INDEXED_WINDOWS = [
+  { label: 'Baseline',         sub: '2024-09 to 2025-03', articles: 100, orders: 100, baseline: true },
+  { label: 'Intro ramp',       sub: '2025-05 to 2025-07', articles: 84,  orders: 98  },
+  { label: 'Intro peak',       sub: '2025-08 to 2025-11', articles: 85,  orders: 106 },
+  { label: 'Final intro month',sub: '2025-12 to 01/15',   articles: 82,  orders: 95  },
+  { label: 'Post-shutoff',     sub: '01/16 to 2026-04',   articles: 75,  orders: 69, post: true }
+];
+
+function renderIndexedWindows(svgId, data) {
+  const W_SVG = 1200, H_SVG = 480;
+  const M = { t: 70, r: 40, b: 110, l: 64 };
+  const plotW = W_SVG - M.l - M.r;
+  const plotH = H_SVG - M.t - M.b;
+
+  const yMax = 120;
+  const step = 20;
+  const yFor = v => M.t + plotH - (v / yMax) * plotH;
+
+  const groupCount = data.length;
+  const groupW = plotW / groupCount;
+  const barPairW = Math.min(150, groupW * 0.62);
+  const barW = barPairW / 2 - 6;
+
+  const parts = [];
+  parts.push('<g font-family="-apple-system, \'Segoe UI\', sans-serif" font-size="16">');
+
+  // Gridlines + y labels
+  for (let v = 0; v <= yMax; v += step) {
+    const y = yFor(v);
+    parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#d9cfb4" stroke-width="1" stroke-dasharray="'+(v===0?'0':'2 3')+'" />');
+    parts.push('<text x="'+(M.l-12)+'" y="'+(y+5).toFixed(1)+'" text-anchor="end" fill="#7a7264" font-size="14">'+v+'</text>');
+  }
+
+  // Baseline emphasis line at 100
+  const y100 = yFor(100);
+  parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+y100.toFixed(1)+'" y2="'+y100.toFixed(1)+'" stroke="#1a1813" stroke-width="1" stroke-dasharray="4 4" opacity="0.55" />');
+  parts.push('<text x="'+(W_SVG-M.r-8)+'" y="'+(y100-8).toFixed(1)+'" text-anchor="end" fill="#1a1813" font-style="italic" font-size="13">Baseline = 100</text>');
+
+  parts.push('<text x="'+(M.l-46)+'" y="'+(M.t-10)+'" fill="#1a1813" font-weight="600" font-size="13" letter-spacing="0.12em">INDEX</text>');
+
+  // Bars + labels per group
+  data.forEach((d, i) => {
+    const cx = M.l + i * groupW + groupW / 2;
+    const aX = cx - barW - 3;
+    const oX = cx + 3;
+    const aY = yFor(d.articles);
+    const oY = yFor(d.orders);
+    const aH = (M.t + plotH) - aY;
+    const oH = (M.t + plotH) - oY;
+
+    const aColor = '#28405a';
+    const oColor = '#8a3a3a';
+    const aOpacity = d.baseline ? 0.58 : 0.88;
+    const oOpacity = d.baseline ? 0.58 : 0.92;
+
+    parts.push('<rect x="'+aX.toFixed(1)+'" y="'+aY.toFixed(1)+'" width="'+barW+'" height="'+aH.toFixed(1)+'" fill="'+aColor+'" fill-opacity="'+aOpacity+'" />');
+    parts.push('<rect x="'+oX.toFixed(1)+'" y="'+oY.toFixed(1)+'" width="'+barW+'" height="'+oH.toFixed(1)+'" fill="'+oColor+'" fill-opacity="'+oOpacity+'" />');
+
+    // Value labels
+    parts.push('<text x="'+(aX+barW/2).toFixed(1)+'" y="'+(aY-8).toFixed(1)+'" text-anchor="middle" fill="#1a1813" font-weight="500" font-size="15">'+d.articles+'</text>');
+    parts.push('<text x="'+(oX+barW/2).toFixed(1)+'" y="'+(oY-8).toFixed(1)+'" text-anchor="middle" fill="#1a1813" font-weight="500" font-size="15">'+d.orders+'</text>');
+
+    // X labels
+    parts.push('<text x="'+cx.toFixed(1)+'" y="'+(M.t+plotH+24)+'" text-anchor="middle" fill="#1a1813" font-weight="600" font-size="15">'+d.label+'</text>');
+    parts.push('<text x="'+cx.toFixed(1)+'" y="'+(M.t+plotH+44)+'" text-anchor="middle" fill="#6b6556" font-style="italic" font-size="13">'+d.sub+'</text>');
+  });
+
+  // Plot border
+  parts.push('<line x1="'+M.l+'" x2="'+(W_SVG-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+  parts.push('<line x1="'+M.l+'" x2="'+M.l+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#1a1813" stroke-width="1.2" />');
+
+  parts.push('</g>');
+  const el = document.getElementById(svgId);
+  if (el) el.innerHTML = parts.join('');
+}
+
+renderIndexedWindows('chart-pub-windows', INDEXED_WINDOWS);
+
+renderPerBrandBars('chart-pub-perbrand', PER_BRAND_R);
+
+})();
+</script>
+
+<script>
+(function(){
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crain Product Team - 2025 Wrapped</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== CARD CONTAINER ===== */
+    .cards-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .card.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 10;
+    }
+
+    /* ===== BRANDING ===== */
+    .brand-icon {
+      position: absolute;
+      top: 30px;
+      left: 40px;
+      height: 28px;
+      width: auto;
+      opacity: 0.9;
+    }
+
+    .brand-logo-large {
+      height: 50px;
+      width: auto;
+      margin-bottom: 10px;
+    }
+
+    /* ===== GRADIENT BACKGROUNDS ===== */
+    .card-intro {
+      background: linear-gradient(135deg, #7B2FF7 0%, #F107A3 100%);
+      color: #fff;
+    }
+
+    .card-aha {
+      background: linear-gradient(135deg, #FC466B 0%, #FF9A44 100%);
+      color: #fff;
+    }
+
+    .card-jira {
+      background: linear-gradient(135deg, #00C9FF 0%, #3F5EFB 100%);
+      color: #fff;
+    }
+
+    .card-meeting-stats {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+
+    .card-vibes {
+      background: linear-gradient(135deg, #92FE9D 0%, #00C9FF 100%);
+      color: #1a1a2e;
+    }
+
+    .card-lingo {
+      background: linear-gradient(135deg, #7B2FF7 0%, #3F5EFB 100%);
+      color: #fff;
+    }
+
+    .card-lingo-king {
+      background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+      color: #1a1a2e;
+    }
+
+    .card-superlatives {
+      background: linear-gradient(135deg, #9B2C5E 0%, #C94277 100%);
+      color: #fff;
+    }
+
+    .card-quotes {
+      background: linear-gradient(135deg, #00C9FF 0%, #1DB954 100%);
+      color: #1a1a2e;
+    }
+
+    .card-predictions {
+      background: linear-gradient(135deg, #7B2FF7 0%, #191414 100%);
+      color: #fff;
+    }
+
+    .card-bonus {
+      background: linear-gradient(135deg, #3F5EFB 0%, #7B2FF7 100%);
+      color: #fff;
+    }
+
+    .card-outro {
+      background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+      color: #fff;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .giant-number {
+      font-size: clamp(120px, 25vw, 280px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -5px;
+    }
+
+    .big-number {
+      font-size: clamp(60px, 12vw, 140px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .medium-number {
+      font-size: clamp(40px, 8vw, 80px);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .small-number {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .title {
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-size: clamp(20px, 3vw, 36px);
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: clamp(16px, 2vw, 24px);
+      font-weight: 600;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .label-small {
+      font-size: clamp(12px, 1.5vw, 16px);
+      font-weight: 600;
+      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+
+    .subtext {
+      font-size: clamp(14px, 2vw, 22px);
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 15px;
+    }
+
+    .prompt {
+      font-size: 16px;
+      font-weight: 500;
+      opacity: 0.6;
+      margin-top: 40px;
+    }
+
+    /* ===== CARD-SPECIFIC LAYOUTS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px 50px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .jira-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px 30px;
+      margin-top: 30px;
+    }
+
+    .jira-type {
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .jira-type-number {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800;
+    }
+
+    .jira-type-label {
+      font-size: clamp(11px, 1.2vw, 14px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+
+    .vibes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px 60px;
+      margin-bottom: 30px;
+    }
+
+    .vibe-item {
+      text-align: center;
+    }
+
+    .lingo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px 30px;
+      max-width: 900px;
+    }
+
+    .lingo-item {
+      text-align: center;
+      padding: 10px;
+    }
+
+    .lingo-word {
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 700;
+    }
+
+    .lingo-count {
+      font-size: clamp(12px, 1.5vw, 16px);
+      opacity: 0.7;
+    }
+
+    .crown-icon {
+      font-size: clamp(60px, 10vw, 100px);
+      margin-bottom: 20px;
+    }
+
+    .awards-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px 40px;
+      max-width: 1000px;
+    }
+
+    .award-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: left;
+      padding: 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      min-width: 0;
+      word-wrap: break-word;
+    }
+
+    .award-title {
+      font-size: clamp(11px, 1.4vw, 14px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    .award-winner {
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 800;
+      overflow-wrap: break-word;
+    }
+
+    .award-quote {
+      font-size: clamp(12px, 1.4vw, 15px);
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    /* These classes kept for backwards compatibility but no longer apply special styling */
+    .award-item-full,
+    .prediction-item-full {
+      /* Removed spanning/centering - now renders as regular tile */
+    }
+
+    .quotes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      max-width: 850px;
+    }
+
+    .quote-item {
+      font-size: clamp(15px, 2vw, 20px);
+      font-style: italic;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 10px;
+      border-left: 4px solid rgba(0,0,0,0.3);
+    }
+
+    .predictions-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 15px 30px;
+      max-width: 1100px;
+      text-align: left;
+    }
+
+    .prediction-item {
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      min-width: 0;
+      word-wrap: break-word;
+    }
+
+    .prediction-name {
+      font-size: clamp(14px, 1.8vw, 18px);
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .prediction-text {
+      font-size: clamp(13px, 1.6vw, 16px);
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .prediction-context {
+      font-size: clamp(11px, 1.3vw, 14px);
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    .bonus-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 900px;
+    }
+
+    .bonus-item {
+      padding: 15px 25px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .bonus-text {
+      font-size: clamp(16px, 2.2vw, 24px);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .bonus-context {
+      font-size: clamp(13px, 1.6vw, 17px);
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    .stats-recap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px 50px;
+      margin-top: 40px;
+      margin-bottom: 30px;
+    }
+
+    .stat-mini {
+      text-align: center;
+    }
+
+    .stat-mini-number {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+    }
+
+    .stat-mini-label {
+      font-size: clamp(12px, 1.5vw, 16px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    .highlight {
+      background: rgba(255,255,255,0.2);
+      padding: 5px 15px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .dark-highlight {
+      background: rgba(0,0,0,0.15);
+      padding: 5px 15px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .card.active .reveal {
+      animation: fadeInUp 0.7s ease forwards;
+    }
+
+    .card.active .reveal-1 { animation-delay: 0s; }
+    .card.active .reveal-2 { animation-delay: 0.15s; }
+    .card.active .reveal-3 { animation-delay: 0.3s; }
+    .card.active .reveal-4 { animation-delay: 0.45s; }
+    .card.active .reveal-5 { animation-delay: 0.6s; }
+    .card.active .reveal-6 { animation-delay: 0.75s; }
+    .card.active .reveal-7 { animation-delay: 0.9s; }
+    .card.active .reveal-8 { animation-delay: 1.05s; }
+    .card.active .reveal-9 { animation-delay: 1.2s; }
+    .card.active .reveal-10 { animation-delay: 1.35s; }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .card.active .reveal-scale {
+      animation: fadeInScale 0.8s ease forwards;
+    }
+
+    .card.active .prompt {
+      animation: pulse 2s ease-in-out infinite;
+      animation-delay: 1.5s;
+    }
+
+    .card.active .crown-bounce {
+      animation: bounce 1s ease-in-out infinite;
+      animation-delay: 0.5s;
+    }
+
+    .counter {
+      display: inline-block;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 30px;
+      }
+
+      .lingo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px 20px;
+      }
+
+      .awards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .predictions-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        padding: 30px;
+      }
+
+      .brand-icon {
+        top: 20px;
+        left: 20px;
+        height: 22px;
+      }
+
+      .brand-logo-large {
+        height: 40px;
+      }
+
+      .vibes-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px 20px;
+      }
+
+      .lingo-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 15px;
+      }
+
+      .jira-breakdown {
+        gap: 10px 15px;
+      }
+
+      .quotes-list {
+        gap: 12px;
+      }
+
+      .quote-item {
+        padding: 10px 15px;
+      }
+
+      .bonus-list {
+        gap: 15px;
+      }
+
+      .bonus-item {
+        padding: 12px 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 15px;
+      }
+
+      .brand-icon {
+        top: 15px;
+        left: 15px;
+        height: 18px;
+      }
+
+      .brand-logo-large {
+        height: 32px;
+      }
+
+      .title {
+        margin-bottom: 15px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .vibes-grid {
+        gap: 25px;
+      }
+
+      .lingo-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 10px;
+      }
+
+      .lingo-item {
+        padding: 5px;
+      }
+
+      .awards-grid {
+        gap: 12px;
+      }
+
+      .award-item {
+        padding: 12px;
+      }
+
+      .predictions-grid {
+        gap: 10px;
+      }
+
+      .prediction-item {
+        padding: 10px 12px;
+      }
+
+      .quotes-list {
+        gap: 10px;
+      }
+
+      .quote-item {
+        padding: 8px 12px;
+        border-left-width: 3px;
+      }
+
+      .bonus-list {
+        gap: 12px;
+      }
+
+      .bonus-item {
+        padding: 10px 15px;
+      }
+
+      .stats-recap {
+        gap: 20px 30px;
+        margin-top: 30px;
+        margin-bottom: 20px;
+      }
+
+      .jira-breakdown {
+        gap: 8px 12px;
+        margin-top: 20px;
+      }
+
+      .jira-type {
+        min-width: 60px;
+      }
+
+      .prompt {
+        margin-top: 30px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cards-wrapper">
+
+    <!-- CARD 1: Intro -->
+    <section class="card card-intro active" data-card="0">
+      <div class="title reveal reveal-scale reveal-1">2025</div>
+      <div class="subtitle reveal reveal-2">Your Year, Wrapped</div>
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-logo-large reveal reveal-3">
+      <div class="subtext reveal reveal-4">Product Team</div>
+      <div class="prompt reveal reveal-5">Click anywhere to begin</div>
+    </section>
+
+    <!-- CARD 2: Aha! - What We Built -->
+    <section class="card card-aha" data-card="1">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 40px;">We worked on</div>
+      <div class="stats-grid">
+        <div class="stat-item reveal reveal-2">
+          <div class="medium-number"><span class="counter" data-target="23">0</span></div>
+          <div class="label">Initiatives</div>
+        </div>
+        <div class="stat-item reveal reveal-3">
+          <div class="medium-number">62+</div>
+          <div class="label">Epics</div>
+        </div>
+        <div class="stat-item reveal reveal-4">
+          <div class="medium-number"><span class="counter" data-target="133">0</span></div>
+          <div class="label">Features</div>
+        </div>
+        <div class="stat-item reveal reveal-5">
+          <div class="medium-number"><span class="counter" data-target="150">0</span></div>
+          <div class="label">Ideas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 3: Jira - The Tickets -->
+    <section class="card card-jira" data-card="2">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 20px;">Jira was like a second home</div>
+      <div class="giant-number reveal reveal-scale reveal-2">
+        <span class="counter" data-target="436">0</span>
+      </div>
+      <div class="label reveal reveal-3">Total Jira tickets</div>
+      <div class="subtext reveal reveal-4">
+        <span class="highlight">72.7% completion rate</span>
+      </div>
+      <div class="jira-breakdown reveal reveal-5">
+        <div class="jira-type">
+          <div class="jira-type-number">236</div>
+          <div class="jira-type-label">Tasks</div>
+        </div>
+        <div class="jira-type">
+          <div class="jira-type-number">62</div>
+          <div class="jira-type-label">Epics</div>
+        </div>
+        <div class="jira-type">
+          <div class="jira-type-number">49</div>
+          <div class="jira-type-label">Stories</div>
+        </div>
+        <div class="jira-type">
+          <div class="jira-type-number">49</div>
+          <div class="jira-type-label">Bugs</div>
+        </div>
+        <div class="jira-type">
+          <div class="jira-type-number">21</div>
+          <div class="jira-type-label">Spikes</div>
+        </div>
+        <div class="jira-type">
+          <div class="jira-type-number">19</div>
+          <div class="jira-type-label">Subtasks</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 4: Meeting Stats -->
+    <section class="card card-meeting-stats" data-card="3">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 30px;">Meetings were our primary home</div>
+      <div class="stats-grid">
+        <div class="stat-item reveal reveal-2">
+          <div class="medium-number">~<span class="counter" data-target="2500">0</span></div>
+          <div class="label">Meetings Tracked</div>
+        </div>
+        <div class="stat-item reveal reveal-3">
+          <div class="medium-number">~<span class="counter" data-target="1630">0</span></div>
+          <div class="label">Hours in Meetings</div>
+        </div>
+        <div class="stat-item reveal reveal-4">
+          <div class="medium-number">~7.7M</div>
+          <div class="label">Words Spoken</div>
+        </div>
+        <div class="stat-item reveal reveal-5">
+          <div class="medium-number">~<span class="counter" data-target="14900">0</span></div>
+          <div class="label">Questions Asked</div>
+        </div>
+      </div>
+      <div class="reveal reveal-6" style="margin-top: 40px;">
+        <div class="small-number">~31 min</div>
+        <div class="label">Average Meeting Duration</div>
+      </div>
+      <div class="subtext reveal reveal-7" style="margin-top: 30px; font-size: 14px; opacity: 0.6;">
+        *Based on available data — not all meetings were tracked
+      </div>
+    </section>
+
+    <!-- CARD 5: Meeting Vibes -->
+    <section class="card card-vibes" data-card="4">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 15px;">Fun Meeting Facts</div>
+      <div class="reveal reveal-2" style="margin-bottom: 35px; text-align: center;">
+        <div style="margin-bottom: 8px;"><strong>Longest Single Meeting:</strong> "BlueConic Rollout Schedule" — 98 minutes</div>
+        <div><strong>Longest Monologue:</strong> 12+ minutes of uninterrupted speaking (you know who)</div>
+      </div>
+      <div class="vibes-grid">
+        <div class="vibe-item reveal reveal-3">
+          <div class="big-number"><span class="counter" data-target="949">0</span></div>
+          <div class="label">times we said "Cool"</div>
+        </div>
+        <div class="vibe-item reveal reveal-4">
+          <div class="big-number"><span class="counter" data-target="634">0</span></div>
+          <div class="label">times we said "Awesome"</div>
+        </div>
+      </div>
+      <div class="reveal reveal-5" style="margin-top: 20px;">
+        <div class="medium-number"><span class="counter" data-target="1583">0</span></div>
+        <div class="label">Total Good Vibes</div>
+      </div>
+      <div class="subtext reveal reveal-6" style="margin-top: 30px;">
+        <span class="dark-highlight">Vibes: Immaculate ✓</span>
+      </div>
+    </section>
+
+    <!-- CARD 6: Corporate Lingo - The Words -->
+    <section class="card card-lingo" data-card="5">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="big-number reveal reveal-scale reveal-1">
+        <span class="counter" data-target="344">0</span>
+      </div>
+      <div class="label reveal reveal-2">Corporate buzzwords detected</div>
+      <div class="lingo-grid reveal reveal-3" style="margin-top: 30px;">
+        <div class="lingo-item">
+          <div class="lingo-word">"leverage"</div>
+          <div class="lingo-count">101</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"align"</div>
+          <div class="lingo-count">71</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"touch base"</div>
+          <div class="lingo-count">39</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"stakeholder"</div>
+          <div class="lingo-count">21</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"action item"</div>
+          <div class="lingo-count">19</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"pivot"</div>
+          <div class="lingo-count">16</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"alignment"</div>
+          <div class="lingo-count">15</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"move the needle"</div>
+          <div class="lingo-count">14</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"deep dive"</div>
+          <div class="lingo-count">10</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"loop in"</div>
+          <div class="lingo-count">9</div>
+        </div>
+        <div class="lingo-item">
+          <div class="lingo-word">"circle back"</div>
+          <div class="lingo-count">8</div>
+        </div>
+      </div>
+      <div class="subtext reveal reveal-4" style="margin-top: 30px; font-weight: 600;">
+        But who said them the most?
+      </div>
+    </section>
+
+    <!-- CARD 7: Corporate Lingo King Reveal -->
+    <section class="card card-lingo-king" data-card="6">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="crown-icon reveal reveal-scale reveal-1 crown-bounce">👑</div>
+      <div class="title reveal reveal-2" style="margin-bottom: 10px;">Sean Bales</div>
+      <div class="subtitle reveal reveal-3">Corporate Lingo King</div>
+      <div class="subtext reveal reveal-4" style="margin-top: 20px;">
+        <span class="dark-highlight">Dominates 10 of 17 tracked phrases</span>
+      </div>
+      <div class="subtext reveal reveal-5" style="margin-top: 25px; font-style: italic;">
+        "Leveraging alignment since 2023"
+      </div>
+    </section>
+
+    <!-- CARD 8: The Superlatives -->
+    <section class="card card-superlatives" data-card="7">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 30px;">The Superlatives</div>
+      <div class="awards-grid">
+        <div class="award-item reveal reveal-2">
+          <div class="award-title">Corporate Lingo King</div>
+          <div class="award-winner">Sean Bales</div>
+          <div class="award-quote">Dominates 10 of 17 buzzphrases</div>
+        </div>
+        <div class="award-item reveal reveal-2">
+          <div class="award-title">Jira Ticket Machine</div>
+          <div class="award-winner">Avery Speel</div>
+          <div class="award-quote">285 tickets touched</div>
+        </div>
+        <div class="award-item reveal reveal-3">
+          <div class="award-title">The Executioner</div>
+          <div class="award-winner">Liz Raisig</div>
+          <div class="award-quote">"Can we kill that?" is her catchphrase</div>
+        </div>
+        <div class="award-item reveal reveal-3">
+          <div class="award-title">Most Loyal Teammate</div>
+          <div class="award-winner">Jessica Nazario Laskowski</div>
+          <div class="award-quote">Her most-used word is literally "avery"</div>
+        </div>
+        <div class="award-item reveal reveal-4">
+          <div class="award-title">Elephant Eater</div>
+          <div class="award-winner">Nicole Rakozy</div>
+          <div class="award-quote">Knows exactly how to eat elephants (one bite at a time)</div>
+        </div>
+        <div class="award-item reveal reveal-4">
+          <div class="award-title">Intensity Award</div>
+          <div class="award-winner">Elena Romashko</div>
+          <div class="award-quote">"Kill. How do you want to kill it? Just to kill."</div>
+        </div>
+        <div class="award-item reveal reveal-5 award-item-full">
+          <div class="award-title">The Pragmatist</div>
+          <div class="award-winner">Shana Thomas</div>
+          <div class="award-quote">"It's annoying, but it works"</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 9: Quotable Moments -->
+    <section class="card card-quotes" data-card="8">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 5px;">Things We Said (Out of Context)</div>
+      <div class="subtext reveal reveal-2" style="margin-bottom: 25px; font-style: italic;">
+        Names withheld to protect the guilty
+      </div>
+      <div class="quotes-list">
+        <div class="quote-item reveal reveal-3">"Honey, I saw you get coffee in your mouth, and now I need something."</div>
+        <div class="quote-item reveal reveal-4">"Going to eat money there."</div>
+        <div class="quote-item reveal reveal-5">"So, yeah, just bear, bear with us."</div>
+        <div class="quote-item reveal reveal-6">"Sorry about my dog."</div>
+        <div class="quote-item reveal reveal-7">"It's like an 1800% difference."</div>
+        <div class="quote-item reveal reveal-8">"Drupal is a completely different instance of Drupal."</div>
+        <div class="quote-item reveal reveal-9">"Like soundproof pod and free coffee."</div>
+      </div>
+    </section>
+
+    <!-- CARD 10: 2026 Predictions -->
+    <section class="card card-predictions" data-card="9">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 25px;">2026 Predictions</div>
+      <div class="predictions-grid">
+        <div class="prediction-item reveal reveal-2">
+          <div class="prediction-name">Sean</div>
+          <div class="prediction-text">"Will achieve sentience through pure meeting exposure"</div>
+          <div class="prediction-context">At 880 hours in 2025, he's basically downloading the company into his brain</div>
+        </div>
+        <div class="prediction-item reveal reveal-2">
+          <div class="prediction-name">Avery</div>
+          <div class="prediction-text">"Will touch their 1,000th Jira ticket"</div>
+          <div class="prediction-context">At 285 this year, the pace is unstoppable. Jira will send a cake.</div>
+        </div>
+        <div class="prediction-item reveal reveal-3">
+          <div class="prediction-name">Liz</div>
+          <div class="prediction-text">"Will be promoted to Chief Elimination Officer"</div>
+          <div class="prediction-context">Her kill count is already legendary</div>
+        </div>
+        <div class="prediction-item reveal reveal-3">
+          <div class="prediction-name">Jessica</div>
+          <div class="prediction-text">"Most-used word will STILL be 'avery'"</div>
+          <div class="prediction-context">Stan loyalty is forever. May legally change her name.</div>
+        </div>
+        <div class="prediction-item reveal reveal-4">
+          <div class="prediction-name">Nicole</div>
+          <div class="prediction-text">"Will finally finish eating the elephant"</div>
+          <div class="prediction-context">One bite at a time. Est. completion: Q4 2026</div>
+        </div>
+        <div class="prediction-item reveal reveal-4">
+          <div class="prediction-name">Elena</div>
+          <div class="prediction-text">"Will achieve peak intensity and become a motivational poster"</div>
+          <div class="prediction-context">"It is insane. It is insane." framed in every conference room</div>
+        </div>
+        <div class="prediction-item reveal reveal-5 prediction-item-full">
+          <div class="prediction-name">Shana</div>
+          <div class="prediction-text">"Will become the team's official 'It works' spokesperson"</div>
+          <div class="prediction-context">Pragmatism will reign supreme. Annoying? Maybe. But it works.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 11: Bonus Predictions -->
+    <section class="card card-bonus" data-card="10">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-icon">
+      <div class="subtitle reveal reveal-1" style="margin-bottom: 30px;">Bonus Predictions</div>
+      <div class="bonus-list">
+        <div class="bonus-item reveal reveal-2">
+          <div class="bonus-text">"The team will say 'cool' and 'awesome' 5,000 more times"</div>
+          <div class="bonus-context">Vibes will remain legally immaculate</div>
+        </div>
+        <div class="bonus-item reveal reveal-3">
+          <div class="bonus-text">"Someone will finally use 'synergy' unironically"</div>
+          <div class="bonus-context">Notably absent from 2025. The dam must break.</div>
+        </div>
+        <div class="bonus-item reveal reveal-4">
+          <div class="bonus-text">"'Leverage' will become the company's unofficial slogan"</div>
+          <div class="bonus-context">Already at 101 uses. We're basically a lever factory.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 12: Outro -->
+    <section class="card card-outro" data-card="11">
+      <img src="assets/crain-logo-transparent.png" alt="Crain" class="brand-logo-large reveal reveal-1">
+      <div class="title reveal reveal-2" style="margin-top: 10px;">Product Team</div>
+      <div class="subtitle reveal reveal-3">2025 Wrapped</div>
+      <div class="stats-recap">
+        <div class="stat-mini reveal reveal-4">
+          <div class="stat-mini-number">436</div>
+          <div class="stat-mini-label">Tickets</div>
+        </div>
+        <div class="stat-mini reveal reveal-4">
+          <div class="stat-mini-number">23</div>
+          <div class="stat-mini-label">Initiatives</div>
+        </div>
+        <div class="stat-mini reveal reveal-5">
+          <div class="stat-mini-number">133</div>
+          <div class="stat-mini-label">Features</div>
+        </div>
+        <div class="stat-mini reveal reveal-5">
+          <div class="stat-mini-number">150</div>
+          <div class="stat-mini-label">Ideas</div>
+        </div>
+        <div class="stat-mini reveal reveal-6">
+          <div class="stat-mini-number">1,583</div>
+          <div class="stat-mini-label">Good Vibes</div>
+        </div>
+        <div class="stat-mini reveal reveal-6">
+          <div class="stat-mini-number">344</div>
+          <div class="stat-mini-label">Buzzwords</div>
+        </div>
+      </div>
+      <div class="subtext reveal reveal-7" style="font-size: 28px;">
+        Here's to 2026
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // ===== STATE =====
+    let currentCard = 0;
+    const cards = document.querySelectorAll('.card');
+    const totalCards = cards.length;
+
+    // ===== NAVIGATION =====
+    function goToCard(index) {
+      if (index < 0 || index >= totalCards) return;
+      
+      // Remove active from current
+      cards[currentCard].classList.remove('active');
+      
+      // Set new current
+      currentCard = index;
+      cards[currentCard].classList.add('active');
+      
+      // Trigger counter animations for this card
+      animateCountersInCard(cards[currentCard]);
+    }
+
+    function nextCard() {
+      if (currentCard < totalCards - 1) {
+        goToCard(currentCard + 1);
+      }
+    }
+
+    function prevCard() {
+      if (currentCard > 0) {
+        goToCard(currentCard - 1);
+      }
+    }
+
+    // Click to advance
+    document.addEventListener('click', (e) => {
+      // Check if click is on left 20% of screen to go back
+      const clickX = e.clientX;
+      const screenWidth = window.innerWidth;
+      
+      if (clickX < screenWidth * 0.2) {
+        prevCard();
+      } else {
+        nextCard();
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case 'ArrowRight':
+        case ' ':
+        case 'Enter':
+          e.preventDefault();
+          nextCard();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          prevCard();
+          break;
+      }
+    });
+
+    // ===== COUNTER ANIMATION =====
+    function animateCounter(el, target, duration = 2000) {
+      const startTime = performance.now();
+      const startValue = 0;
+      
+      // Add easing for more dramatic effect
+      function easeOutExpo(t) {
+        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+      }
+      
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutExpo(progress);
+        const currentValue = Math.floor(easedProgress * target);
+        
+        el.textContent = currentValue.toLocaleString();
+        
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+      
+      requestAnimationFrame(tick);
+    }
+
+    function animateCountersInCard(card) {
+      const counters = card.querySelectorAll('.counter:not(.animated)');
+      
+      counters.forEach((counter, index) => {
+        const target = parseInt(counter.dataset.target, 10);
+        
+        // Stagger the counter animations
+        setTimeout(() => {
+          counter.classList.add('animated');
+          animateCounter(counter, target, 2000);
+        }, 300 + (index * 200));
+      });
+    }
+
+    // ===== INITIALIZATION =====
+    // Animate counters on first card if any
+    animateCountersInCard(cards[0]);
+  </script>
+</body>
+</html>
