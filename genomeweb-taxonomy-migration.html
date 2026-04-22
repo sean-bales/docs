@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GenomeWeb taxonomy migration &mdash; same commitments, half the systems</title>
+<title>GenomeWeb taxonomy migration &mdash; bounded vocabulary bound in Arc</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1014,88 +1014,56 @@ footer.endnote {
     <img class="brand-logo" src="https://sean-bales.github.io/gnw-taxonomy-deck/assets/crain-logo.png" alt="Crain Communications">
     <div class="byline">
       <b>Sean Bales</b>
-      <span>04/19/2026</span>
+      <span>04/21/2026</span>
     </div>
   </div>
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="intro">
-    <h1>GenomeWeb migrates to Arc with sponsor commitments and reader expectations intact &mdash; <em>half the overhead, portable across brands.</em></h1>
+    <h1>GenomeWeb migrates to Arc on a defined tag vocabulary. <em>Sponsor and reader expectations intact.</em></h1>
   </header>
 
-  <!-- ============ SECTION 01 — CLAIM + ASKS ============ -->
+  <!-- ============ SECTION 01 — THE CLAIM ============ -->
   <section class="primary" id="s1">
-    <div class="kicker"><span class="sec-num">01</span>Four shifts</div>
-    <h2>STAMP replaces hand-tagging, standing packages replace bespoke sponsor builds, and one page-KV contract feeds Sailthru and GAM.</h2>
-    <p class="lead">The migration retires per-sponsor assembly and per-article hand-tagging.</p>
-
-    <div class="ifthen">
-      <div class="nn">01</div>
-      <div>
-        <div class="cond"><b>Current</b>Editorial hand-tags every article from a 3,000-term shared vocabulary; ad ops and editorial each maintain a parallel curated list on top.</div>
-        <div class="actual"><b>Future</b> STAMP classifies on publish against a governed vocabulary editorial owns. Editor confirms or overrides edge cases. One source of truth replaces three parallel lists.</div>
-      </div>
-    </div>
-
-    <div class="ifthen">
-      <div class="nn">02</div>
-      <div>
-        <div class="cond"><b>Current</b>Each sponsor campaign is built bespoke across five systems and five-plus handoffs, with an external vendor in the critical path.</div>
-        <div class="actual"><b>Future</b> Sponsors pick a standing package off the shelf. Marketing automation schedules and uploads creative against a standing template. Three systems, two-to-three handoffs, no external vendor in the critical path.</div>
-      </div>
-    </div>
-
-    <div class="ifthen">
-      <div class="nn">03</div>
-      <div>
-        <div class="cond"><b>Current</b>Reader follows live in one storage layer; subscribing to the newsletter lives in another.</div>
-        <div class="actual"><b>Future</b> One opt-in subscribes the reader by definition. Inferred reading signals layer onto explicit preferences without reader action. The follower-vs-subscriber seam closes.</div>
-      </div>
-    </div>
-
-    <div class="ifthen">
-      <div class="nn">04</div>
-      <div>
-        <div class="cond"><b>Current</b>This Sailthru to GAM bridge is a parameter on the email click-through URL. If it&rsquo;s stripped or mistyped, GAM can&rsquo;t match the takeover line item and default ads fill the slots &mdash; no alert fires.</div>
-        <div class="actual"><b>Future</b> The article page emits page key-values. GAM and Sailthru both read the same source. One contract, multiple consumers.</div>
-      </div>
-    </div>
+    <div class="kicker"><span class="sec-num">01</span>The claim</div>
+    <h2>The migration settles the tag vocabulary in Arc. Downstream systems get a cleaner input.</h2>
+    <p class="lead">A curated section map and a closed tag vocabulary. New tag creation runs through admin approval. The Drupal long-tail is dropped.</p>
 
     <div class="callout">
-      <strong>Cross-brand</strong> The same architecture stands up a newsletter on each of the next fifteen brands without per-brand re-engineering.
+      <strong>Scope.</strong> The taxonomy direction is set. The sponsor operating model is set: Topic Takeover moves to an editorial newsletter with exclusive sponsorship &mdash; theme-level standing infrastructure, edited per send, sponsor-facing experience unchanged. See <a href="#a3">A3</a> and <a href="#a4">A4</a>. The reader-side UX (where section follows live, how the Preference Center shapes) is a downstream product decision that this deck does not resolve.
     </div>
 
-    <p class="src">Sources: Sailthru analytics, GAM line-item data, internal ops audit. Pulled 04/2026. Universe: GenomeWeb production traffic, active sponsor campaigns, reader follow records.</p>
+    <p class="src">Sources: GNW taxonomy decision doc (2026-04-21); six-year Drupal content audit (23,384 articles / 2,105 applied tags / 141,534 tag assignments); executive editor&rsquo;s site-structure and TT, My Topics, and 2025 engagement curation; Sailthru segment rules and Content Library; GAM line-item register. Pulled 04/2026.</p>
   </section>
 
   <!-- ============ SECTION 02 — SPONSOR CURRENT -> FUTURE ============ -->
   <section class="primary" id="s2">
     <div class="kicker"><span class="sec-num">02</span>Sponsor process</div>
-    <h2>Sponsor delivery collapses from five systems and five-plus handoffs to three systems and two-to-three handoffs.</h2>
-    <p class="lead">Bespoke per-campaign assembly retires. Standing topic packages take its place. Same deliverables for the sponsor.</p>
+    <h2>Cutover tightens the vocabulary. Topic Takeover moves to an editorial newsletter with exclusive sponsorship.</h2>
+    <p class="lead">Sponsor experience unchanged. Operator work shifts from custom build per campaign to standing theme infrastructure edited per send.</p>
 
     <div class="cmp-grid">
       <div class="cmp-card current">
         <div class="cmp-label">Current</div>
         <ul>
-          <li><b>Manual content tagging.</b> Editorial tags every article in the CMS by hand.</li>
-          <li><b>Bespoke campaign assembly.</b> Five systems, five-plus handoffs, external vendor in the critical path.</li>
-          <li><b>Per-send hand-built newsletters.</b> Marketing ops carves audiences and clones templates per send.</li>
-          <li><b>Hand-typed competitor exclusions.</b> Up to ninety edits across the live book per new launch.</li>
+          <li><b>Free-text content tagging.</b> Editorial tags every article against the accumulated Drupal vocabulary; no mechanical governance.</li>
+          <li><b>Bespoke campaign assembly.</b> Custom audience list, custom feed, custom template built from scratch for every sponsor.</li>
+          <li><b>Per-send hand-built newsletters.</b> Marketing automation carves audiences and clones templates per send.</li>
+          <li><b>Hand-typed competitor exclusions.</b> Up to ninety targeting-clause edits across the live book per new launch; one sponsor excludes sixty-plus historical competitors.</li>
         </ul>
       </div>
       <div class="cmp-card future">
         <div class="cmp-label">Future</div>
         <ul>
-          <li><b>Automatic content tagging.</b> STAMP classifies every article on publish against the governed vocabulary.</li>
-          <li><b>Off-the-shelf package assembly.</b> Three systems, two-to-three handoffs, no external vendor in the critical path.</li>
-          <li><b>Standing-template newsletters.</b> No per-send carving, cloning, or template mutation.</li>
-          <li><b>Structural competitor exclusions.</b> Zero exclusion-list edits per launch; the package owns all positions for the run period.</li>
+          <li><b>Dropdown tagging from the closed vocabulary.</b> New tag creation runs through admin approval. Shipping at cutover.</li>
+          <li><b>Standing theme infrastructure.</b> One audience cohort and one content feed per top-level theme (Cancer, Diagnostics, Drug Testing, etc.) &mdash; built once, reused across sponsors in that theme. Sponsors still pick tags like today.</li>
+          <li><b>Editorial-edits-per-send model.</b> Each send is a light configuration of the standing theme feed &mdash; tune to this sponsor&rsquo;s tag list, apply competitor exclusions, schedule. No rebuild from zero.</li>
+          <li><b>Concurrent sponsors per theme.</b> Multiple sponsors can share a theme with feed-level exclusion between them. Exclusive placement per send preserved; structural per-package occupancy isn&rsquo;t required.</li>
         </ul>
       </div>
     </div>
 
-    <div class="cmp-delta">Critical-path systems <b>5 &rarr; 3</b>. Per-campaign handoffs <b>5+ &rarr; 2&ndash;3</b>. Per-send manual mutations <b>&rarr; zero</b>. Single-operator risk <b>dissolves</b>. See <a href="#a2">A2</a> and <a href="#a3">A3</a> for the system-by-system lifecycle.</div>
+    <div class="cmp-delta">Shipping at cutover: the free-text Drupal vocabulary tightens to a closed, curated Arc vocabulary; new tag creation runs through admin approval; the long-tail drops. The sponsor-side operational shift &mdash; custom build per campaign &rarr; standing theme infrastructure edited per send &mdash; rolls out in the marketing automation workstream tied to cutover. Sponsor-facing product unchanged. See <a href="#a2">A2</a> (today) and <a href="#a3">A3</a> (future).</div>
 
     <p class="src">Sources: ops audit of marketing automation, ad ops, and sales workflows; GAM line-item exclusion patterns; sponsor campaign register. Pulled 04/2026. Universe: 15 active GenomeWeb sponsor campaigns.</p>
   </section>
@@ -1104,8 +1072,8 @@ footer.endnote {
   <!-- Adjacency justified: sponsor (02) and reader (03) are the two stakeholder halves of the same architectural shift. The symmetry IS the point of the deck; merging them would bury it. -->
   <section class="primary" id="s3">
     <div class="kicker"><span class="sec-num">03</span>Reader experience</div>
-    <h2>Reader opt-in collapses from three surfaces to one, and relevance starts learning from reading behavior.</h2>
-    <p class="lead">One opt-in surface. One channel. Automated relevance that improves with use. Same newsletter.</p>
+    <h2>Readers follow sections, not tags. Tags power advertising and newsletter infrastructure underneath.</h2>
+    <p class="lead">Separating the two resolves an ambiguity the current follow list carries.</p>
 
     <div class="cmp-grid">
       <div class="cmp-card current">
@@ -1113,7 +1081,7 @@ footer.endnote {
         <ul>
           <li><b>Three opt-in surfaces.</b> Preferences UI, topic-page button, article-page button.</li>
           <li><b>Follow does not equal subscribe.</b> Topic follow and newsletter subscription are separate plumbing.</li>
-          <li><b>Followable list mirrors the full Drupal taxonomy.</b> Every term shows up in My Topics.</li>
+          <li><b>Followable list mirrors the full Drupal taxonomy.</b> The accumulated tag list shows up in My Topics, mixing entities (company names, drug names) with concepts (methods, disease areas).</li>
           <li><b>Personalization runs through an opaque Sailthru data feed.</b> Tag-matching at render time inside an unauditable Zephyr template.</li>
           <li><b>Relevance comes from explicit follows only.</b> Reading behavior never feeds back.</li>
         </ul>
@@ -1121,31 +1089,31 @@ footer.endnote {
       <div class="cmp-card future">
         <div class="cmp-label">Future</div>
         <ul>
-          <li><b>One opt-in surface.</b> Preferences UI; topic-page and article-page buttons retire.</li>
+          <li><b>One opt-in surface.</b> Preferences UI only; on-site topic and article follow buttons retire.</li>
           <li><b>Follow equals subscribe.</b> A single opt-in flow does both.</li>
-          <li><b>Followable list is generated automatically by STAMP.</b> No editorial topic list to maintain.</li>
-          <li><b>Personalization runs through transparent page key-values.</b> GAM and Sailthru read the same source.</li>
-          <li><b>Relevance comes from explicit follows plus inferred reading signals.</b> The newsletter evolves with reading behavior.</li>
+          <li><b>Followable list is the curated section map.</b> Editorial governs the section map; no free-text terms surface to the reader. Tags stay in the infrastructure layer &mdash; not reader-facing.</li>
+          <li><b>Personalization matches reader section follows against editorially-sectioned articles.</b> Same render-time mechanism as today, on a tighter signal.</li>
+          <li><b>Relevance comes from explicit follows.</b> No inferred reading-signal layer at launch.</li>
         </ul>
       </div>
     </div>
 
-    <div class="cmp-delta">Opt-in surfaces <b>3 &rarr; 1</b>. Consumption surfaces <b>2 &rarr; 1</b>. Editorial topic-list maintenance <b>&rarr; zero</b>. Pattern travels to <b>15+ brands</b>. See <a href="#a5">A5</a> and <a href="#a6">A6</a> for the lifecycle in detail.</div>
+    <div class="cmp-delta">Opt-in surfaces <b>3 &rarr; 1</b>. Reader-facing vocabulary tightens from the free-text Drupal list to the curated section map. The tag vocabulary stays in the infrastructure layer (advertising, newsletter segmentation). Observed basis: in a six-month GAM window, 168 concurrent-campaign pairs would have collided on a top-level section alone &mdash; the tag layer is what keeps per-sponsor targeting distinct. See <a href="#a5">A5</a> and <a href="#a6">A6</a> for the lifecycle in detail.</div>
 
-    <p class="src">Sources: Sailthru user records and send logs; on-site preferences-UI analytics; Drupal taxonomy export. Pulled 04/2026. Universe: GenomeWeb stated followers (n = 12,891) and active-tier newsletter recipients.</p>
+    <p class="src">Sources: Sailthru user records and send logs; on-site preferences-UI analytics; Drupal taxonomy export; GAM six-month campaign-concurrency analysis. Pulled 04/2026. Universe: GenomeWeb stated followers (n = 12,891) and active-tier newsletter recipients.</p>
   </section>
 
   <!-- ============ SECTION 04 — ARCHITECTURE SPINE (Methodology, main-track exception) ============ -->
   <!-- Pre-approved exception: the end-to-end flow diagram is the proof of the convergence claim and earns main-track placement. -->
   <section class="primary" id="s4">
     <div class="kicker"><span class="sec-num">04</span>Architecture spine</div>
-    <h2>Sponsor, editorial, and reader flows converge on one contract: page key-values emitted at article render.</h2>
-    <p class="lead">The article page render is the only handshake. GAM, the Sailthru content scraper, and Junction all read from the same source.</p>
+    <h2>Page key-values handle article targeting. The newsletter-click URL handles Topic Takeover attribution.</h2>
+    <p class="lead">Arc holds the closed vocabulary. Editors pick from it at publish. Downstream systems consume the page key-values.</p>
 
     <div class="arch-diagram future">
       <svg viewBox="0 0 1040 880" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="archTitle archDesc" preserveAspectRatio="xMidYMid meet">
         <title id="archTitle">Post-migration end-to-end architecture</title>
-        <desc id="archDesc">Sponsor, editorial, and reader flows converge at the Arc article page render, where page key-values are emitted as both Sailthru meta tags and googletag.setTargeting calls. GAM, the Sailthru Content Library scraper, and Junction all read from that single contract. Junction passthrough writes explicit and inferred reader signals to the Sailthru profile. The Sailthru send-time match combines the reader profile with the Content Library to assemble each reader's newsletter.</desc>
+        <desc id="archDesc">Sponsor, editorial, and reader flows converge at the Arc article page render, where page key-values are emitted as both Sailthru meta tags and googletag.setTargeting calls. Editorial picks sections and tags from a closed Arc vocabulary; new tag creation runs through admin approval. GAM reads the page key-values via the ad call for article-page targeting; the Sailthru scraper indexes the same signal for send-time match. A second bridge, the newsletter_campaign URL parameter carried on newsletter-click landings, targets Topic Takeover boundary-level line items. Readers configure explicit section follows via the preferences UI.</desc>
 
         <defs>
           <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
@@ -1160,60 +1128,61 @@ footer.endnote {
         <text class="arch-lane-header" x="520" y="22" text-anchor="middle">Editorial</text>
         <text class="arch-lane-header" x="880" y="22" text-anchor="middle">Reader</text>
 
-        <line class="arch-arrow" x1="160" y1="120" x2="160" y2="142" marker-end="url(#arr)"/>
+        <line class="arch-arrow" x1="160" y1="130" x2="160" y2="142" marker-end="url(#arr)"/>
         <line class="arch-arrow" x1="160" y1="215" x2="160" y2="237" marker-end="url(#arr)"/>
         <line class="arch-arrow" x1="160" y1="310" x2="160" y2="352" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="170" y="335">click &rarr; article</text>
+        <text class="arch-arrow-label" x="170" y="335">click &rarr; article (URL carries newsletter_campaign)</text>
 
-        <line class="arch-arrow" x1="520" y1="120" x2="520" y2="142" marker-end="url(#arr)"/>
-        <line class="arch-arrow" x1="520" y1="215" x2="520" y2="237" marker-end="url(#arr)"/>
-        <line class="arch-arrow" x1="520" y1="310" x2="520" y2="352" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="530" y="335">classifications</text>
+        <line class="arch-arrow" x1="520" y1="130" x2="520" y2="142" marker-end="url(#arr)"/>
+        <text class="arch-arrow-label" x="530" y="138">dropdown vocabulary</text>
+        <line class="arch-arrow" x1="520" y1="215" x2="520" y2="352" marker-end="url(#arr)"/>
+        <text class="arch-arrow-label" x="530" y="295">section + tags emit on page</text>
 
-        <line class="arch-arrow" x1="880" y1="120" x2="880" y2="467" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="890" y="295">explicit signal</text>
+        <line class="arch-arrow" x1="880" y1="120" x2="880" y2="577" marker-end="url(#arr)"/>
+        <text class="arch-arrow-label" x="890" y="350">explicit section follows</text>
 
         <line class="arch-arrow" x1="160" y1="435" x2="160" y2="467" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="170" y="458">ad call</text>
+        <text class="arch-arrow-label" x="170" y="458">ad call (page KV)</text>
         <line class="arch-arrow" x1="520" y1="435" x2="520" y2="467" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="530" y="458">scrape</text>
-        <path class="arch-arrow" d="M 660 405 Q 700 425 745 467" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="670" y="395">reading event</text>
+        <text class="arch-arrow-label" x="530" y="458">scrape (page KV)</text>
+        <path class="arch-arrow" d="M 140 310 Q 80 400 140 467" marker-end="url(#arr)"/>
+        <text class="arch-arrow-label" x="18" y="395">newsletter_campaign URL (TTBL)</text>
 
         <line class="arch-arrow arch-arrow-strong" x1="160" y1="540" x2="160" y2="577" marker-end="url(#arr-acc)"/>
         <text class="arch-arrow-label" x="170" y="565">matched line item</text>
 
-        <line class="arch-arrow" x1="880" y1="540" x2="880" y2="577" marker-end="url(#arr)"/>
-
         <line class="arch-arrow" x1="520" y1="540" x2="520" y2="687" marker-end="url(#arr)"/>
         <text class="arch-arrow-label" x="530" y="615">indexed articles</text>
 
-        <path class="arch-arrow" d="M 740 615 Q 700 660 745 687" marker-end="url(#arr)"/>
-        <text class="arch-arrow-label" x="660" y="673">reader profile</text>
+        <line class="arch-arrow" x1="880" y1="650" x2="740" y2="705" marker-end="url(#arr)"/>
+        <text class="arch-arrow-label" x="720" y="680">reader profile</text>
 
         <line class="arch-arrow arch-arrow-strong" x1="490" y1="760" x2="490" y2="787" marker-end="url(#arr-acc)"/>
 
         <g>
-          <rect class="arch-rect" x="20" y="50" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="34" y="74">Sales</text>
+          <rect class="arch-rect" x="20" y="50" width="280" height="80" rx="4"/>
+          <text class="arch-system" x="34" y="74">Sales &mdash; IO signed</text>
           <text class="arch-action" y="94">
-            <tspan x="34" dy="0">Sponsor selects standing topic package;</tspan>
-            <tspan x="34" dy="14">IO signed</tspan>
+            <tspan x="34" dy="0">Sponsor tag list (10&ndash;15 closed-vocab</tspan>
+            <tspan x="34" dy="14">terms) + flight dates handed to</tspan>
+            <tspan x="34" dy="14">marketing automation.</tspan>
           </text>
         </g>
         <g>
-          <rect class="arch-rect" x="380" y="50" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="394" y="74">Editor &mdash; Arc Composer</text>
+          <rect class="arch-rect" x="380" y="50" width="280" height="80" rx="4"/>
+          <text class="arch-system" x="394" y="74">Closed vocabulary (Arc)</text>
           <text class="arch-action" y="94">
-            <tspan x="394" dy="0">Publishes article</tspan>
+            <tspan x="394" dy="0">Tags &mdash; admin-approved additions</tspan>
+            <tspan x="394" dy="14">Sections &mdash; editorial-governed</tspan>
+            <tspan x="394" dy="14">Governance cadence: scheduled batches</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect" x="740" y="50" width="280" height="70" rx="4"/>
           <text class="arch-system" x="754" y="74">Reader &mdash; preferences UI</text>
           <text class="arch-action" y="94">
-            <tspan x="754" dy="0">Configures topics</tspan>
-            <tspan x="754" dy="14">(explicit signal)</tspan>
+            <tspan x="754" dy="0">Configures section follows</tspan>
+            <tspan x="754" dy="14">(explicit signal; one opt-in)</tspan>
           </text>
         </g>
 
@@ -1221,31 +1190,25 @@ footer.endnote {
           <rect class="arch-rect" x="20" y="145" width="280" height="70" rx="4"/>
           <text class="arch-system" x="34" y="169">Marketing automation</text>
           <text class="arch-action" y="189">
-            <tspan x="34" dy="0">Schedules sends + uploads creative</tspan>
-            <tspan x="34" dy="14">against standing package template</tspan>
+            <tspan x="34" dy="0">Builds audience from closed-vocab tags;</tspan>
+            <tspan x="34" dy="14">schedules sends; uploads creative.</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect" x="380" y="145" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="394" y="169">STAMP</text>
+          <text class="arch-system" x="394" y="169">Editor &mdash; Arc Composer</text>
           <text class="arch-action" y="189">
-            <tspan x="394" dy="0">Classifies article with meta tag</tspan>
+            <tspan x="394" dy="0">Publishes article. Picks 1 section + N tags</tspan>
+            <tspan x="394" dy="14">from the closed-vocabulary dropdown.</tspan>
           </text>
         </g>
 
         <g>
           <rect class="arch-rect" x="20" y="240" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="34" y="264">Sailthru</text>
+          <text class="arch-system" x="34" y="264">Sailthru &mdash; send</text>
           <text class="arch-action" y="284">
-            <tspan x="34" dy="0">Standing package newsletter sends</tspan>
-            <tspan x="34" dy="14">to package audience</tspan>
-          </text>
-        </g>
-        <g>
-          <rect class="arch-rect" x="380" y="240" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="394" y="264">Human in the loop</text>
-          <text class="arch-action" y="284">
-            <tspan x="394" dy="0">Meta tag classification review</tspan>
+            <tspan x="34" dy="0">Newsletter fires to sponsor audience.</tspan>
+            <tspan x="34" dy="14">Landing URL carries newsletter_campaign.</tspan>
           </text>
         </g>
 
@@ -1254,8 +1217,8 @@ footer.endnote {
           <rect class="arch-rect-conv-stripe" x="84" y="355" width="572" height="3"/>
           <text class="arch-system arch-system-conv" x="370" y="385" text-anchor="middle">Article page render (Arc)</text>
           <text class="arch-action arch-action-conv" y="408" text-anchor="middle">
-            <tspan x="370" dy="0">One contract &mdash; page key-values emitted as Sailthru meta tags</tspan>
-            <tspan x="370" dy="14">AND googletag.setTargeting calls. One source, multiple consumers.</tspan>
+            <tspan x="370" dy="0">Page key-values emit as Sailthru meta tags (slug-form, uncapped)</tspan>
+            <tspan x="370" dy="14">AND googletag.setTargeting calls (page_type, tag, subchannel, page_id).</tspan>
           </text>
         </g>
 
@@ -1263,24 +1226,16 @@ footer.endnote {
           <rect class="arch-rect" x="20" y="470" width="280" height="70" rx="4"/>
           <text class="arch-system" x="34" y="494">GAM</text>
           <text class="arch-action" y="514">
-            <tspan x="34" dy="0">Reads page KV via ad call;</tspan>
-            <tspan x="34" dy="14">matches line item to creative</tspan>
+            <tspan x="34" dy="0">Reads page KV (article targeting) +</tspan>
+            <tspan x="34" dy="14">newsletter_campaign URL (TTBL targeting).</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect" x="380" y="470" width="280" height="70" rx="4"/>
           <text class="arch-system" x="394" y="494">Sailthru Content Library</text>
           <text class="arch-action" y="514">
-            <tspan x="394" dy="0">Scraper reads page KV;</tspan>
-            <tspan x="394" dy="14">indexes article for send-time match</tspan>
-          </text>
-        </g>
-        <g>
-          <rect class="arch-rect" x="740" y="470" width="280" height="70" rx="4"/>
-          <text class="arch-system" x="754" y="494">Junction</text>
-          <text class="arch-action" y="514">
-            <tspan x="754" dy="0">Captures reading event; passthrough</tspan>
-            <tspan x="754" dy="14">writes signal layers to profile</tspan>
+            <tspan x="394" dy="0">Scraper reads page KV; indexes article</tspan>
+            <tspan x="394" dy="14">for send-time match (push path retires).</tspan>
           </text>
         </g>
 
@@ -1288,16 +1243,16 @@ footer.endnote {
           <rect class="arch-rect-out" x="20" y="580" width="280" height="70" rx="4"/>
           <text class="arch-system arch-system-out" x="34" y="608">Display takeover served</text>
           <text class="arch-action arch-action-out" y="628">
-            <tspan x="34" dy="0">On every article matching</tspan>
-            <tspan x="34" dy="14">the package's tag set</tspan>
+            <tspan x="34" dy="0">On matched articles (page KV or</tspan>
+            <tspan x="34" dy="14">newsletter-click attribution).</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect" x="740" y="580" width="280" height="70" rx="4"/>
           <text class="arch-system" x="754" y="604">Sailthru profile</text>
           <text class="arch-action" y="624">
-            <tspan x="754" dy="0">Explicit (preferences) +</tspan>
-            <tspan x="754" dy="14">inferred (Junction) signal layers</tspan>
+            <tspan x="754" dy="0">Explicit section follows.</tspan>
+            <tspan x="754" dy="14">No inferred reading-signal layer at launch.</tspan>
           </text>
         </g>
 
@@ -1306,23 +1261,23 @@ footer.endnote {
           <rect class="arch-rect-conv-stripe" x="204" y="690" width="572" height="3"/>
           <text class="arch-system arch-system-conv" x="490" y="717" text-anchor="middle">Sailthru send-time match</text>
           <text class="arch-action arch-action-conv" y="740" text-anchor="middle">
-            <tspan x="490" dy="0">Combines reader profile with Content Library</tspan>
-            <tspan x="490" dy="14">to assemble each reader's newsletter</tspan>
+            <tspan x="490" dy="0">Matches each reader's section follows against the indexed</tspan>
+            <tspan x="490" dy="14">editorially-tagged content. Same render pattern as today.</tspan>
           </text>
         </g>
 
         <g>
           <rect class="arch-rect-out" x="290" y="790" width="400" height="60" rx="4"/>
-          <text class="arch-system arch-system-out" x="490" y="826" text-anchor="middle">Personalized newsletter delivered</text>
+          <text class="arch-system arch-system-out" x="490" y="826" text-anchor="middle">Newsletter delivered</text>
         </g>
       </svg>
     </div>
 
     <ul class="data-bullets">
-      <li><b>One contract for content.</b> Page key-values emit as Sailthru meta tags AND <span class="mono">googletag.setTargeting</span> calls.</li>
-      <li><b>One profile for the reader.</b> Junction passthrough writes explicit preferences and inferred reading behavior to the same Sailthru profile.</li>
-      <li><b>One render pattern for the newsletter.</b> Send-time match combines the reader profile against the indexed content library.</li>
-      <li><b>The same architecture stands up</b> on every other Crain brand without rebuilding the spine.</li>
+      <li><b>One vocabulary in Arc.</b> Editorial-governed sections and an admin-approved tag list. Editors pick from it at publish via dropdown.</li>
+      <li><b>Two bridges to GAM, coexisting.</b> Page key-values for article-page targeting (SOV, TT, 100% SOV); <span class="mono">newsletter_campaign</span> URL parameter for Topic Takeover boundary-level (TTBL) targeting. Both preserved; neither replaces the other.</li>
+      <li><b>One render pattern for the newsletter.</b> Send-time match reads reader section follows against indexed, editorially-tagged articles &mdash; same pattern as today, tighter signal.</li>
+      <li><b>Ring-fenced footprint.</b> GNW-scoped within Arc&rsquo;s org-global tag namespace. Migrable if the org picks a different direction later.</li>
     </ul>
 
     <p class="src">Architecture reference. See <a href="#a2">A2</a>&ndash;<a href="#a10">A10</a> for the system-by-system breakdown of each lane.</p>
@@ -1341,24 +1296,24 @@ footer.endnote {
       <ul class="toc">
         <li class="toc-group">Sponsor lifecycle</li>
         <li><a href="#a2"><b>A2</b> Today &mdash; five systems, external vendor, hand-typed exclusions</a></li>
-        <li><a href="#a3"><b>A3</b> With packages &mdash; three systems, structural exclusivity</a></li>
-        <li><a href="#a4"><b>A4</b> Nine open questions</a></li>
+        <li><a href="#a3"><b>A3</b> Templated editorial with exclusive sponsorship</a></li>
+        <li><a href="#a4"><b>A4</b> Theme-rollout scoping items</a></li>
       </ul>
       <ul class="toc">
         <li class="toc-group">Reader lifecycle</li>
         <li><a href="#a5"><b>A5</b> Today &mdash; three opt-in surfaces, follow &ne; subscribe</a></li>
-        <li><a href="#a6"><b>A6</b> With inferred signal &mdash; one opt-in equals subscription</a></li>
-        <li><a href="#a7"><b>A7</b> Seven open scoping calls</a></li>
+        <li><a href="#a6"><b>A6</b> One opt-in on explicit section follows</a></li>
+        <li><a href="#a7"><b>A7</b> Topic landing + Preference Center cutover</a></li>
       </ul>
       <ul class="toc">
-        <li class="toc-group">Editorial &amp; classification</li>
+        <li class="toc-group">Editorial &amp; vocabulary</li>
         <li><a href="#a8"><b>A8</b> Today &mdash; three parallel curation efforts, no source of truth</a></li>
-        <li><a href="#a9"><b>A9</b> With STAMP &mdash; editorial governs, classifier classifies</a></li>
-        <li><a href="#a10"><b>A10</b> Six open governance calls</a></li>
+        <li><a href="#a9"><b>A9</b> Three roles, one vocabulary, admin approval on new tag creation</a></li>
+        <li><a href="#a10"><b>A10</b> Editorial open Q&rsquo;s + cutover blockers</a></li>
       </ul>
       <ul class="toc">
         <li class="toc-group">Newsletter operations</li>
-        <li><a href="#a11"><b>A11</b> Four marketing-ops open questions</a></li>
+        <li><a href="#a11"><b>A11</b> Taxonomy remap + segment-rule rebuild at cutover</a></li>
       </ul>
     </div>
   </div>
@@ -1369,7 +1324,7 @@ footer.endnote {
   <section class="appx" id="a1">
     <div class="kicker"><span class="sec-num">A1</span>Source-of-truth problem</div>
     <h3>Three documents describe the Topic Takeover. None of them agree.</h3>
-    <p class="lead">The 2026 media kit, the signed insertion order, and the customer-facing explainer each promise a different product. The widest gaps sit on editorial effort and newsletter framing. Decide which document is the source of truth.</p>
+    <p class="lead">The widest gaps sit on editorial effort and newsletter framing. Decide which document is the source of truth.</p>
 
     <div class="sot-matrix">
       <table class="sot-table">
@@ -1475,7 +1430,7 @@ footer.endnote {
   <section class="appx" id="a2">
     <div class="kicker"><span class="sec-num">A2</span>Sponsor lifecycle today</div>
     <h3>Today&rsquo;s sponsor lifecycle runs through five systems, an external vendor, and ~90 hand-typed exclusion edits per launch.</h3>
-    <p class="lead">Five systems. Five-plus handoffs. External vendor in the critical path. Single-operator risk on every send. The Sailthru-to-GAM bridge is a sponsor tag carried in the email URL.</p>
+    <p class="lead">The Sailthru-to-GAM bridge is a sponsor tag carried in the email URL.</p>
 
     <div class="arch-diagram">
       <svg viewBox="0 0 1040 950" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="advTitle advDesc" preserveAspectRatio="xMidYMid meet">
@@ -1512,25 +1467,25 @@ footer.endnote {
         <g>
           <rect class="arch-rect-warn" x="270" y="70" width="210" height="125" rx="4"/>
           <text class="arch-warn-tag" x="464" y="87" text-anchor="end">single operator</text>
-          <text class="arch-system" x="284" y="110">Sailthru audience build</text>
+          <text class="arch-system" x="284" y="110">Sailthru setup (two steps)</text>
           <text class="arch-action" y="130">
-            <tspan x="284" dy="0">Builds a custom audience</tspan>
-            <tspan x="284" dy="14">by hand. Tunes the interest</tspan>
-            <tspan x="284" dy="14">threshold per sponsor.</tspan>
-            <tspan x="284" dy="14">Builds the email template</tspan>
-            <tspan x="284" dy="14">from scratch.</tspan>
+            <tspan x="284" dy="0">Step 1 &mdash; smart-list build</tspan>
+            <tspan x="284" dy="14">(10&ndash;21 tag interests, tuned</tspan>
+            <tspan x="284" dy="14">threshold).</tspan>
+            <tspan x="284" dy="14">Step 2 &mdash; archetype template</tspan>
+            <tspan x="284" dy="14">build (Zephyr, from scratch).</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect-warn" x="520" y="70" width="210" height="125" rx="4"/>
           <text class="arch-warn-tag" x="714" y="87" text-anchor="end">external vendor</text>
-          <text class="arch-system" x="534" y="110">GAM ad units</text>
+          <text class="arch-system" x="534" y="110">GAM ad units (two-step)</text>
           <text class="arch-action" y="130">
-            <tspan x="534" dy="0">YourBow (vendor) creates</tspan>
-            <tspan x="534" dy="14">the delivering ad units in</tspan>
-            <tspan x="534" dy="14">GAM. Ad ops hand-types</tspan>
-            <tspan x="534" dy="14">competitor exclusions onto</tspan>
-            <tspan x="534" dy="14">each one.</tspan>
+            <tspan x="534" dy="0">Elan.Web auto-syncs 9&ndash;27</tspan>
+            <tspan x="534" dy="14">INACTIVE forward-book LIs at</tspan>
+            <tspan x="534" dy="14">IO sign. YourBow converts on</tspan>
+            <tspan x="534" dy="14">flight open + traffics Conv-2</tspan>
+            <tspan x="534" dy="14">delivering LIs. Ad ops adds IS_NOTs.</tspan>
           </text>
         </g>
 
@@ -1652,9 +1607,18 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">Setup &mdash; what gets built once per sponsor</div>
       <ul>
-        <li>Sales hands the sponsor&rsquo;s tag list and flight dates to marketing automation. The same sales record auto-generates draft GAM ad slots that someone has to finish setting up.</li>
-        <li>Marketing automation builds a custom audience by hand &mdash; smart segment over 10&ndash;21 content tags with a hand-tuned interest threshold &mdash; plus a sponsor-specific email template, plus a client code in a one-off in-house tool that exists only for GenomeWeb.</li>
-        <li>YourBow (external vendor) creates the actual delivering ad units in GAM. Ad ops then hand-types competitor exclusions onto each new ad unit &mdash; one inline list per unit, no central registry.</li>
+        <li>Sales hands the sponsor&rsquo;s tag list and flight dates to marketing automation. The IO signs in the sales system.</li>
+        <li><strong>Elan.Web auto-syncs the GAM forward book.</strong> At IO sign, Elan.Web creates 9&ndash;27 INACTIVE line items per order across the three ad-unit trees &mdash; Topic Takeover Sponsorship / Single Keyword / Multiple Keyword CPM. Status INACTIVE, <span class="mono">isMissingCreatives: true</span>, stub targeting on <span class="mono">page_type IS (article)</span>. Currently 111 such INACTIVE LIs are forward-booked for 2026-06 and later across 8 parent orders. These sit waiting for YourBow to convert them.</li>
+        <li>Marketing automation builds the Sailthru side in two steps: (1) smart-list build &mdash; 10&ndash;21 tag interests, hand-tuned threshold, ancestor scoping to consented users; (2) archetype template build &mdash; Zephyr, from scratch, wired to a sponsor-specific data feed. Plus a client code entered into a GenomeWeb-only in-house tool hosted on S3.</li>
+        <li>YourBow (external vendor) converts the INACTIVE LIs when flights open and traffics Convention-2 delivering LIs &mdash; naming convention <span class="mono">GNW_&lt;adv&gt;_CID nnnnn_WATRICLE_MLT_{TTBL|TT|100%SOV}_YYYY-MM-DD</span> &mdash; in triplicate across the three ad-unit trees (gnwo, gpo, gdxo). ~9 delivering LIs per campaign-month. Ad ops then hand-types competitor exclusions onto each one &mdash; one inline list per LI, no central registry.</li>
+      </ul>
+    </div>
+
+    <div class="method-block">
+      <div class="mb-head">SOV targeting predicate (for context)</div>
+      <ul>
+        <li>Full-SOV delivering LIs carry an OR-of-ANDs predicate: <span class="mono">(page_type IS article AND tag IS [brand-tag]) OR (page_type IS category AND page_id IS [taxonomy-NNNN])</span>. Brand-tag slugs and category-hub <span class="mono">page_id</span> values must survive cutover without re-slugging &mdash; the slug stability guarantee for the migrated vocabulary is a hard contract.</li>
+        <li>71 distinct <span class="mono">tag</span> values and 22 <span class="mono">page_id</span> values are currently targeted across live Topic Takeover LIs.</li>
       </ul>
     </div>
 
@@ -1681,8 +1645,10 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">Maintenance and reporting &mdash; the ongoing tax</div>
       <ul>
-        <li>Steady-state cost: every new sponsor launch makes ad ops hand-type the new sponsor name into every other live sponsor&rsquo;s exclusion list &mdash; up to ~90 edits per launch.</li>
-        <li>Visible drift between sponsor exclusion footprints (6 vs 1 in the same month) proves the sweep isn&rsquo;t always done.</li>
+        <li>Steady-state cost: every new sponsor launch makes ad ops hand-type the new sponsor&rsquo;s <span class="mono">newsletter_campaign</span> value into every other live sponsor&rsquo;s targeting clause &mdash; up to ~90 <span class="mono">IS_NOT</span> edits per launch (3 tiers &times; 3 ad units &times; ~10 concurrent TTs).</li>
+        <li>Visible drift between sponsor exclusion footprints proves the sweep isn&rsquo;t always done: one sponsor&rsquo;s <span class="mono">tagged</span> LI excludes 60+ historical TTBL values (years of accumulated hygiene debt); another excludes 1. Same calendar month.</li>
+        <li>Off-roster delivery happens: a completed flight in March 2026 delivered 85,736 impressions for a sponsor not on the 15-active-sponsors roster. The roster and the GAM book are not cross-checked.</li>
+        <li>Five of 15 active campaigns exhibit multi-list advertiser mappings &mdash; the single-list-per-campaign narrative is approximate.</li>
         <li>Revenue Ops pulls a monthly impression and click report and forwards to the sponsor.</li>
         <li>Billing reconciles in the sales system against the original record, not GAM. Canonical revenue per campaign requires a cross-reference.</li>
       </ul>
@@ -1694,14 +1660,16 @@ footer.endnote {
   </section>
 
   <section class="appx future" id="a3">
-    <div class="kicker"><span class="sec-num">A3</span>Sponsor lifecycle with packages</div>
-    <h3>Standing packages collapse the sponsor build to scheduling and creative upload, and competitor exclusivity becomes structural.</h3>
-    <p class="lead">Three systems. Two-to-three handoffs per campaign. No external vendor in the critical path. No per-send manual mutations. Page key-values bridge Sailthru and GAM.</p>
+    <div class="kicker"><span class="sec-num">A3</span>Sponsor lifecycle &mdash; templated editorial with exclusive sponsorship</div>
+    <h3>Standing theme infrastructure replaces per-campaign builds. Sponsors still pick tags like today; editorial tunes the theme feed per send.</h3>
+    <p class="lead">Nothing changes on the outside. Behind the scenes, one audience cohort and one content feed per top-level theme, reused across sponsors. Each send is a light configuration of that standing infrastructure, not a rebuild.</p>
+
+    <div class="callout-muted"><strong>Scope of this diagram.</strong> The committed sponsor operating model. Sponsor experience and sales pitch are unchanged. The operational shift &mdash; custom build per campaign &rarr; standing theme infrastructure edited per send &mdash; is scoped in the marketing automation workstream tied to cutover. GAM-side plumbing (YourBow, Convention-2 delivering LIs, competitor <span class="mono">IS_NOT</span> edits) is largely preserved.</div>
 
     <div class="arch-diagram future">
-      <svg viewBox="0 0 1040 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="advFutTitle advFutDesc" preserveAspectRatio="xMidYMid meet">
-        <title id="advFutTitle">Sponsor lifecycle &mdash; future state with packages</title>
-        <desc id="advFutDesc">Standing topic packages replace bespoke sponsor builds. Editorial publishes; STAMP classifies; the article page emits classifications as page key-values. Sailthru and GAM both read from the same key-values. Sailthru's send-time match auto-selects articles against the package vocabulary; GAM matches the takeover line item via the ad call. Sponsor selects a package off the shelf; marketing automation schedules sends and uploads creative; competitor exclusivity is structural.</desc>
+      <svg viewBox="0 0 1040 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="advFutTitle advFutDesc" preserveAspectRatio="xMidYMid meet">
+        <title id="advFutTitle">Sponsor lifecycle &mdash; templated editorial with exclusive sponsorship</title>
+        <desc id="advFutDesc">Standing theme infrastructure replaces per-sponsor rebuild. Editors publish in Arc and pick sections and tags from the closed vocabulary via dropdown; the article page emits these as page key-values. Marketing automation maintains one audience cohort and one content feed per top-level theme, reused across sponsors. Sales signs sponsors with tag lists; marketing automation maps them to a theme and registers them. Per send, editorial tunes the theme feed for the sponsor's tag list and competitor exclusions; marketing automation schedules and fires. Multiple sponsors can share a theme across sends; exclusive placement per send is preserved via feed-level exclusion. GAM side is largely unchanged: YourBow traffics Convention-2 delivering LIs, competitor exclusion via IS_NOT edits, two bridges (page key-values + newsletter_campaign URL) continue.</desc>
 
         <defs>
           <marker id="arr-fA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
@@ -1714,113 +1682,141 @@ footer.endnote {
 
         <text class="arch-lane-header" x="125" y="22" text-anchor="middle">Sales</text>
         <text class="arch-lane-header" x="375" y="22" text-anchor="middle">Marketing automation</text>
-        <text class="arch-lane-header" x="625" y="22" text-anchor="middle">Ad ops</text>
-        <text class="arch-lane-header" x="875" y="22" text-anchor="middle">Editorial &mdash; Arc + STAMP</text>
+        <text class="arch-lane-header" x="625" y="22" text-anchor="middle">Editorial</text>
+        <text class="arch-lane-header" x="875" y="22" text-anchor="middle">Ad ops</text>
 
-        <text class="arch-phase-header" x="20" y="50">Always-on</text>
+        <text class="arch-phase-header" x="20" y="50">Standing infrastructure</text>
 
         <g>
-          <rect class="arch-rect" x="770" y="60" width="240" height="80" rx="4"/>
-          <text class="arch-system" x="784" y="84">Editor + STAMP</text>
+          <rect class="arch-rect" x="270" y="60" width="210" height="95" rx="4"/>
+          <text class="arch-system" x="284" y="84">Theme audience cohorts</text>
           <text class="arch-action" y="104">
-            <tspan x="784" dy="0">Editor publishes in Arc. STAMP</tspan>
-            <tspan x="784" dy="14">classifies against the governed</tspan>
-            <tspan x="784" dy="14">vocabulary. Page emits page KV.</tspan>
-          </text>
-        </g>
-
-        <text class="arch-phase-header" x="20" y="165">Package setup</text>
-
-        <g>
-          <rect class="arch-rect" x="270" y="175" width="210" height="80" rx="4"/>
-          <text class="arch-system" x="284" y="199">Standing audience</text>
-          <text class="arch-action" y="219">
-            <tspan x="284" dy="0">One pre-tuned audience per</tspan>
-            <tspan x="284" dy="14">package, maintained once.</tspan>
-            <tspan x="284" dy="14">No per-send carving.</tspan>
+            <tspan x="284" dy="0">One cohort per top-level theme</tspan>
+            <tspan x="284" dy="14">(Cancer, Diagnostics, Drug Testing,</tspan>
+            <tspan x="284" dy="14">etc.). Reused across sponsors.</tspan>
+            <tspan x="284" dy="14">Built once; maintained, not rebuilt.</tspan>
           </text>
         </g>
         <g>
-          <rect class="arch-rect" x="520" y="175" width="210" height="80" rx="4"/>
-          <text class="arch-system" x="534" y="199">Package occupancy rules</text>
-          <text class="arch-action" y="219">
-            <tspan x="534" dy="0">Whoever owns the package</tspan>
-            <tspan x="534" dy="14">owns all 7 positions. Competitor</tspan>
-            <tspan x="534" dy="14">exclusion is automatic.</tspan>
+          <rect class="arch-rect" x="520" y="60" width="210" height="95" rx="4"/>
+          <text class="arch-system" x="534" y="84">Theme content feeds</text>
+          <text class="arch-action" y="104">
+            <tspan x="534" dy="0">One Sailthru feed per theme, queries</tspan>
+            <tspan x="534" dy="14">Content Library on theme tags.</tspan>
+            <tspan x="534" dy="14">Feed + template built once per theme;</tspan>
+            <tspan x="534" dy="14">tuned per send.</tspan>
           </text>
         </g>
 
-        <text class="arch-phase-header" x="20" y="280">Per campaign</text>
+        <text class="arch-phase-header" x="20" y="180">New sponsor</text>
 
         <g>
-          <rect class="arch-rect" x="20" y="290" width="210" height="95" rx="4"/>
-          <text class="arch-system" x="34" y="314">Sales</text>
-          <text class="arch-action" y="334">
-            <tspan x="34" dy="0">Sponsor picks a package</tspan>
-            <tspan x="34" dy="14">off the shelf. IO signed</tspan>
-            <tspan x="34" dy="14">against the package, not</tspan>
-            <tspan x="34" dy="14">against bespoke keywords.</tspan>
+          <rect class="arch-rect" x="20" y="190" width="210" height="90" rx="4"/>
+          <text class="arch-system" x="34" y="214">Sales &mdash; IO signed</text>
+          <text class="arch-action" y="234">
+            <tspan x="34" dy="0">Sponsor picks tags (same</tspan>
+            <tspan x="34" dy="14">experience as today). Tag list</tspan>
+            <tspan x="34" dy="14">+ competitor exclusions handed</tspan>
+            <tspan x="34" dy="14">to marketing automation.</tspan>
           </text>
         </g>
         <g>
-          <rect class="arch-rect" x="270" y="290" width="210" height="95" rx="4"/>
-          <text class="arch-system" x="284" y="314">Per-send work</text>
-          <text class="arch-action" y="334">
-            <tspan x="284" dy="0">Schedule the send. Upload</tspan>
-            <tspan x="284" dy="14">creative against the standing</tspan>
-            <tspan x="284" dy="14">template. No carve, no</tspan>
-            <tspan x="284" dy="14">mutation, no template clone.</tspan>
+          <rect class="arch-rect" x="270" y="190" width="210" height="90" rx="4"/>
+          <text class="arch-system" x="284" y="214">Theme mapping</text>
+          <text class="arch-action" y="234">
+            <tspan x="284" dy="0">Sponsor&rsquo;s tag list mapped to</tspan>
+            <tspan x="284" dy="14">nearest theme. Sponsor registered</tspan>
+            <tspan x="284" dy="14">in that theme&rsquo;s send queue with</tspan>
+            <tspan x="284" dy="14">their tag filter + exclusions.</tspan>
           </text>
         </g>
 
-        <line class="arch-arrow" x1="230" y1="337" x2="268" y2="337" marker-end="url(#arr-fA)"/>
-        <text class="arch-arrow-label" x="234" y="332">handoff</text>
+        <line class="arch-arrow" x1="230" y1="235" x2="268" y2="235" marker-end="url(#arr-fA)"/>
+        <text class="arch-arrow-label" x="234" y="230">handoff</text>
 
-        <line class="arch-arrow" x1="375" y1="385" x2="375" y2="408" marker-end="url(#arr-fA)"/>
-        <line class="arch-arrow" x1="890" y1="140" x2="890" y2="408" marker-end="url(#arr-fA)"/>
-        <text class="arch-arrow-label" x="900" y="270">page KV</text>
+        <text class="arch-phase-header" x="20" y="305">Per send</text>
 
         <g>
-          <rect class="arch-rect-conv" x="80" y="410" width="880" height="65" rx="4"/>
-          <rect class="arch-rect-conv-stripe" x="84" y="410" width="872" height="3"/>
-          <text class="arch-system arch-system-conv" x="520" y="438" text-anchor="middle">Article page key-values are the contract</text>
-          <text class="arch-action arch-action-conv" y="458" text-anchor="middle">
-            <tspan x="520" dy="0">One source of truth. Sailthru reads via the content index. GAM reads via the ad call.</tspan>
-          </text>
-        </g>
-
-        <line class="arch-arrow" x1="375" y1="475" x2="375" y2="498" marker-end="url(#arr-fA)"/>
-        <text class="arch-arrow-label" x="385" y="492">indexed articles</text>
-
-        <text class="arch-phase-header" x="20" y="490">Newsletter</text>
-
-        <g>
-          <rect class="arch-rect" x="270" y="500" width="210" height="60" rx="4"/>
-          <text class="arch-system" x="284" y="524">Sailthru send-time match</text>
-          <text class="arch-action" y="544">
-            <tspan x="284" dy="0">Articles auto-match to package</tspan>
-            <tspan x="284" dy="14">vocabulary at send time.</tspan>
-          </text>
-        </g>
-
-        <line class="arch-arrow arch-arrow-strong" x1="375" y1="560" x2="375" y2="583" marker-end="url(#arr-fA-acc)"/>
-        <line class="arch-arrow arch-arrow-strong" x1="625" y1="475" x2="625" y2="583" marker-end="url(#arr-fA-acc)"/>
-        <text class="arch-arrow-label" x="635" y="525">ad call match</text>
-
-        <text class="arch-phase-header" x="20" y="575">Output</text>
-
-        <g>
-          <rect class="arch-rect-out" x="270" y="585" width="210" height="60" rx="4"/>
-          <text class="arch-system arch-system-out" x="284" y="610">Sponsor newsletter delivered</text>
-          <text class="arch-action arch-action-out" y="630">
-            <tspan x="284" dy="0">Stable package audience.</tspan>
+          <rect class="arch-rect" x="520" y="315" width="210" height="90" rx="4"/>
+          <text class="arch-system" x="534" y="339">Editorial feed edit</text>
+          <text class="arch-action" y="359">
+            <tspan x="534" dy="0">Tune theme feed for this sponsor&rsquo;s</tspan>
+            <tspan x="534" dy="14">send &mdash; filter to sponsor tag list,</tspan>
+            <tspan x="534" dy="14">apply competitor story exclusions.</tspan>
+            <tspan x="534" dy="14">Roughly the work of an editorial send.</tspan>
           </text>
         </g>
         <g>
-          <rect class="arch-rect-out" x="520" y="585" width="210" height="60" rx="4"/>
-          <text class="arch-system arch-system-out" x="534" y="610">Display takeover served</text>
-          <text class="arch-action arch-action-out" y="630">
-            <tspan x="534" dy="0">All 7 positions on matched articles.</tspan>
+          <rect class="arch-rect" x="270" y="315" width="210" height="90" rx="4"/>
+          <text class="arch-system" x="284" y="339">Marketing automation</text>
+          <text class="arch-action" y="359">
+            <tspan x="284" dy="0">Configure send (date, subject,</tspan>
+            <tspan x="284" dy="14">creative) off the theme template.</tspan>
+            <tspan x="284" dy="14">Schedule and fire. No rebuild,</tspan>
+            <tspan x="284" dy="14">no carve, no template clone.</tspan>
+          </text>
+        </g>
+        <g>
+          <rect class="arch-rect-warn" x="770" y="315" width="240" height="90" rx="4"/>
+          <text class="arch-warn-tag" x="1004" y="332" text-anchor="end">GAM side preserved</text>
+          <text class="arch-system" x="784" y="352">YourBow + GAM</text>
+          <text class="arch-action" y="372">
+            <tspan x="784" dy="0">Convention-2 delivering LIs still</tspan>
+            <tspan x="784" dy="14">trafficked by YourBow; competitor</tspan>
+            <tspan x="784" dy="14">IS_NOT edits continue. GAM-side</tspan>
+            <tspan x="784" dy="14">overhead is not resolved here.</tspan>
+          </text>
+        </g>
+
+        <line class="arch-arrow" x1="480" y1="360" x2="518" y2="360" marker-end="url(#arr-fA)"/>
+        <text class="arch-arrow-label" x="484" y="355">feed handoff</text>
+
+        <text class="arch-phase-header" x="20" y="425">Render</text>
+
+        <g>
+          <rect class="arch-rect-conv" x="80" y="435" width="880" height="70" rx="4"/>
+          <rect class="arch-rect-conv-stripe" x="84" y="435" width="872" height="3"/>
+          <text class="arch-system arch-system-conv" x="520" y="463" text-anchor="middle">Article page key-values are the contract</text>
+          <text class="arch-action arch-action-conv" y="485" text-anchor="middle">
+            <tspan x="520" dy="0">Page KV emits unchanged. Sailthru scrapes into Content Library; GAM reads via ad call;</tspan>
+            <tspan x="520" dy="16">newsletter_campaign URL handles Topic Takeover boundary-level attribution.</tspan>
+          </text>
+        </g>
+
+        <line class="arch-arrow" x1="375" y1="505" x2="375" y2="528" marker-end="url(#arr-fA)"/>
+        <text class="arch-arrow-label" x="385" y="522">tuned feed articles</text>
+        <line class="arch-arrow" x1="890" y1="405" x2="890" y2="618" marker-end="url(#arr-fA-acc)"/>
+        <text class="arch-arrow-label" x="900" y="512">takeover served</text>
+
+        <text class="arch-phase-header" x="20" y="520">Newsletter</text>
+
+        <g>
+          <rect class="arch-rect" x="270" y="530" width="210" height="80" rx="4"/>
+          <text class="arch-system" x="284" y="554">Sailthru send-time match</text>
+          <text class="arch-action" y="574">
+            <tspan x="284" dy="0">Fires to the theme audience cohort</tspan>
+            <tspan x="284" dy="14">with this send&rsquo;s sponsor tag filter +</tspan>
+            <tspan x="284" dy="14">exclusions applied. Exclusive placement</tspan>
+            <tspan x="284" dy="14">per send; sponsors share theme across sends.</tspan>
+          </text>
+        </g>
+
+        <line class="arch-arrow arch-arrow-strong" x1="375" y1="610" x2="375" y2="633" marker-end="url(#arr-fA-acc)"/>
+
+        <text class="arch-phase-header" x="20" y="625">Output</text>
+
+        <g>
+          <rect class="arch-rect-out" x="270" y="635" width="210" height="60" rx="4"/>
+          <text class="arch-system arch-system-out" x="284" y="662">Sponsor newsletter delivered</text>
+          <text class="arch-action arch-action-out" y="682">
+            <tspan x="284" dy="0">Exclusive sponsor send.</tspan>
+          </text>
+        </g>
+        <g>
+          <rect class="arch-rect-out" x="770" y="635" width="240" height="60" rx="4"/>
+          <text class="arch-system arch-system-out" x="784" y="662">Display takeover served</text>
+          <text class="arch-action arch-action-out" y="682">
+            <tspan x="784" dy="0">Page KV + newsletter_campaign URL.</tspan>
           </text>
         </g>
       </svg>
@@ -1829,55 +1825,65 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">What changes structurally</div>
       <ul>
-        <li><strong>Bespoke per-sponsor assembly retires.</strong> Standing packages mean one pre-tuned audience and one reusable template per package, not per sponsor.</li>
-        <li><strong>External vendor exits the critical path.</strong> Pre-built packages don&rsquo;t need bespoke per-campaign ad-unit creation in GAM.</li>
-        <li><strong>Competitor exclusivity becomes structural.</strong> A package has one occupant at a time, by definition. The hand-typed exclusion list goes away with it.</li>
-        <li><strong>The Sailthru-to-GAM bridge moves from URL handshake to shared page key-values.</strong> One source of truth for both consumers.</li>
-        <li><strong>Per-send work for marketing automation collapses</strong> to scheduling and creative upload. Single-operator risk dissolves as a consequence.</li>
+        <li><strong>Theme infrastructure replaces per-sponsor builds.</strong> One audience cohort, one content feed, one template per top-level theme. Reused across sponsors. Built once; maintained.</li>
+        <li><strong>Per-send work is a light configuration, not a build.</strong> Editorial tunes the theme feed for this sponsor&rsquo;s tag filter and competitor exclusions. Marketing automation configures date, subject, creative off the theme template. No list carve, no template rebuild, no segment-query mutation.</li>
+        <li><strong>Multiple concurrent sponsors per theme.</strong> Exclusive placement per send is preserved via per-send feed-level exclusion. Structural per-package occupancy isn&rsquo;t required; sponsors share the theme infrastructure across sends.</li>
+        <li><strong>Sailthru side overhead drops substantially.</strong> Hand-built custom lists, feeds, and template clones per sponsor retire. Single-operator risk compresses: the work shifts to maintaining theme infrastructure, not rebuilding it per sponsor.</li>
+        <li><strong>GAM side is largely preserved.</strong> YourBow still traffics Convention-2 delivering LIs; competitor exclusion via inline <span class="mono">IS_NOT</span> edits continues; Elan.Web forward-book auto-sync continues. Ad-ops-side overhead is not resolved by this model &mdash; that is a separate workstream.</li>
+        <li><strong>Two bridges to GAM, still coexisting.</strong> Page key-values for article-page targeting; <span class="mono">newsletter_campaign</span> URL parameter for Topic Takeover boundary-level targeting. Neither replaces the other.</li>
       </ul>
     </div>
 
     <div class="method-block">
-      <div class="mb-head">Newsletter curation &mdash; explicit shift</div>
+      <div class="mb-head">Editorial in the loop per send</div>
       <ul>
-        <li>Package-level editorial ownership replaces ad-hoc per-campaign curation. Editorial judgment lives where it matters: shaping what the package is and what it commits to.</li>
-        <li>No per-send Custom Content layer for sponsor sends. Article matching against the package&rsquo;s vocabulary is automated, the same way the newsletter works today.</li>
-        <li>Editorial input is preserved at vocabulary governance and package definition. See <a href="#a9">A9</a> for the editorial-side picture.</li>
+        <li>Editorial tunes the theme feed on every send &mdash; set the sponsor tag filter, apply competitor story exclusions. About the same level of judgment as editing a regular editorial newsletter.</li>
+        <li>Custom Content per-send article picks consolidate into the per-send editorial feed edit (or stay as a manual overlay if the team wants). Not a separate workstream.</li>
+        <li>The editorial role this model asks for is ongoing engagement per send, not vocabulary governance alone. Scoping and staffing land in the editorial ops workstream.</li>
       </ul>
     </div>
 
     <div class="method-block">
       <div class="mb-head">What the sponsor still gets &mdash; unchanged</div>
       <ul>
-        <li>Same deliverables: monthly pageviews, e-blasts to readers interested in the topic, monthly report.</li>
-        <li>Same standing in the article inventory: full takeover on the package&rsquo;s matched articles.</li>
-        <li>Same pricing structure (per the rate-card direction toward time-based packages, not pageview-based commitments).</li>
-        <li>Verification surface preserved &mdash; sponsors still see their topic landing in the wild.</li>
-        <li><strong>Mid-flight transition:</strong> every signed flight completes under current mechanics. New sponsors sell into packages. No active campaign is disrupted.</li>
+        <li>Same sell-in experience: sponsor picks tags from the library as they do today.</li>
+        <li>Same exclusive placement within each send &mdash; no competing sponsors in the same email.</li>
+        <li>Same mutual-exclusivity across concurrent campaigns in the same theme, applied at the feed level per send.</li>
+        <li>Same competitor story exclusion, applied at the feed level per send.</li>
+        <li>Same cadence (multi-send campaign), same deliverables, same verification surface.</li>
+        <li><strong>Mid-flight transition:</strong> existing active sponsors continue under current mechanics during the operational switch-over; new sponsors sell into the theme-infrastructure model as it stands up. Cutover timing is a marketing automation ops call.</li>
       </ul>
     </div>
 
-    <div class="callout-muted"><strong>Deliberately not committed in this slide.</strong> Exact package count, which current campaigns map to which packages, package pricing tiers. These get defined in a 2&ndash;3 week sprint with editorial and sales after architectural alignment. See <a href="#a4">A4</a> for the open questions.</div>
-
-    <p class="src">Architecture reference. Mechanics referenced from internal STAMP design docs and Sailthru/GAM integration spec. Pulled 04/2026.</p>
+    <p class="src">Architecture reference. Sources: marketing automation ops reframe (2026-04-21); Sailthru Content Library and segment-rule model; GAM line-item register; internal sponsor-product rate-card direction. Pulled 04/2026.</p>
   </section>
 
   <section class="appx" id="a4">
     <div class="kicker"><span class="sec-num">A4</span>Sponsor open questions</div>
-    <h3>The sponsor workstream&rsquo;s nine open questions are scoping conversations, not architecture blockers.</h3>
-    <p class="lead">Each item is a question and, where applicable, a tentative direction. Most resolve in 2&ndash;3 week working sessions with editorial, sales, and ad ops.</p>
+    <h3>The operating model is set. Open items are scoping detail for the theme infrastructure rollout.</h3>
+    <p class="lead">Sponsor-facing product and pitch don&rsquo;t change. The items below scope the operational build-out tied to cutover.</p>
 
     <ul class="data-bullets">
-      <li><b>Package count and structure.</b> Tentative: start from today&rsquo;s standing topical newsletters as the package shelf. 2&ndash;3 week working group with editorial and sales to define count, contents, and naming.</li>
-      <li><b>Mapping current campaigns to packages.</b> Tentative: each current sponsor&rsquo;s tag list maps to whichever package&rsquo;s topic best fits. Sales and editorial co-own the mapping rules.</li>
-      <li><b>Package pricing tiers.</b> Tentative: the internal rate card already directs the move from pageview-based to time-based pricing. Existing standard monthly unit holds through transition. Revenue Ops carries the detailed pricing pass.</li>
-      <li><b>In-flight campaign transition.</b> Every prior platform migration has required touching every active campaign at cutover &mdash; ad slots change with the new layout, so targeting rebuilds regardless. Grandfathering isn&rsquo;t mechanically possible. Package adoption aligns to cutover, not flight expiry.</li>
-      <li><b>Old-to-new tag mapping for in-flight sponsors.</b> Tentative: a mapping document applied once at cutover so sales reps don&rsquo;t re-run tag selection with every existing sponsor. Editorial + sales + marketing-ops.</li>
-      <li><b>Cross-package competitor co-scheduling.</b> Within a package, exclusivity is automatic. Open: whether a thin policy is needed across packages. Ad-ops governance call for a later scoping pass.</li>
-      <li><b>Sponsor perception of the topic landing page.</b> Sponsors today use the topic page as a verification surface. Open: whether the surface needs preservation, can simplify, or migrates to a sponsor-facing dashboard. Sales-led check.</li>
-      <li><b>SLA for creative upload to send go-live.</b> Under bespoke assembly today, lead time is whatever the operator can manage. Under packages, a standard lead-time commitment becomes possible. Sales will want a number.</li>
-      <li><b>Headcount and ops design under packages.</b> Open: whether the marketing automation function reshapes around package count, and what the right operator load looks like once bespoke per-sponsor assembly retires. Affects staffing plans.</li>
+      <li><b>Theme definitions.</b> The top-level themes that carry standing audiences and feeds (Cancer, Diagnostics, Drug Testing, etc.). Derived from how sponsor tag selections actually cluster today. Marketing automation ops + editorial scope the final set and naming.</li>
+      <li><b>Tag-to-theme mapping for in-flight sponsors.</b> Each active sponsor&rsquo;s tag list mapped once to the right theme at rollout. Applied without re-running tag selection with the sponsor. Marketing automation ops + sales.</li>
+      <li><b>In-flight campaign transition.</b> Existing active sponsors continue under current mechanics during the operational switch-over; new sponsors sell into the theme-infrastructure model as it stands up. No grandfathering contortions required at cutover itself.</li>
+      <li><b>Editorial per-send staffing.</b> The model asks editorial to tune the theme feed on every sponsor send. Roughly editorial-newsletter-level effort per send. Scoping and staffing sit in the editorial ops workstream, not this deck.</li>
+      <li><b>Custom Content per-send layer disposition.</b> Current per-send Custom Content article picks can fold into the per-send editorial feed edit, or stay as a parallel manual overlay. Editorial + product call.</li>
+      <li><b>Sponsor perception of topic landing pages.</b> Sponsors today use the topic page as a verification surface. Open: whether the surface needs preservation, can simplify, or migrates to a sponsor-facing dashboard. Ties to the drug-brand-name section question in <a href="#a10">A10</a> &mdash; if drug/gene-name sections are dropped, sponsors targeting those terms lose their verification page.</li>
+      <li><b>Ad-ops GAM line-item audit (due 2026-05-01).</b> Could move terms from retireable back to load-bearing. Blocks vocabulary finalization. See <a href="#a10">A10</a> Cutover blockers for the full list.</li>
+      <li><b>GAM-side overhead is not resolved here.</b> YourBow, Convention-2 delivering LIs, and competitor <span class="mono">IS_NOT</span> edits continue under this model. A separate ad-ops workstream would be needed to touch GAM-side operator overhead.</li>
+      <li><b>Competitor-exclusion targeting refactor (ad-ops workstream).</b> Under consideration: replace the cross-sponsor <span class="mono">IS_NOT</span> pattern with per-sponsor positive inclusion.
+        <ul>
+          <li><strong>Today:</strong> <span class="mono">newsletter_campaign IS_NOT (sponsor_b_tt, sponsor_c_tt, &hellip;)</span> maintained across every LI on every launch.</li>
+          <li><strong>Proposed:</strong> each LI holds <span class="mono">newsletter_campaign IS &lt;own_sponsor_value&gt; OR NOT SET</span>. No cross-sponsor references. No edits needed when new sponsors launch.</li>
+          <li><strong>Why it&rsquo;s worth reviewing:</strong> eliminates ~900 hand-edits/year floor; dissolves the visible exclusion-list drift problem (one sponsor excludes 60+, another 1) by construction.</li>
+          <li><strong>What the ad-ops team validates:</strong> functional equivalence across TTBL / TT / 100% SOV tiers; GAM priority/bid interaction on multi-tag articles; YourBow&rsquo;s Convention-2 templating fit; migration path (new LIs only vs. retroactive refactor).</li>
+        </ul>
+        Independent of the Sailthru-side operating model; rides in the ad-ops workstream alongside the May 1 line-item audit.
+      </li>
     </ul>
+
+    <p class="src">Sources: taxonomy decision doc (2026-04-21); marketing automation ops reframe (2026-04-21); rate-card direction; GAM line-item register; internal sponsor-product discussion. Pulled 04/2026.</p>
   </section>
 
   <!-- ============ BUCKET 3: READER LIFECYCLE ============ -->
@@ -1886,7 +1892,7 @@ footer.endnote {
   <section class="appx" id="a5">
     <div class="kicker"><span class="sec-num">A5</span>Reader lifecycle today</div>
     <h3>Three opt-in surfaces feed an unbounded follow array, but following a topic does not subscribe to the newsletter &mdash; which is why ~12,900 followers translate to ~625 daily sends.</h3>
-    <p class="lead">Three opt-in surfaces. One unbounded follow array. A separate yes/no flag is the sole gate on the daily send. The send-time match is 100% automated and runs only inside Sailthru&rsquo;s UI.</p>
+    <p class="lead">A separate yes/no flag gates the daily send. Send-time match runs inside Sailthru, fully automated.</p>
 
     <div class="arch-diagram">
       <svg viewBox="0 0 1040 740" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rdrTitle rdrDesc" preserveAspectRatio="xMidYMid meet">
@@ -1915,7 +1921,7 @@ footer.endnote {
           <rect class="arch-rect" x="20" y="65" width="280" height="55" rx="4"/>
           <text class="arch-system" x="34" y="89">Preferences UI <tspan fill="#956a2a" font-weight="700">85%</tspan></text>
           <text class="arch-action" y="109">
-            <tspan x="34" dy="0">Search-and-pick from the curated 128-term topic list.</tspan>
+            <tspan x="34" dy="0">Search-and-pick from the curated My Topics list.</tspan>
           </text>
         </g>
         <g>
@@ -1939,7 +1945,7 @@ footer.endnote {
           <text class="arch-action" y="109">
             <tspan x="754" dy="0">On article publish, hand-assigns</tspan>
             <tspan x="754" dy="14">a primary topic plus secondary</tspan>
-            <tspan x="754" dy="14">topics from a 3,000-term vocabulary.</tspan>
+            <tspan x="754" dy="14">topics from the Drupal vocabulary.</tspan>
           </text>
         </g>
         <g>
@@ -1962,7 +1968,7 @@ footer.endnote {
           <text class="arch-warn-tag" x="644" y="187" text-anchor="end">unbounded</text>
           <text class="arch-system" x="394" y="210">Follow array on user record</text>
           <text class="arch-action" y="230">
-            <tspan x="394" dy="0">Any term in the 3,000-term vocabulary</tspan>
+            <tspan x="394" dy="0">Any term in the Drupal vocabulary</tspan>
             <tspan x="394" dy="14">can be followed. No upper bound on</tspan>
             <tspan x="394" dy="14">follows per user (~56 average).</tspan>
           </text>
@@ -2034,7 +2040,7 @@ footer.endnote {
       <ul>
         <li>All three follow surfaces (preferences UI 85%, topic landing page 9%, article page 6%) write to the same follow array on the Sailthru user record.</li>
         <li>No auto-assignment. Every follow is a deliberate click.</li>
-        <li>Unbounded means any term in the ~3,000-term Drupal vocabulary can be followed &mdash; including long-tail terms that appear on a single article. The long tail is the point: niche topics are the product.</li>
+        <li>Unbounded means any term in the Drupal vocabulary can be followed &mdash; including long-tail terms that appear on a single article. The long tail is the point: niche topics are the product.</li>
         <li>Average user follow count: 56. Unfollow-to-follow ratio: 1:21 &mdash; the array tends to grow.</li>
       </ul>
     </div>
@@ -2052,7 +2058,7 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">Editorial &rarr; content index &mdash; the parallel pipeline</div>
       <ul>
-        <li>On every article publish, the editor hand-assigns a primary topic plus secondary topics from the shared 3,000-term Drupal vocabulary.</li>
+        <li>On every article publish, the editor hand-assigns a primary topic plus secondary topics from the shared Drupal vocabulary.</li>
         <li>Drupal pushes the article and its tags into the Sailthru content index per save. Push is capped at 15 tags per article. The cap goes away in Arc.</li>
         <li>The content index is the corpus every sponsor send and every newsletter filter against.</li>
       </ul>
@@ -2073,14 +2079,14 @@ footer.endnote {
   </section>
 
   <section class="appx future" id="a6">
-    <div class="kicker"><span class="sec-num">A6</span>Reader lifecycle with inferred signal</div>
-    <h3>One opt-in subscribes the reader; inferred signals layer onto explicit preferences without reader action.</h3>
-    <p class="lead">One opt-in surface. One channel. Automated relevance that improves with use. Editorial role in the per-send picture: zero.</p>
+    <div class="kicker"><span class="sec-num">A6</span>Reader lifecycle &mdash; one opt-in on explicit section follows</div>
+    <h3>Reader picks sections once; that subscribes to the newsletter. Tags stay in the infrastructure layer.</h3>
+    <p class="lead">One opt-in, one channel. No inferred reading-signal layer at launch.</p>
 
     <div class="arch-diagram future">
-      <svg viewBox="0 0 1040 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rdrFutTitle rdrFutDesc" preserveAspectRatio="xMidYMid meet">
+      <svg viewBox="0 0 1040 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rdrFutTitle rdrFutDesc" preserveAspectRatio="xMidYMid meet">
         <title id="rdrFutTitle">Reader lifecycle &mdash; future state</title>
-        <desc id="rdrFutDesc">Reader configures topics once via the preferences UI. The act of opting in subscribes the reader to the newsletter. Junction passthrough writes inferred signals from reading behavior to the same profile. STAMP classifies every article as it publishes. Sailthru renders the newsletter by matching STAMP-classified articles against the explicit + inferred profile. Fully automated.</desc>
+        <desc id="rdrFutDesc">Reader configures section follows once via the preferences UI. The act of opting in subscribes the reader to the newsletter. Editor publishes in Arc, picking a section and tags from the closed vocabulary via dropdown. The article page emits page key-values. Sailthru renders the newsletter by matching each reader's section follows against editorially-tagged articles.</desc>
 
         <defs>
           <marker id="arr-fR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
@@ -2093,85 +2099,73 @@ footer.endnote {
 
         <text class="arch-lane-header" x="160" y="22" text-anchor="middle">Reader</text>
         <text class="arch-lane-header" x="520" y="22" text-anchor="middle">Sailthru</text>
-        <text class="arch-lane-header" x="880" y="22" text-anchor="middle">Editorial &mdash; Arc + STAMP</text>
+        <text class="arch-lane-header" x="880" y="22" text-anchor="middle">Editorial &mdash; Arc</text>
 
         <text class="arch-phase-header" x="20" y="55">Opt-in</text>
 
         <g>
-          <rect class="arch-rect" x="20" y="65" width="280" height="80" rx="4"/>
+          <rect class="arch-rect" x="20" y="65" width="280" height="90" rx="4"/>
           <text class="arch-system" x="34" y="89">Preferences UI</text>
           <text class="arch-action" y="109">
-            <tspan x="34" dy="0">Reader configures topics from a</tspan>
-            <tspan x="34" dy="14">curated list. The single act of</tspan>
-            <tspan x="34" dy="14">opt-in subscribes to the newsletter.</tspan>
+            <tspan x="34" dy="0">Reader configures section follows</tspan>
+            <tspan x="34" dy="14">from the curated section list.</tspan>
+            <tspan x="34" dy="14">The single act of opt-in subscribes</tspan>
+            <tspan x="34" dy="14">to the newsletter.</tspan>
           </text>
         </g>
 
         <g>
-          <rect class="arch-rect" x="740" y="65" width="280" height="80" rx="4"/>
-          <text class="arch-system" x="754" y="89">Editor publishes in Arc</text>
+          <rect class="arch-rect" x="740" y="65" width="280" height="90" rx="4"/>
+          <text class="arch-system" x="754" y="89">Editor &mdash; Arc Composer</text>
           <text class="arch-action" y="109">
-            <tspan x="754" dy="0">STAMP classifies article against</tspan>
-            <tspan x="754" dy="14">the governed vocabulary. Article</tspan>
-            <tspan x="754" dy="14">page emits page key-values.</tspan>
+            <tspan x="754" dy="0">Publishes article. Picks 1 section +</tspan>
+            <tspan x="754" dy="14">N tags from the closed-vocabulary</tspan>
+            <tspan x="754" dy="14">dropdown. Article page emits page</tspan>
+            <tspan x="754" dy="14">key-values (sections + tags).</tspan>
           </text>
         </g>
 
-        <text class="arch-phase-header" x="20" y="180">Signal layering</text>
+        <text class="arch-phase-header" x="20" y="195">Profile</text>
+
+        <line class="arch-arrow" x1="160" y1="155" x2="470" y2="218" marker-end="url(#arr-fR)"/>
+        <text class="arch-arrow-label" x="260" y="180">explicit section follows</text>
 
         <g>
-          <rect class="arch-rect" x="20" y="190" width="280" height="80" rx="4"/>
-          <text class="arch-system" x="34" y="214">Reading behavior</text>
-          <text class="arch-action" y="234">
-            <tspan x="34" dy="0">Junction passthrough writes</tspan>
-            <tspan x="34" dy="14">inferred interest signals as the</tspan>
-            <tspan x="34" dy="14">reader reads. No reader action.</tspan>
+          <rect class="arch-rect-conv" x="380" y="205" width="280" height="70" rx="4"/>
+          <rect class="arch-rect-conv-stripe" x="384" y="205" width="272" height="3"/>
+          <text class="arch-system arch-system-conv" x="520" y="232" text-anchor="middle">Sailthru profile</text>
+          <text class="arch-action arch-action-conv" y="253" text-anchor="middle">
+            <tspan x="520" dy="0">Explicit section follows only.</tspan>
+            <tspan x="520" dy="14">No inferred reading-signal layer at launch.</tspan>
           </text>
         </g>
 
-        <line class="arch-arrow" x1="300" y1="100" x2="378" y2="218" marker-end="url(#arr-fR)"/>
-        <text class="arch-arrow-label" x="320" y="160">explicit</text>
-        <line class="arch-arrow" x1="300" y1="225" x2="378" y2="232" marker-end="url(#arr-fR)"/>
-        <text class="arch-arrow-label" x="320" y="245">inferred</text>
-
-        <g>
-          <rect class="arch-rect-conv" x="380" y="190" width="280" height="80" rx="4"/>
-          <rect class="arch-rect-conv-stripe" x="384" y="190" width="272" height="3"/>
-          <text class="arch-system arch-system-conv" x="520" y="218" text-anchor="middle">Reader profile</text>
-          <text class="arch-action arch-action-conv" y="240" text-anchor="middle">
-            <tspan x="520" dy="0">Explicit preferences (what reader picked)</tspan>
-            <tspan x="520" dy="14">+ inferred signals (what reader reads).</tspan>
-          </text>
-        </g>
-
-        <line class="arch-arrow" x1="740" y1="105" x2="662" y2="218" marker-end="url(#arr-fR)"/>
-        <text class="arch-arrow-label" x="668" y="170">classifications</text>
+        <line class="arch-arrow" x1="880" y1="155" x2="662" y2="218" marker-end="url(#arr-fR)"/>
+        <text class="arch-arrow-label" x="720" y="180">page KV (scraper)</text>
 
         <text class="arch-phase-header" x="20" y="305">Send-time match</text>
 
-        <line class="arch-arrow" x1="520" y1="270" x2="520" y2="318" marker-end="url(#arr-fR)"/>
+        <line class="arch-arrow" x1="520" y1="275" x2="520" y2="318" marker-end="url(#arr-fR)"/>
 
         <g>
-          <rect class="arch-rect-conv" x="80" y="320" width="880" height="100" rx="4"/>
+          <rect class="arch-rect-conv" x="80" y="320" width="880" height="90" rx="4"/>
           <rect class="arch-rect-conv-stripe" x="84" y="320" width="872" height="3"/>
-          <text class="arch-system arch-system-conv" x="520" y="350" text-anchor="middle">Sailthru render-time match</text>
+          <text class="arch-system arch-system-conv" x="520" y="350" text-anchor="middle">Sailthru send-time match</text>
           <text class="arch-action arch-action-conv" y="372" text-anchor="middle">
-            <tspan x="520" dy="0">STAMP-classified articles match against each reader's combined profile (explicit + inferred).</tspan>
-            <tspan x="520" dy="16">Top-N digest assembled per recipient. Editorial role in this phase: zero. Same automated</tspan>
-            <tspan x="520" dy="16">render pattern that powers the newsletter today, on a richer signal.</tspan>
+            <tspan x="520" dy="0">Each reader&rsquo;s section follows match against editorially-tagged articles</tspan>
+            <tspan x="520" dy="16">in the Content Library. Top-N digest assembled per recipient. Same render pattern as today.</tspan>
           </text>
         </g>
 
-        <line class="arch-arrow arch-arrow-strong" x1="520" y1="420" x2="520" y2="478" marker-end="url(#arr-fR-acc)"/>
+        <line class="arch-arrow arch-arrow-strong" x1="520" y1="410" x2="520" y2="448" marker-end="url(#arr-fR-acc)"/>
 
-        <text class="arch-phase-header" x="20" y="468">Output</text>
+        <text class="arch-phase-header" x="20" y="438">Output</text>
 
         <g>
-          <rect class="arch-rect-out" x="290" y="480" width="460" height="80" rx="4"/>
-          <text class="arch-system arch-system-out" x="520" y="507" text-anchor="middle">Newsletter delivered</text>
-          <text class="arch-action arch-action-out" y="527" text-anchor="middle">
-            <tspan x="520" dy="0">One opt-in. One channel. No follow-array maintenance burden.</tspan>
-            <tspan x="520" dy="14">Relevance evolves with reading behavior; emerging topics earn their way in.</tspan>
+          <rect class="arch-rect-out" x="290" y="450" width="460" height="60" rx="4"/>
+          <text class="arch-system arch-system-out" x="520" y="477" text-anchor="middle">Newsletter delivered</text>
+          <text class="arch-action arch-action-out" y="497" text-anchor="middle">
+            <tspan x="520" dy="0">One opt-in. One channel. Section-follows as the reader-facing signal.</tspan>
           </text>
         </g>
 
@@ -2181,51 +2175,47 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">What changes for the reader</div>
       <ul>
-        <li><strong>One opt-in surface.</strong> The preferences UI stays. Topic-page and article-page follow buttons retire; the on-site topic feed retires as a consumption surface.</li>
-        <li><strong>Opt-in equals subscription.</strong> The seam between following a topic and subscribing to the newsletter closes. No second action required.</li>
-        <li><strong>The reader doesn&rsquo;t maintain a follow list.</strong> Explicit preferences anchor the floor; inferred signals from reading behavior expand the ceiling automatically.</li>
+        <li><strong>One opt-in surface.</strong> Preferences UI stays. On-site topic and article follow buttons retire as separate surfaces; the in-page consumption feed retires.</li>
+        <li><strong>Opt-in equals subscription.</strong> The seam between following a section and subscribing to the newsletter closes. No second action required.</li>
+        <li><strong>Followable list is the curated section map.</strong> Reader-facing vocabulary tightens from the Drupal long-tail to the editorial section list. Tags don&rsquo;t appear in the Preferences UI.</li>
         <li><strong>Same delivery channel, same engagement profile.</strong> Newsletter remains the consumption surface; ~3&times; flagship engagement carries forward.</li>
       </ul>
     </div>
 
     <div class="method-block">
-      <div class="mb-head">How the two signal layers combine</div>
+      <div class="mb-head">What tags do instead</div>
       <ul>
-        <li><strong>Explicit preferences anchor the floor.</strong> Opted-in topics stay in scope regardless of behavior.</li>
-        <li><strong>Inferred signals expand the ceiling.</strong> Topics the reader consistently engages with rise in ranking even without an explicit follow. Emerging topics earn their way in without requiring discovery first.</li>
-        <li><strong>Inferred signals carry timestamps.</strong> Stale interest decays. Explicit follows still require affirmative removal.</li>
-        <li><strong>Junction passthrough does the wiring.</strong> The gateway between Arc and Sailthru already accepts arbitrary profile writes. No new gateway engineering.</li>
+        <li><strong>Advertising targeting.</strong> GAM reads tags from page key-values on article ad calls. SOV and Topic Takeover line items target tag-level slugs.</li>
+        <li><strong>Newsletter segmentation infrastructure.</strong> Sailthru Interest Lists query against tag-level tokens in segment rules. ~16 active Interest Lists rebuild against slug-form tokens at cutover.</li>
+        <li><strong>Not reader-facing.</strong> Tags power the plumbing; the reader picks from sections.</li>
       </ul>
     </div>
 
     <div class="method-block">
-      <div class="mb-head">What stays the same on the Sailthru side</div>
+      <div class="mb-head">What the Sailthru side looks like</div>
       <ul>
-        <li>The send-time match pattern is unchanged: render against the reader profile, filter the content index, top-N digest per recipient.</li>
-        <li>The delivery channel is unchanged: newsletter email.</li>
-        <li>What changes is the signal on the profile (richer) and the source of classifications (STAMP via page key-values, not Drupal-pushed tags).</li>
+        <li>Send-time match pattern is unchanged: render against the reader profile, filter the content index, top-N per recipient.</li>
+        <li>Source of the signal changes: page key-values feed the Content Library via scraper (<span class="mono">sailthru.tags</span> slug-form, uncapped); the direct push path from Drupal retires.</li>
+        <li>Reader preferences live as explicit section follows on the profile. No Junction inferred-signal layer at launch; Junction&rsquo;s role is limited to explicit pass-through if the Preference Center UX moves to Arc post-cutover &mdash; that&rsquo;s a separate product call.</li>
       </ul>
     </div>
 
-    <div class="callout-muted"><strong>Cross-brand pattern.</strong> The same architecture &mdash; preferences UI + inferred signals + STAMP-classified content + newsletter delivery &mdash; supports a newsletter on any Crain brand. GenomeWeb is wave 1.</div>
+    <div class="callout-muted"><strong>Ring-fenced footprint.</strong> GNW&rsquo;s tag set within Arc&rsquo;s org-global namespace is bounded, curated, and admin-governed on new tag creation. Reversible if the org picks a different direction later.</div>
 
-    <p class="src">Architecture reference. Mechanics referenced from Junction passthrough spec and Sailthru profile schema. Pulled 04/2026.</p>
+    <p class="src">Architecture reference. Mechanics referenced from Sailthru profile schema, Arc tag-taxonomy permissions model, and GNW taxonomy decision doc. Pulled 04/2026.</p>
   </section>
 
   <section class="appx" id="a7">
     <div class="kicker"><span class="sec-num">A7</span>Reader open questions</div>
-    <h3>The reader workstream&rsquo;s seven open questions are UX and signal-tuning calls, not architecture blockers.</h3>
-    <p class="lead">Each item is a question and, where applicable, a tentative direction. Closing the follower-vs-subscriber seam is the only architectural outcome.</p>
+    <h3>Two open reader-side questions at cutover. The rest are downstream product decisions that don&rsquo;t need to resolve first.</h3>
+    <p class="lead">Inferred-signal work, signal weighting, reading-event taxonomy, and cold-start logic are out of scope at launch.</p>
 
     <ul class="data-bullets">
-      <li><b>Weighting and decay between explicit and inferred signals.</b> Tentative: explicit preferences anchor the floor (never overridden); inferred signals layer on top with recency-aware ranking. Tuning the blend lives in the preferences-UI workstream with engineering and product.</li>
-      <li><b>Which reading events count as inferred signal.</b> Open: click-through, full open, scroll depth, repeat visits, on-site dwell. Function of what Arc&rsquo;s page emission exposes and what reader-privacy posture allows. Engineering scoping with privacy review.</li>
-      <li><b>Transparency to the reader of inferred interests.</b> Open: whether the UI surfaces inferred interests back ("we noticed you&rsquo;re reading a lot about X &mdash; follow?"). UX decision; affects perceived trust, not the underlying mechanic.</li>
-      <li><b>Cold start for new subscribers.</b> Open: whether the newsletter leans harder on explicit preferences during onboarding, falls back to flagship-style editorial picks until inferred signal accumulates, or both. Delivery-logic call.</li>
-      <li><b>Opt-in experience.</b> Surface, copy, sequencing, where the prompt lands &mdash; joint call with marketing and product. Closing the follower-vs-subscriber seam is the outcome.</li>
-      <li><b>Topic landing page disposition.</b> Open: whether the page persists for SEO and sponsor verification value, or simplifies into a sponsor-facing dashboard. Sales-led check with sponsors paired with editorial input on SEO impact.</li>
-      <li><b>Preference Center layering.</b> Tentative: topic-follow opt-in layers into the existing Preference Center at the Arc cutover, not phased later. One change, less rework, legacy preference plumbing retires. Marketing-ops + reader-lifecycle joint call.</li>
+      <li><b>Topic landing page disposition.</b> Sponsors today use the topic page as a verification surface. Open: whether the page persists for SEO and sponsor verification value, simplifies, or migrates to a sponsor-facing dashboard. Ties to the drug-brand-name section question in <a href="#a10">A10</a> &mdash; if drug/gene-name sections are dropped, their landing pages go with them. Sales-led check with sponsors; editorial input on SEO impact.</li>
+      <li><b>Preference Center layering at cutover.</b> Where the closed-vocabulary-sourced section-follow list lives post-cutover &mdash; in Arc&rsquo;s Preference Center, in Sailthru&rsquo;s, or both with Junction pass-through. Mechanical cutover item. Tentative: section-follow opt-in layers into the existing Preference Center at the Arc cutover, not phased later. Marketing automation ops + reader-lifecycle joint call.</li>
     </ul>
+
+    <div class="callout-muted"><strong>Explicitly out of scope at launch.</strong> Inferred reading-signal layer, signal weighting and decay, reading-event taxonomy, transparency UX for inferred interests, cold-start logic. Reader-side product evolution is a separate workstream; these resolve there, not in the taxonomy reframe.</div>
   </section>
 
   <!-- ============ BUCKET 4: EDITORIAL & CLASSIFICATION ============ -->
@@ -2234,7 +2224,7 @@ footer.endnote {
   <section class="appx" id="a8">
     <div class="kicker"><span class="sec-num">A8</span>Editorial today</div>
     <h3>Three parallel curation efforts feed one corpus, no shared source of truth, no retirement workflow &mdash; drift accumulates.</h3>
-    <p class="lead">A 3,000-term shared vocabulary maintained by hand. Three parallel curated lists that overlap imperfectly. A per-send manual editorial layer on the sponsor side. No approval step, no retirement workflow.</p>
+    <p class="lead">A per-send manual editorial layer runs on top of the automated feed. No approval step, no retirement workflow.</p>
 
     <div class="arch-diagram">
       <svg viewBox="0 0 1040 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="edTitle edDesc" preserveAspectRatio="xMidYMid meet">
@@ -2259,7 +2249,7 @@ footer.endnote {
         <g>
           <rect class="arch-rect-warn" x="20" y="65" width="300" height="105" rx="4"/>
           <text class="arch-warn-tag" x="304" y="82" text-anchor="end">no retirement workflow</text>
-          <text class="arch-system" x="34" y="105">3,000-term shared vocabulary</text>
+          <text class="arch-system" x="34" y="105">Shared Drupal vocabulary</text>
           <text class="arch-action" y="125">
             <tspan x="34" dy="0">Accumulated organically over the</tspan>
             <tspan x="34" dy="14">product's life. No approval step.</tspan>
@@ -2269,7 +2259,7 @@ footer.endnote {
         </g>
         <g>
           <rect class="arch-rect" x="20" y="180" width="300" height="80" rx="4"/>
-          <text class="arch-system" x="34" y="204">Curated 128-term My Topics list</text>
+          <text class="arch-system" x="34" y="204">Curated My Topics list</text>
           <text class="arch-action" y="224">
             <tspan x="34" dy="0">Maintained as a subset of the shared</tspan>
             <tspan x="34" dy="14">vocabulary by editorial leadership.</tspan>
@@ -2283,7 +2273,7 @@ footer.endnote {
           <text class="arch-system" x="374" y="105">Manual tagging at publish</text>
           <text class="arch-action" y="125">
             <tspan x="374" dy="0">Editor hand-picks a primary topic</tspan>
-            <tspan x="374" dy="14">+ secondary topics from the 3,000-term</tspan>
+            <tspan x="374" dy="14">+ secondary topics from the shared</tspan>
             <tspan x="374" dy="14">vocabulary on publish. No second</tspan>
             <tspan x="374" dy="14">reviewer; no reconciliation step.</tspan>
           </text>
@@ -2323,7 +2313,7 @@ footer.endnote {
           <rect class="arch-rect-conv-stripe" x="84" y="335" width="872" height="3"/>
           <text class="arch-system arch-system-conv" x="520" y="365" text-anchor="middle">Three curated lists, one shared content corpus</text>
           <text class="arch-action arch-action-conv" y="385" text-anchor="middle">
-            <tspan x="520" dy="0">Editorial 128-term list, ad ops Topic Takeover term list, accumulated 3,000-term vocabulary.</tspan>
+            <tspan x="520" dy="0">Editorial My Topics list, ad ops Topic Takeover term list, accumulated Drupal vocabulary.</tspan>
             <tspan x="520" dy="16">They overlap imperfectly. No single source of truth for what the product recognizes.</tspan>
           </text>
         </g>
@@ -2334,17 +2324,17 @@ footer.endnote {
           <rect class="arch-rect-warn" x="20" y="460" width="320" height="80" rx="4"/>
           <text class="arch-system" x="34" y="484">Used-once tags</text>
           <text class="arch-action" y="504">
-            <tspan x="34" dy="0">44% of unique applied tags have been</tspan>
-            <tspan x="34" dy="14">used exactly once. One-off coinage, or</tspan>
-            <tspan x="34" dy="14">duplicates from inconsistent entry.</tspan>
+            <tspan x="34" dy="0">285 of 2,098 free-form terms (13.6%)</tspan>
+            <tspan x="34" dy="14">used exactly once across six years.</tspan>
+            <tspan x="34" dy="14">Quality of new tags: 69% one-off in 2026 YTD.</tspan>
           </text>
         </g>
         <g>
           <rect class="arch-rect-warn" x="360" y="460" width="320" height="80" rx="4"/>
           <text class="arch-system" x="374" y="484">Zero-evidence terms</text>
           <text class="arch-action" y="504">
-            <tspan x="374" dy="0">184 of 505 curated terms have</tspan>
-            <tspan x="374" dy="14">zero load-bearing evidence.</tspan>
+            <tspan x="374" dy="0">A meaningful share of curated-list</tspan>
+            <tspan x="374" dy="14">terms have zero load-bearing evidence.</tspan>
             <tspan x="374" dy="14">Retireable; no retirement workflow.</tspan>
           </text>
         </g>
@@ -2364,8 +2354,8 @@ footer.endnote {
     <div class="method-block">
       <div class="mb-head">Three governance lanes, no shared source of truth</div>
       <ul>
-        <li>Editorial leadership maintains a curated 128-term subset (the My Topics list, the followable surface readers see).</li>
-        <li>The editorial tagging lead applies tags per article from the broader 3,000-term shared vocabulary, every article, on publish.</li>
+        <li>Editorial leadership maintains a curated My Topics subset (the followable surface readers see).</li>
+        <li>The editorial tagging lead applies tags per article from the broader shared vocabulary, every article, on publish.</li>
         <li>Ad ops maintains a separate working list of which tags drive sponsor Topic Takeover targeting &mdash; a parallel curation effort.</li>
         <li>The three lists overlap imperfectly. There is no single source of truth for what the product recognizes.</li>
       </ul>
@@ -2384,26 +2374,25 @@ footer.endnote {
       <div class="mb-head">What hand-tagging costs &mdash; governance drift</div>
       <ul>
         <li>The per-article time cost is modest (seconds to a minute). The compounding cost is governance drift.</li>
-        <li>44% of unique applied tags have been used exactly once &mdash; one-off coinage that should have been merged, or accidental duplicates from inconsistent editor entry.</li>
-        <li>184 of 505 terms across the three curated lists have zero load-bearing evidence &mdash; no engagement, no follows, no sponsor segment rules. Retireable by definition.</li>
+        <li>285 of 2,098 free-form <span class="mono">topics</span> terms (13.6%) have been used exactly once across six years of content &mdash; one-off coinage, entity mentions, or accidental duplicates. Quality of new tags is declining: 53% of 2025-added tags used once; 69% of 2026 YTD.</li>
+        <li>Top 50 tags carry 58% of all assignments. Bottom 40% of the vocabulary (used &le;2 times) carries ~2% of assignments.</li>
+        <li>A meaningful share of terms across the three curated lists have zero load-bearing evidence &mdash; no engagement, no follows, no sponsor segment rules. Retireable by definition.</li>
         <li>Inconsistency across editors is unmeasured but likely material &mdash; no approval step, no reconciliation between editors covering similar content.</li>
       </ul>
     </div>
 
     <div class="callout-muted"><strong>The long tail is the point.</strong> Niche topics with small followings are exactly what the product is for; this isn&rsquo;t an argument to shrink the vocabulary aggressively. It&rsquo;s an argument to govern the vocabulary deliberately, not let it accumulate by default. See <a href="#a9">A9</a> for the future-state shape.</div>
 
-    <p class="src">Sources: Drupal taxonomy + applied-tag export; Sailthru segment definitions; ad ops Topic Takeover term registry. Pulled 04/2026. Universe: GenomeWeb production tag corpus (3,000 terms; 505 curated; ~12,900 stated followers).</p>
+    <p class="src">Sources: Drupal taxonomy + applied-tag export; Sailthru segment definitions; ad ops Topic Takeover term registry. Pulled 04/2026. Universe: GenomeWeb production tag corpus and stated followers (~12,900).</p>
   </section>
 
   <section class="appx future" id="a9">
-    <div class="kicker"><span class="sec-num">A9</span>Editorial with STAMP</div>
-    <h3>Editorial governs the vocabulary, STAMP classifies on publish, and one source of truth feeds reader personalization and sponsor matching.</h3>
-    <p class="lead">STAMP classifies on publish. Editor confirms or overrides edge cases. Editorial leadership shifts from per-article tagger to vocabulary governor. One vocabulary serves both reader personalization and sponsor matching.</p>
-
+    <div class="kicker"><span class="sec-num">A9</span>Editorial governs the vocabulary; editors pick from it; admin approval governs new tag creation</div>
+    <h3>Editorial governs sections freely. New tag creation runs through admin approval; governance TBD. Per-article editors freely pick from loaded sections and tags via dropdown.</h3>
     <div class="arch-diagram future">
-      <svg viewBox="0 0 1040 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="edFutTitle edFutDesc" preserveAspectRatio="xMidYMid meet">
-        <title id="edFutTitle">Editorial and classification &mdash; future state</title>
-        <desc id="edFutDesc">Editorial leadership maintains a governed vocabulary. STAMP classifies every article against that vocabulary on publish. Editor confirms high-confidence classifications and overrides edge cases. The article page emits classifications as page key-values consumed by both Sailthru (newsletter matching) and GAM (sponsor package matching). One source of truth for both jobs.</desc>
+      <svg viewBox="0 0 1040 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="edFutTitle edFutDesc" preserveAspectRatio="xMidYMid meet">
+        <title id="edFutTitle">Editorial future-state &mdash; three roles, one vocabulary</title>
+        <desc id="edFutDesc">Three lanes. Executive editor governs the section map freely. A tag-governance role (TBD) reviews additions and retirements to the closed tag vocabulary. Per-article editors pick one section and N tags from the dropdown at publish. The article page emits page key-values consumed by Sailthru (newsletter) and GAM (advertising). No classifier; no review step.</desc>
 
         <defs>
           <marker id="arr-fE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
@@ -2414,83 +2403,101 @@ footer.endnote {
           </marker>
         </defs>
 
-        <text class="arch-lane-header" x="170" y="22" text-anchor="middle">Editorial &mdash; vocabulary governor</text>
-        <text class="arch-lane-header" x="520" y="22" text-anchor="middle">STAMP &mdash; classifier</text>
-        <text class="arch-lane-header" x="870" y="22" text-anchor="middle">Page render &rarr; consumers</text>
+        <text class="arch-lane-header" x="170" y="22" text-anchor="middle">Executive editor &mdash; section governor</text>
+        <text class="arch-lane-header" x="520" y="22" text-anchor="middle">Tag governance (role TBD)</text>
+        <text class="arch-lane-header" x="870" y="22" text-anchor="middle">Per-article editor</text>
 
-        <text class="arch-phase-header" x="20" y="55">Vocabulary governance</text>
+        <text class="arch-phase-header" x="20" y="55">Vocabulary source</text>
 
         <g>
           <rect class="arch-rect" x="20" y="65" width="300" height="105" rx="4"/>
-          <text class="arch-system" x="34" y="89">Governed vocabulary</text>
+          <text class="arch-system" x="34" y="89">Sections</text>
           <text class="arch-action" y="109">
-            <tspan x="34" dy="0">Editorial owns the governed</tspan>
-            <tspan x="34" dy="14">vocabulary. Add, retire, merge,</tspan>
-            <tspan x="34" dy="14">alias as the field evolves.</tspan>
-            <tspan x="34" dy="14">Periodic governance, not per-article.</tspan>
+            <tspan x="34" dy="0">Editorial governs freely &mdash; add,</tspan>
+            <tspan x="34" dy="14">retire, merge, alias as coverage</tspan>
+            <tspan x="34" dy="14">evolves. No admin step. Provenance:</tspan>
+            <tspan x="34" dy="14">executive editor&rsquo;s site-structure map.</tspan>
           </text>
         </g>
 
-        <text class="arch-phase-header" x="20" y="200">Per-article classification</text>
-
         <g>
-          <rect class="arch-rect" x="360" y="210" width="300" height="105" rx="4"/>
-          <text class="arch-system" x="374" y="234">STAMP classification</text>
-          <text class="arch-action" y="254">
-            <tspan x="374" dy="0">Classifies every article on publish</tspan>
-            <tspan x="374" dy="14">against the governed vocabulary.</tspan>
-            <tspan x="374" dy="14">Suggestions surface in the editor's</tspan>
-            <tspan x="374" dy="14">Composer sidebar.</tspan>
+          <rect class="arch-rect-warn" x="360" y="65" width="300" height="105" rx="4"/>
+          <text class="arch-warn-tag" x="644" y="82" text-anchor="end">admin approval on new tags</text>
+          <text class="arch-system" x="374" y="102">Closed tag vocabulary</text>
+          <text class="arch-action" y="122">
+            <tspan x="374" dy="0">New tag creation goes through</tspan>
+            <tspan x="374" dy="14">admin approval. Additions and</tspan>
+            <tspan x="374" dy="14">retirements batched. Provenance:</tspan>
+            <tspan x="374" dy="14">TT + My Topics + 2025 engagement.</tspan>
           </text>
         </g>
 
-        <line class="arch-arrow" x1="320" y1="262" x2="358" y2="262" marker-end="url(#arr-fE)"/>
-        <text class="arch-arrow-label" x="324" y="257">vocabulary</text>
-
         <g>
-          <rect class="arch-rect" x="20" y="210" width="300" height="105" rx="4"/>
-          <text class="arch-system" x="34" y="234">Editor review</text>
-          <text class="arch-action" y="254">
-            <tspan x="34" dy="0">High-confidence classifications</tspan>
-            <tspan x="34" dy="14">pass through; low-confidence flag</tspan>
-            <tspan x="34" dy="14">for override. Per-article time</tspan>
-            <tspan x="34" dy="14">collapses.</tspan>
+          <rect class="arch-rect" x="700" y="65" width="320" height="105" rx="4"/>
+          <text class="arch-system" x="714" y="89">Editor &mdash; Arc Composer</text>
+          <text class="arch-action" y="109">
+            <tspan x="714" dy="0">Publishes article. Picks 1 section</tspan>
+            <tspan x="714" dy="14">+ N tags from the closed-vocabulary</tspan>
+            <tspan x="714" dy="14">dropdown. Free-text tag creation</tspan>
+            <tspan x="714" dy="14">retires; selection is the mechanism.</tspan>
           </text>
         </g>
 
-        <line class="arch-arrow" x1="660" y1="262" x2="700" y2="262" marker-end="url(#arr-fE)"/>
-        <text class="arch-arrow-label" x="664" y="257">classifications</text>
+        <line class="arch-arrow" x1="320" y1="118" x2="700" y2="118" marker-end="url(#arr-fE)"/>
+        <text class="arch-arrow-label" x="495" y="113">dropdown source</text>
+
+        <text class="arch-phase-header" x="20" y="210">Governance cadence</text>
 
         <g>
-          <rect class="arch-rect-conv" x="700" y="210" width="320" height="105" rx="4"/>
-          <rect class="arch-rect-conv-stripe" x="704" y="210" width="312" height="3"/>
-          <text class="arch-system arch-system-conv" x="860" y="240" text-anchor="middle">Article page emits page KV</text>
-          <text class="arch-action arch-action-conv" y="262" text-anchor="middle">
-            <tspan x="860" dy="0">One source of truth, both jobs.</tspan>
-            <tspan x="860" dy="14">Sailthru reads via content index.</tspan>
-            <tspan x="860" dy="14">GAM reads via the ad call.</tspan>
+          <rect class="arch-rect" x="20" y="220" width="300" height="85" rx="4"/>
+          <text class="arch-system" x="34" y="244">Section governance</text>
+          <text class="arch-action" y="264">
+            <tspan x="34" dy="0">Editorial-internal. Ad-hoc as</tspan>
+            <tspan x="34" dy="14">coverage shifts. No admin step</tspan>
+            <tspan x="34" dy="14">or approval gate at section level.</tspan>
           </text>
         </g>
 
-        <text class="arch-phase-header" x="20" y="350">Two consumers, one vocabulary</text>
+        <g>
+          <rect class="arch-rect" x="360" y="220" width="300" height="85" rx="4"/>
+          <text class="arch-system" x="374" y="244">Tag governance</text>
+          <text class="arch-action" y="264">
+            <tspan x="374" dy="0">Admin role approves adds/retires</tspan>
+            <tspan x="374" dy="14">in scheduled batches. Slug stability</tspan>
+            <tspan x="374" dy="14">is a hard contract for live sponsor SOV.</tspan>
+          </text>
+        </g>
 
-        <line class="arch-arrow arch-arrow-strong" x1="780" y1="315" x2="500" y2="365" marker-end="url(#arr-fE-acc)"/>
-        <line class="arch-arrow arch-arrow-strong" x1="940" y1="315" x2="940" y2="365" marker-end="url(#arr-fE-acc)"/>
+        <text class="arch-phase-header" x="20" y="345">Publish &rarr; consumers</text>
+
+        <line class="arch-arrow" x1="860" y1="170" x2="860" y2="365" marker-end="url(#arr-fE)"/>
+        <text class="arch-arrow-label" x="870" y="265">section + tags on page</text>
 
         <g>
-          <rect class="arch-rect-out" x="280" y="370" width="350" height="80" rx="4"/>
-          <text class="arch-system arch-system-out" x="455" y="397" text-anchor="middle">Reader newsletter</text>
-          <text class="arch-action arch-action-out" y="417" text-anchor="middle">
-            <tspan x="455" dy="0">Matches reader profile (explicit + inferred)</tspan>
-            <tspan x="455" dy="14">against STAMP-classified articles.</tspan>
+          <rect class="arch-rect-conv" x="700" y="365" width="320" height="80" rx="4"/>
+          <rect class="arch-rect-conv-stripe" x="704" y="365" width="312" height="3"/>
+          <text class="arch-system arch-system-conv" x="860" y="393" text-anchor="middle">Article page emits page KV</text>
+          <text class="arch-action arch-action-conv" y="415" text-anchor="middle">
+            <tspan x="860" dy="0">Same vocabulary, two jobs:</tspan>
+            <tspan x="860" dy="14">newsletter matching + GAM targeting.</tspan>
+          </text>
+        </g>
+
+        <line class="arch-arrow arch-arrow-strong" x1="780" y1="445" x2="500" y2="475" marker-end="url(#arr-fE-acc)"/>
+        <line class="arch-arrow arch-arrow-strong" x1="940" y1="445" x2="940" y2="475" marker-end="url(#arr-fE-acc)"/>
+
+        <g>
+          <rect class="arch-rect-out" x="280" y="480" width="350" height="55" rx="4"/>
+          <text class="arch-system arch-system-out" x="455" y="510" text-anchor="middle">Reader newsletter</text>
+          <text class="arch-action arch-action-out" y="527" text-anchor="middle">
+            <tspan x="455" dy="0">Matches section follows against tagged articles.</tspan>
           </text>
         </g>
         <g>
-          <rect class="arch-rect-out" x="700" y="370" width="320" height="80" rx="4"/>
-          <text class="arch-system arch-system-out" x="860" y="397" text-anchor="middle">Sponsor package matching</text>
-          <text class="arch-action arch-action-out" y="417" text-anchor="middle">
-            <tspan x="860" dy="0">Matches package definition against</tspan>
-            <tspan x="860" dy="14">the same STAMP-classified articles.</tspan>
+          <rect class="arch-rect-out" x="700" y="480" width="320" height="55" rx="4"/>
+          <text class="arch-system arch-system-out" x="860" y="510" text-anchor="middle">GAM &mdash; sponsor targeting</text>
+          <text class="arch-action arch-action-out" y="527" text-anchor="middle">
+            <tspan x="860" dy="0">Matches line-item tag predicate.</tspan>
           </text>
         </g>
 
@@ -2498,82 +2505,93 @@ footer.endnote {
     </div>
 
     <div class="method-block">
-      <div class="mb-head">Editorial role shifts from tagger to governor</div>
+      <div class="mb-head">Two editorial roles, separated</div>
       <ul>
-        <li><strong>On publish.</strong> STAMP classifies; the editor confirms high-confidence classifications and overrides edge cases. Per-article time collapses.</li>
-        <li><strong>Ongoing.</strong> Editorial leadership owns the governed vocabulary &mdash; adding new terms as the field evolves, retiring terms that lose load-bearing signal, reconciling alias and merge decisions.</li>
-        <li><strong>Classifier tuning.</strong> Editorial partners with engineering to adjust classifier weights and confidence thresholds once STAMP runs against the corpus. New territory.</li>
-        <li><strong>Package-level editorial ownership replaces ad-hoc per-campaign curation.</strong> Where editorial judgment adds value &mdash; defining what a package is and what it commits to &mdash; editorial owns it. Where it doesn&rsquo;t &mdash; per-send article picks &mdash; the manual layer retires.</li>
+        <li><strong>Per-article editors</strong> tag every article at publish. Free-text creation retires; selection from the dropdown is the mechanism. Per-article time order-of-magnitude unchanged; only net-new-term creation changes.</li>
+        <li><strong>Executive editor</strong> governs the curated section map. Adds, retires, merges, aliases as coverage evolves. No admin step on sections.</li>
+        <li><strong>Tag governance (role TBD)</strong> reviews additions and retirements to the closed tag vocabulary in scheduled batches. Candidate shapes: executive editor alone; executive editor + product; executive editor + product + ad ops for SOV additions. Decision open; see <a href="#a10">A10</a>.</li>
       </ul>
     </div>
 
     <div class="method-block">
-      <div class="mb-head">One vocabulary, both jobs</div>
+      <div class="mb-head">Vocabulary provenance</div>
       <ul>
-        <li>The governed vocabulary serves reader personalization and sponsor matching from the same source.</li>
-        <li>Ad ops&rsquo; parallel curation for Topic Takeover targeting collapses into editorial&rsquo;s governed vocabulary.</li>
-        <li>Sponsor packages match against the same classifications the newsletter reads from.</li>
+        <li><strong>Sections</strong> from the executive editor&rsquo;s curated site-structure map (top nav + hamburger menu + hierarchical site tree). Most are load-bearing in six-year Drupal content; a smaller share is zero-evidence (intentional new-for-Arc sections, drug/gene-name placeholders, structural placeholders).</li>
+        <li><strong>Tags</strong> from four sources: Topic Takeover campaign tags + My Topics follow terms + 2025 engagement tags + the implicit TT-tier granular terms the executive editor keeps as tags rather than sections. The overwhelming majority are load-bearing in six years of content.</li>
+        <li><strong>Drupal long-tail</strong> &mdash; the free-text <span class="mono">topics</span> tags outside the curated vocabulary &mdash; is dropped. Not migrated. Slug stability is preserved for the migrated tags &mdash; a hard contract, because live sponsor SOV and Interest List segment rules depend on stable slugs.</li>
       </ul>
     </div>
 
     <div class="method-block">
-      <div class="mb-head">What this enables</div>
+      <div class="mb-head">How new tag creation works</div>
       <ul>
-        <li><strong>Consistency across editors.</strong> Two articles covering the same topic get classified the same way.</li>
-        <li><strong>Vocabulary retirement has a workflow.</strong> Terms that lose signal drop out of the governed vocabulary. The 3,000-term drift inventory stops accumulating.</li>
-        <li><strong>The long tail is preserved deliberately.</strong> Niche topics aren&rsquo;t dropped to chase a number; they&rsquo;re retained because the product is for niche audiences. Governance is about earned signal, not size.</li>
-        <li><strong>Cross-brand portability.</strong> Same classifier architecture applies to any Crain brand. Per-brand work is the editorial golden-set and vocabulary shape, not a rebuild.</li>
+        <li>Editors don&rsquo;t type new tags at publish &mdash; selection is the mechanism. Need a new term? File a governance request to the admin role.</li>
+        <li>Enforcement is mechanical, not procedural &mdash; new-tag creation is wired to the admin role in Arc at cutover; no workflow discipline to sustain.</li>
+        <li>Admin approval applies to tags, not sections. Editorial retains full section authority.</li>
+        <li>Reversible: if governance shifts later, creation scope can expand. The system starts conservative.</li>
       </ul>
     </div>
 
-    <div class="method-block">
-      <div class="mb-head">Throughput economics</div>
-      <ul>
-        <li>At GenomeWeb&rsquo;s volume (~20&ndash;30 articles/day), direct LLM classification cost is sub-$1/day. Not budget-meaningful.</li>
-        <li>At 16-brand network scale (~300&ndash;500 articles/day), classification cost is ~$100&ndash;180K/year. Material but not blocking.</li>
-        <li>Editorial labor recovered from hand-tagging offsets classification cost at both scales. Real constraint is classifier quality and governance discipline, not cost.</li>
-      </ul>
-    </div>
+    <div class="callout-muted"><strong>What&rsquo;s deliberately not here.</strong> No AI classifier at launch. No &ldquo;editorial shifts from tagger to governor&rdquo; collapse &mdash; per-article tagging continues. No cross-brand portability claim &mdash; GNW-scoped. No throughput-economics math &mdash; there&rsquo;s no classifier to cost. If classification later becomes worth reconsidering, the decision names four triggers (editorial throughput bottleneck, tag quality degrades, new use cases, cross-brand demand validates) &mdash; but that&rsquo;s a future reopen, not launch scope.</div>
 
-    <div class="callout-muted"><strong>Deliberately not numbered.</strong> The future-state vocabulary size is "governed," not "~300 terms" or any specific count. Editorial governance defines the shape once STAMP runs against the corpus. See <a href="#a10">A10</a> for the open questions, including the company-name inclusion question that could move the working number.</div>
-
-    <p class="src">Architecture reference. Throughput economics derived from internal STAMP cost modeling against current Crain article volumes. Pulled 04/2026.</p>
+    <p class="src">Architecture reference. Sources: GNW taxonomy decision doc (2026-04-21); executive editor&rsquo;s site-structure workbook + top-tags workbook; six-year Drupal content audit; Arc tag-permission model. Pulled 04/2026.</p>
   </section>
 
   <section class="appx" id="a10">
-    <div class="kicker"><span class="sec-num">A10</span>Editorial open questions</div>
-    <h3>The editorial workstream&rsquo;s six open questions are governance cadence and STAMP-tuning calls; several need an observation period to settle.</h3>
-    <p class="lead">Each item is a question and, where applicable, a tentative direction. Several depend on observation periods after STAMP runs against the corpus.</p>
-
+    <div class="kicker"><span class="sec-num">A10</span>Editorial open questions + cutover blockers</div>
+    <h3>Four open editorial calls, one named list of discussion tags, and four cutover blockers that must resolve before vocabulary finalization.</h3>
     <ul class="data-bullets">
-      <li><b>Confidence threshold for auto-pass vs editor review.</b> Open: where the cutoff lives between high-confidence pass-through and low-confidence editor override. Affects editorial workload and classification accuracy tradeoff. Needs an observation period post-cutover to tune.</li>
-      <li><b>Vocabulary governance cadence.</b> Open: whether vocabulary review is quarterly, ad hoc as emerging terms surface, or continuous. Editorial leadership&rsquo;s call; an editorial-operations question.</li>
-      <li><b>Entity tags vs topic tags governance.</b> STAMP&rsquo;s taxonomy can cover topics and entities (companies, products, people). Open: whether entity tagging follows the same governance pattern or needs a separate lane.</li>
-      <li><b>Historical reclassification scope.</b> Open: whether STAMP re-runs over the pre-cutover article backlog or only tags new articles forward. Affects sponsor matching on legacy content and newsletter recommendation quality during early days.</li>
-      <li><b>Company names in the controlled vocabulary.</b> Editorial flagged that 50&ndash;100 company names sit on the boundary &mdash; they appear among the most-followed terms and the highest-engagement tags, and sponsor names are used as 100% share-of-voice terms today. Open: whether company names live in the governed vocabulary, in a separate entity lane, or both. Editorial leadership&rsquo;s call.</li>
-      <li><b>Final vocabulary working number.</b> Tentative: "governed," not committed to a count. The current working hard floor is 272 load-bearing terms; the company-name decision and the ad-ops audit on which tags are live in GAM targeting could move the number. Final shape lands once STAMP is observed against the corpus.</li>
+      <li><b>Tag-creation admin role.</b> Who holds approval rights on the closed tag vocabulary post-cutover. Candidate shapes: executive editor alone; executive editor + product; executive editor + product + ad ops (for SOV additions). Decision before cutover.</li>
+      <li><b>Vocabulary governance cadence.</b> Section governance is editorial-internal and ad-hoc. Tag governance runs in scheduled batches. Open: exact cadence (monthly, quarterly, as-needed). Editorial-ops call.</li>
+      <li><b>Company names in the controlled vocabulary.</b> A meaningful number of company names sit on the boundary &mdash; they appear among the most-followed terms and the highest-engagement tags, and sponsor names are used as 100% share-of-voice terms today. Open: whether company names live in the closed vocabulary, a separate entity lane, or both. Editorial leadership&rsquo;s call.</li>
+      <li><b>Final vocabulary composition.</b> The earned tag list is committed in composition, not in a specific count &mdash; the exact number may shift with drug/gene-name inclusion (below), company-name disposition (above), and the ad-ops GAM audit below.</li>
     </ul>
+
+    <div class="method-block">
+      <div class="mb-head">Named tags that need editorial resolution before finalization</div>
+      <ul>
+        <li><strong>Drug-brand-name sections, thin content evidence in Drupal.</strong> Krazati, Opdivo, Panitumumab, Enhertu, gefitinib, larotrectinib, Lumakras. These appear in the curated section map but have minimal content evidence today. Resolution: keep as sections and begin tagging to them going forward, or drop. Editorial call.</li>
+        <li><strong>Gene-symbol and diagnostic-technology sections, zero content evidence.</strong> BRCA, ALK, BRAF, EGFR, HER2, KRAS, PD-L1, ROS1, MRD testing, CE-IVDR. Same resolution question as above.</li>
+        <li><strong>Normalization mismatches &mdash; concept exists, tag form differs.</strong> PrecisionOncology (Drupal has &ldquo;Testing Strategies for Precision Oncology&rdquo;); COVID (My Topics slug; Drupal uses &ldquo;COVID-19&rdquo;); Mass Spec (My Topics; Drupal uses &ldquo;Mass Spectrometry&rdquo;); AutoimmuneDisease (curated; Drupal uses &ldquo;Autoimmune Disease Research News&rdquo;). Pick one canonical form per pair before cutover.</li>
+        <li><strong>Zero-evidence named entities.</strong> LabCorp, NYGC (New York Genome Center), Kettering (Memorial Sloan Kettering), &ldquo;Variant Analysis&rdquo;. Appear in curated lists with no Drupal tag match. Resolution: add, merge, or drop.</li>
+        <li><strong>Drupal long-tail disposition &mdash; decided.</strong> The free-text <span class="mono">topics</span> tags outside the curated vocabulary are dropped at cutover, not migrated. This is a decision item, not an open question. Slug stability is preserved for the migrated vocabulary.</li>
+      </ul>
+    </div>
+
+    <div class="method-block">
+      <div class="mb-head">Cutover blockers &mdash; must resolve before vocabulary finalization</div>
+      <ul>
+        <li><strong>Ad-ops lead&rsquo;s GAM line-item audit (due 2026-05-01).</strong> Surfaces Topic Takeover tags currently live in GAM targeting that may not appear in Sailthru-side vocabulary analysis. Could move terms from retireable back to load-bearing. Missing a GAM-active tag would break an SOV contract silently at cutover. Blocks vocabulary finalization.</li>
+        <li><strong>Arc slug-collision check.</strong> All migrated GNW tag slugs must be verified against Arc&rsquo;s org-global namespace for collisions with other brands&rsquo; tags. Owner TBD. If collisions exist, GNW must accept the existing slug or negotiate.</li>
+        <li><strong>Sailthru Interest List rebuild sequencing.</strong> Active Interest Lists must be rebuilt against slug-form tokens without breaking live sponsor campaigns. Open: can lists run dual-rule (display-name OR slug) during a transition window, or is it a hard swap at cutover? Marketing automation ops owns.</li>
+        <li><strong>Arc Composer dropdown UX at closed-vocabulary scale.</strong> Usability verification needed &mdash; does the Composer&rsquo;s tag-assignment UX support closed-vocabulary selection cleanly? Affects per-article editor workload and governance posture. Product + editorial validation.</li>
+      </ul>
+    </div>
+
+    <p class="src">Sources: taxonomy decision doc (2026-04-21); six-year Drupal content audit; executive editor&rsquo;s site-structure and top-tags workbooks; Sailthru Interest List inventory; Arc tag-permission model. Pulled 04/2026.</p>
   </section>
 
   <!-- ============ BUCKET 5: NEWSLETTER OPERATIONS ============ -->
   <div class="appx-bucket-break"><h4>Bucket 5 &middot; Newsletter operations</h4></div>
 
   <section class="appx" id="a11">
-    <div class="kicker"><span class="sec-num">A11</span>Marketing-ops open questions</div>
-    <h3>Marketing ops surfaced four newsletter-side items. Each resolves inside existing workstreams, not as separate scope.</h3>
-    <p class="lead">The migration touches the newsletter layer through taxonomy consolidation and package work.</p>
+    <div class="kicker"><span class="sec-num">A11</span>Newsletter operations open questions</div>
+    <h3>The taxonomy remap at cutover is the load-bearing newsletter-ops item. The theme-infrastructure rollout is sequenced alongside it.</h3>
+    <p class="lead">Two load-bearing newsletter-ops workstreams tied to cutover: the mechanical segment-rule rebuild, and the standing theme infrastructure that <a href="#a3">A3</a> relies on.</p>
 
     <ul class="data-bullets">
-      <li><b>Audience-pool governance.</b> ~80k unique recipients across the portfolio; per-client pools of ~20&ndash;40k. Lists are tag-generated and mutually exclusive today. Suppression and mutual-exclusivity rules need a single home under packages.</li>
-      <li><b>Ad-position layout.</b> Sponsor positions don&rsquo;t adapt cleanly when an optional newsletter section is absent. Resolve as part of the package-template work.</li>
-      <li><b>Theme alignment.</b> Existing subject-line patterns suggest natural groupings; confirm the final set as part of package definition.</li>
-      <li><b>Taxonomy remap at cutover.</b> Old-to-new value mapping captured once; applied to newsletter templates at the Arc cutover.</li>
+      <li><b>Taxonomy remap at cutover.</b> Load-bearing. Active Interest Lists rebuild against slug-form tokens; Sailthru data feeds rebuild; <span class="mono">vars.drupal_term_names_*</span> migration for existing followers; per-send carve-list continuity validation across cutover for live sponsors. One-time lift. Required regardless of the operating model. Owner: marketing automation ops.</li>
+      <li><b>Theme infrastructure build-out.</b> Under the committed sponsor operating model (<a href="#a3">A3</a>): build standing audience cohorts and content feeds per top-level theme; stand up theme-level send templates; establish the sponsor-registry pattern (tag filters + competitor exclusions keyed to sponsor). Sequenced into the cutover workstream.</li>
+      <li><b>Segment-rule wire-format divergence.</b> Sailthru segment rules today reference <span class="mono">sailthru.tags</span> in display-name form capped at 15 tokens. Post-cutover: slug-form, uncapped, scraper-sourced. Rebuild for each Interest List is mandatory; Zephyr-authored data feeds need walkthroughs (MCP-opaque tokens).</li>
+      <li><b>Theme definitions for both jobs.</b> The same top-level themes that anchor the sponsor infrastructure should anchor Interest List groupings where possible. Existing subject-line patterns suggest natural groupings; confirm tag-set composition against the closed vocabulary during rebuild.</li>
     </ul>
+
+    <p class="src">Sources: Sailthru segment-rule inventory; backend operational workflow audit; Sailthru Content Library scraper behavior; taxonomy decision doc. Pulled 04/2026.</p>
   </section>
 
   <footer class="endnote">
-    <div>GenomeWeb taxonomy migration &mdash; same commitments, half the systems</div>
-    <div>Prepared by Sean Bales &middot; Crain Communications &middot; 04/19/2026</div>
+    <div>GenomeWeb taxonomy migration &mdash; bounded vocabulary bound in Arc</div>
+    <div>Prepared by Sean Bales &middot; Crain Communications &middot; 04/21/2026</div>
   </footer>
 
 </main>
