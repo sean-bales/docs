@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crain proposal generator &mdash; state of the state</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+
+  --rule:         #d9cfb5;
+
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+/* Scroll progress rail */
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+/* Brand strip */
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+}
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover { text-decoration-color: var(--accent); color: var(--accent-deep); }
+a:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; border-radius: 1px; }
+
+.num { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum", "lnum"; letter-spacing: -0.005em; }
+.mono { font-family: var(--font-mono); font-size: 0.85em; font-feature-settings: "tnum"; letter-spacing: -0.01em; }
+
+/* Kicker */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+/* Hero */
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+  background: transparent;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 { margin-bottom: 1.35rem; max-width: none; }
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: none;
+}
+header.hero .standfirst + .standfirst { margin-top: 0.6rem; }
+
+/* Primary section cards */
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+section.primary .lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.35;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  max-width: none;
+  letter-spacing: -0.005em;
+}
+
+/* Panels under one section number */
+.panel + .panel { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+.panel-label {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1rem;
+}
+
+/* Data bullets */
+ul.data-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+ul.data-bullets > li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+ul.data-bullets > li:last-child { border-bottom: none; }
+ul.data-bullets > li > b,
+ul.data-bullets > li > strong { color: var(--ink); font-weight: 600; }
+
+/* Callouts */
+.callout {
+  margin: 1.75rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--accent-wash);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.callout strong {
+  color: var(--accent-deep);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 0.45rem;
+}
+.callout.decision {
+  background: var(--accent2-wash);
+  border-left-color: var(--accent2);
+}
+.callout.decision strong { color: var(--accent2-deep); }
+
+/* Current -> future */
+.cmp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1rem 0 0;
+}
+@media (max-width: 860px) { .cmp-grid { grid-template-columns: 1fr; } }
+
+.cmp-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 1.5rem 1.35rem 1.25rem;
+  position: relative;
+}
+.cmp-card.current { border-top: 2px solid var(--accent); }
+.cmp-card.future {
+  border-top: 2px solid var(--accent2);
+  background:
+    linear-gradient(180deg, var(--accent2-wash) 0%, transparent 40%),
+    var(--card);
+}
+.cmp-card .cmp-label {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 0.85rem;
+}
+.cmp-card.future .cmp-label { color: var(--accent2-deep); }
+.cmp-card ul { list-style: none; padding: 0; margin: 0; }
+.cmp-card ul > li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.cmp-card ul > li:last-child { border-bottom: none; }
+.cmp-card ul > li b { color: var(--ink); font-weight: 600; }
+
+/* End-to-end flow */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 1rem 0 1.5rem;
+}
+.flow-step {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 12rem) 1fr;
+  gap: 1.35rem;
+  align-items: center;
+  padding: 1.15rem 1.35rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.flow-step.reader {
+  border-left-color: var(--accent2);
+  background:
+    linear-gradient(180deg, var(--accent2-wash) 0%, transparent 60%),
+    var(--card);
+}
+.flow-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.65rem;
+  color: var(--accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.flow-step.reader .flow-num { color: var(--accent2-deep); }
+.flow-sys {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0.5rem 0.75rem;
+  background: var(--accent-wash);
+  border-radius: 2px;
+  display: inline-block;
+  text-align: center;
+}
+.flow-step.reader .flow-sys {
+  background: var(--accent2-wash);
+  color: var(--accent2-deep);
+}
+.flow-desc {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.flow-desc b { color: var(--ink); font-weight: 600; }
+.flow-arrow {
+  width: 1px;
+  height: 1.25rem;
+  background: var(--rule);
+  margin: 0.35rem auto;
+  position: relative;
+}
+.flow-arrow::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid var(--ink-mute);
+  border-bottom: 1px solid var(--ink-mute);
+  transform: rotate(45deg);
+}
+
+@media (max-width: 720px) {
+  .flow-step {
+    grid-template-columns: 2.25rem 1fr;
+    gap: 0.75rem 1rem;
+    padding: 1rem 1.1rem;
+  }
+  .flow-sys { grid-column: 2; grid-row: 1; margin-bottom: 0.25rem; }
+  .flow-desc { grid-column: 2; grid-row: 2; }
+  .flow-num { grid-column: 1; grid-row: 1 / span 2; }
+}
+
+/* Architecture diagram (SVG topology) */
+.arch-intro {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0.25rem 0 1.25rem;
+}
+.arch-svg-wrap {
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.arch-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.arch-svg .arch-phase-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  fill: var(--ink-mute);
+}
+.arch-svg .arch-box {
+  fill: var(--card);
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.arch-svg .arch-box.box-sp { stroke: var(--sage); stroke-width: 1.5; }
+.arch-svg .arch-box.box-ss { stroke: var(--accent2); stroke-width: 1.5; }
+.arch-svg .arch-box.box-cl { stroke: var(--accent); stroke-width: 1.5; }
+.arch-svg .arch-box.box-mcp { stroke: var(--accent-deep); stroke-width: 1.5; }
+.arch-svg .arch-box.box-ae { stroke: var(--ink-faint); stroke-width: 1.25; stroke-dasharray: 3 2; }
+.arch-svg .arch-box-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.arch-svg .arch-box-sub {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 500;
+  fill: var(--ink-mute);
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+}
+.arch-svg .arch-pill {
+  fill: var(--bg);
+  stroke: var(--accent-line);
+  stroke-width: 1;
+}
+.arch-svg .arch-pill-text {
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  fill: var(--accent-deep);
+  text-anchor: middle;
+}
+.arch-svg .arch-line {
+  fill: none;
+  stroke: var(--ink-mute);
+  stroke-width: 1.25;
+}
+.arch-svg .arch-line.emphasis {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.arch-svg .arch-line-sub {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  fill: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.arch-svg .arch-line-aside {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  fill: var(--ink-mute);
+  font-style: italic;
+}
+.arch-svg .arch-step-bg {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 1.25;
+}
+.arch-svg .arch-step-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  fill: var(--accent);
+  font-weight: 500;
+  text-anchor: middle;
+}
+.arch-svg .arch-divider {
+  stroke: var(--rule);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+.arch-svg .label-bg {
+  fill: var(--card);
+  stroke: none;
+}
+.arch-svg .arch-step-num {
+  dominant-baseline: central;
+}
+
+/* Diagram legend */
+.arch-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.3rem;
+  margin: 0.85rem 0 0;
+  padding: 0.85rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+}
+.arch-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.arch-legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+}
+.arch-legend-swatch.sw-sp { border-color: var(--sage); border-width: 1.5px; }
+.arch-legend-swatch.sw-ss { border-color: var(--accent2); border-width: 1.5px; }
+.arch-legend-swatch.sw-cl { border-color: var(--accent); border-width: 1.5px; }
+.arch-legend-swatch.sw-mcp { border-color: var(--accent-deep); border-width: 1.5px; }
+.arch-legend-swatch.sw-ae { border-color: var(--ink-faint); border-width: 1.25px; border-style: dashed; }
+.arch-legend-label { color: var(--ink-soft); }
+.arch-legend-label b { color: var(--ink); font-weight: 600; }
+
+@media (max-width: 720px) {
+  .arch-svg-wrap { padding: 0.45rem; }
+  .arch-legend { padding: 0.7rem 0.85rem; font-size: 0.78rem; gap: 0.5rem 1rem; }
+}
+
+/* Table (for appendix) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+  margin: 0.85rem 0 1.25rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+}
+th {
+  text-align: left;
+  padding: 0.8rem 1rem 0.6rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+td {
+  padding: 0.68rem 1rem 0.68rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.45;
+}
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) td { background: var(--sage-wash); }
+tr.group-head td {
+  background: var(--accent-wash);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-top: 0.85rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--ink);
+}
+col.col-ask { width: 26%; }
+col.col-src { width: 16%; }
+col.col-state { width: 28%; }
+col.col-rec { width: 30%; }
+
+/* Source note */
+.src {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  margin-top: 1.25rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  line-height: 1.55;
+}
+
+/* Appendix break */
+.appx-break {
+  margin: 4rem auto 2rem;
+  padding: 2.5rem 0 0;
+  text-align: center;
+  position: relative;
+}
+.appx-break::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--ink);
+  margin: 0 auto 2rem;
+}
+.appx-break::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  margin: 0.85rem auto 0;
+}
+.appx-break h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  margin: 0;
+}
+.appx-break .sub {
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-top: 0.65rem;
+}
+
+section.appx {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+}
+section.appx h3 {
+  margin-bottom: 1.15rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+section.appx .kicker { margin-bottom: 0.9rem; color: var(--ink-mute); }
+section.appx .kicker .sec-num { font-size: 1.25rem; }
+
+/* Three-column comparison (A2: stays / changes / pending) */
+.tri-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1rem 0 0;
+}
+@media (max-width: 860px) { .tri-grid { grid-template-columns: 1fr; } }
+
+.cmp-card.pending {
+  border-top: 2px solid var(--accent2);
+  background:
+    linear-gradient(180deg, var(--accent2-wash) 0%, transparent 40%),
+    var(--card);
+}
+.cmp-card.pending .cmp-label { color: var(--accent2-deep); }
+
+.cmp-card.neutral {
+  border-top: 2px solid var(--sage);
+}
+
+/* Tentative callout variant */
+.callout.tentative {
+  background: var(--sage-wash);
+  border-left-color: var(--sage);
+}
+.callout.tentative strong { color: var(--ink-soft); }
+
+/* ERD entity fields (A3) */
+.arch-svg .entity-rule { stroke: var(--rule); stroke-width: 1; }
+.arch-svg .entity-field {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  fill: var(--ink-soft);
+  letter-spacing: 0.01em;
+}
+.arch-svg .entity-field.pk { font-weight: 600; fill: var(--ink); }
+.arch-svg .entity-field-tag {
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  fill: var(--ink-mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.arch-svg .entity-field.highlight,
+.arch-svg .entity-field-tag.highlight {
+  fill: var(--accent2-deep);
+  font-weight: 600;
+}
+.arch-svg .entity-stub {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 11px;
+  fill: var(--ink-mute);
+  text-anchor: middle;
+}
+.arch-svg .arch-box.phase-two {
+  stroke: var(--ink-faint);
+  stroke-dasharray: 4 3;
+  stroke-width: 1.25;
+}
+.arch-svg .arch-line.dashed {
+  stroke: var(--ink-faint);
+  stroke-dasharray: 5 3;
+}
+.arch-svg .rel-label {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+/* Inline legend marks (A3 ERD) */
+.legend-mark {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0 0.3rem;
+  border-radius: 2px;
+  line-height: 1;
+}
+.legend-mark.pk { color: var(--ink); background: var(--accent-wash); }
+.legend-mark.new { color: var(--accent2-deep); background: var(--accent2-wash); }
+.legend-mark.p2 {
+  color: var(--ink-mute);
+  border: 1px dashed var(--ink-faint);
+  background: transparent;
+  padding: 0 0.4rem;
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary, section.appx { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .kicker .sec-num::after { display: none; }
+  section.primary, section.appx { padding: clamp(1.25rem, 4vw, 1.75rem); }
+  table { font-size: 0.88rem; }
+  th, td { padding-right: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <span>04/22/2026</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="intro">
+    <h1>Crain proposal generator. <em>State of the state.</em></h1>
+    <p class="standfirst">Where it stands today, what was asked, where it's going, what's open.</p>
+  </header>
+
+  <!-- SECTION 01 - WHY REBUILD -->
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Why rebuild</div>
+    <h2>Scopic delivered the MVP. Crain moved it in-house.</h2>
+    <p class="lead">Current state. Rationale. What the rebuild adds.</p>
+
+    <ul class="data-bullets">
+      <li><b>What Scopic delivered.</b> A working proposal tool. RFP in, draft out, deck export. Smartsheet-driven pricing. Five city brands.</li>
+      <li><b>Why rebuild.</b> Claude Enterprise landed across Crain. Moving in-house fit the stack. Rebuild scope extends beyond Scopic's footprint.</li>
+      <li><b>Gains from the rebuild.</b> Higher-quality drafts. Enhanced capabilities &mdash; auto-ingestion, structured extraction, broader coverage. Smaller maintenance surface.</li>
+    </ul>
+
+    <p class="src">Sources: Scopic delivery repos; Claude Enterprise tenant; approved October 2025 specifications; rebuild scoping 04/2026.</p>
+  </section>
+
+  <!-- SECTION 02 - PATH FORWARD (was 03) -->
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Path forward</div>
+    <h2>Proposal work moves to Claude Enterprise on native connectors.</h2>
+    <p class="lead">Directionally viable. Implementation details open.</p>
+
+    <div class="panel">
+      <p class="panel-label">Panel 1 &middot; Shape</p>
+
+      <div class="cmp-grid">
+        <div class="cmp-card current">
+          <div class="cmp-label">Current</div>
+          <ul>
+            <li><b>Custom web application.</b> Hosted on dedicated cloud infrastructure and maintained in three repositories.</li>
+            <li><b>AI engine wraps OpenAI.</b> Custom retrieval, custom orchestration, custom chunking.</li>
+            <li><b>Proposal state lives in a purpose-built database.</b> Dashboard and archive layered on top.</li>
+            <li><b>Pricing flows on a schedule.</b> Smartsheet refreshes into the database hourly.</li>
+            <li><b>Media kits arrive via an ingestion script.</b> Run by an operator when content changes.</li>
+            <li><b>Login uses email plus one-time code.</b> Roles are defined inside the application.</li>
+          </ul>
+        </div>
+        <div class="cmp-card future">
+          <div class="cmp-label">Future &mdash; first-pass read</div>
+          <ul>
+            <li><b>Claude Enterprise project.</b> No Crain-built application; behavior lives in a system prompt.</li>
+            <li><b>Claude reads natively.</b> Hosted Microsoft 365 and Smartsheet connectors, plus one small custom write surface.</li>
+            <li><b>Proposal state lives in SharePoint.</b> Dashboard and archive are SharePoint list views.</li>
+            <li><b>Pricing reads live.</b> Smartsheet queried at proposal time, on demand.</li>
+            <li><b>Media kits read live.</b> SharePoint queried at proposal time, on demand.</li>
+            <li><b>Login uses Crain single sign-on.</b> Roles are defined in Entra groups.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 2 &middot; End-to-end flow</p>
+
+      <div class="flow" role="img" aria-label="Seven-step end-to-end flow. Step 1: content lands in SharePoint. Step 2: the Account Executive opens the Crain Proposal Generator project in Claude and starts a chat with the RFP attached. Step 3: Claude reads the RFP and extracts the structured fields for AE review. Step 4: pricing from Smartsheet and relevant documents from SharePoint flow into Claude's context through hosted connectors. Step 5: Claude drafts the strategy and product mix; the AE refines the draft in chat. Step 6: the deck, the strategy file, and the proposal metadata write back to a folder in the SharePoint Proposals library. Step 7: the Account Executive reviews the folder and sends the deck to the client.">
+        <div class="flow-step">
+          <div class="flow-num">01</div>
+          <div class="flow-sys">SharePoint</div>
+          <div class="flow-desc"><b>Content lands in SharePoint.</b> Media kits, product toolkits, and prior proposals live in their libraries.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step">
+          <div class="flow-num">02</div>
+          <div class="flow-sys">Claude project</div>
+          <div class="flow-desc"><b>AE opens the Crain Proposal Generator project</b> and starts a chat with the RFP attached.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step">
+          <div class="flow-num">03</div>
+          <div class="flow-sys">Claude</div>
+          <div class="flow-desc"><b>Claude reads the RFP</b> and extracts the structured fields for the AE to review and edit.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step">
+          <div class="flow-num">04</div>
+          <div class="flow-sys">Connectors</div>
+          <div class="flow-desc"><b>Pricing from Smartsheet and documents from SharePoint</b> flow into Claude's context through the hosted connectors.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step">
+          <div class="flow-num">05</div>
+          <div class="flow-sys">Claude</div>
+          <div class="flow-desc"><b>Claude drafts the strategy and product mix.</b> The AE refines the draft in plain-English chat.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step">
+          <div class="flow-num">06</div>
+          <div class="flow-sys">SharePoint</div>
+          <div class="flow-desc"><b>The deck, the strategy file, and metadata</b> write back to a folder in the SharePoint Proposals library.</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"></div>
+        <div class="flow-step reader">
+          <div class="flow-num">07</div>
+          <div class="flow-sys">AE</div>
+          <div class="flow-desc"><b>The AE reviews the folder</b> and sends the deck to the client.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 3 &middot; Architecture</p>
+      <p class="arch-intro">Systems as boxes, data as labeled arrows. Ingestion runs asynchronously before any AE session; the runtime flow is what happens when an AE drops in an RFP.</p>
+
+      <div class="arch-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 1080 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram. Top strip: ingestion, running before any AE session. New documents arrive in SharePoint content libraries. A content classifier reads each document and writes metadata tags — brand, product family, document type, year — back to SharePoint for search. Bottom section: runtime AE session. The AE attaches an RFP to a Claude project conversation. Claude queries Smartsheet for pricing and SharePoint for tagged media kits, toolkits, and prior proposals. Inside the Claude project the work moves through five stages: read, look up, draft, revise, deck. A save tool then writes the deck, the strategy file, and the typed metadata back to the SharePoint Proposals library, which carries the lifecycle: status transitions, version history, and audit trail.">
+
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b6248"/>
+            </marker>
+            <marker id="ahe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0d1b2a"/>
+            </marker>
+          </defs>
+
+          <!-- INGESTION -->
+          <text x="20" y="24" class="arch-phase-label">INGESTION  ·  PRE-RUNTIME</text>
+
+          <g transform="translate(40,46)">
+            <rect class="arch-box" width="190" height="78" rx="4"/>
+            <text x="95" y="34" class="arch-box-title">New content</text>
+            <text x="95" y="56" class="arch-box-sub">PPTX · PDF · DOCX</text>
+          </g>
+
+          <line x1="232" y1="85" x2="300" y2="85" class="arch-line" marker-end="url(#ah)"/>
+
+          <g transform="translate(304,46)">
+            <rect class="arch-box box-sp" width="230" height="78" rx="4"/>
+            <text x="115" y="34" class="arch-box-title">SharePoint libraries</text>
+            <text x="115" y="56" class="arch-box-sub">Media kits · Toolkits · Precedent</text>
+          </g>
+
+          <line x1="536" y1="85" x2="604" y2="85" class="arch-line" marker-end="url(#ah)"/>
+
+          <g transform="translate(608,46)">
+            <rect class="arch-box box-cl" width="230" height="78" rx="4"/>
+            <text x="115" y="34" class="arch-box-title">Content classifier</text>
+            <text x="115" y="56" class="arch-box-sub">Tags each document for search</text>
+          </g>
+
+          <!-- Feedback path: classifier → SharePoint libraries (clean U, no curve) -->
+          <path d="M 723 124 L 723 204 L 419 204 L 419 124" class="arch-line" fill="none" marker-end="url(#ah)"/>
+          <rect class="label-bg" x="378" y="196" width="388" height="16"/>
+          <text x="572" y="208" class="arch-line-aside" text-anchor="middle">tags write back  ·  Brand · Product family · Document type · Year</text>
+
+          <!-- Divider -->
+          <line x1="20" y1="238" x2="1060" y2="238" class="arch-divider"/>
+
+          <!-- RUNTIME -->
+          <text x="20" y="264" class="arch-phase-label">RUNTIME  ·  AE SESSION</text>
+
+          <!-- Smartsheet (top, centered over new Claude position) -->
+          <g transform="translate(345,296)">
+            <rect class="arch-box box-ss" width="220" height="80" rx="4"/>
+            <text x="110" y="34" class="arch-box-title">Smartsheet</text>
+            <text x="110" y="54" class="arch-box-sub">Pricing rows · Rate cards</text>
+            <text x="110" y="70" class="arch-box-sub">Frequency caps · Lead times</text>
+          </g>
+
+          <!-- AE (left) -->
+          <g transform="translate(30,440)">
+            <rect class="arch-box box-ae" width="140" height="100" rx="4"/>
+            <text x="70" y="44" class="arch-box-title">AE</text>
+            <text x="70" y="66" class="arch-box-sub">Human user</text>
+          </g>
+
+          <!-- Claude project (center, narrower + shifted right to widen flanking gaps) -->
+          <g transform="translate(245,420)">
+            <rect class="arch-box box-cl" width="420" height="160" rx="4"/>
+            <text x="210" y="34" class="arch-box-title">Claude project</text>
+
+            <!-- Internal stage pills (total 384 wide, centered within 420) -->
+            <g transform="translate(18,92)">
+              <rect class="arch-pill" width="60" height="26" rx="13"/>
+              <text x="30" y="17" class="arch-pill-text">READ</text>
+            </g>
+            <g transform="translate(88,92)">
+              <rect class="arch-pill" width="76" height="26" rx="13"/>
+              <text x="38" y="17" class="arch-pill-text">LOOK UP</text>
+            </g>
+            <g transform="translate(174,92)">
+              <rect class="arch-pill" width="60" height="26" rx="13"/>
+              <text x="30" y="17" class="arch-pill-text">DRAFT</text>
+            </g>
+            <g transform="translate(244,92)">
+              <rect class="arch-pill" width="72" height="26" rx="13"/>
+              <text x="36" y="17" class="arch-pill-text">REVISE</text>
+            </g>
+            <g transform="translate(326,92)">
+              <rect class="arch-pill" width="60" height="26" rx="13"/>
+              <text x="30" y="17" class="arch-pill-text">DECK</text>
+            </g>
+          </g>
+
+          <!-- SharePoint content (right) -->
+          <g transform="translate(755,440)">
+            <rect class="arch-box box-sp" width="220" height="100" rx="4"/>
+            <text x="110" y="36" class="arch-box-title">SharePoint</text>
+            <text x="110" y="58" class="arch-box-sub">Content libraries</text>
+            <text x="110" y="76" class="arch-box-sub">tag-filtered read</text>
+          </g>
+
+          <!-- Save tool -->
+          <g transform="translate(320,630)">
+            <rect class="arch-box box-mcp" width="260" height="78" rx="4"/>
+            <text x="130" y="34" class="arch-box-title">Save tool</text>
+            <text x="130" y="56" class="arch-box-sub">Writes back to SharePoint</text>
+          </g>
+
+          <!-- SharePoint Proposals library -->
+          <g transform="translate(190,738)">
+            <rect class="arch-box box-sp" width="720" height="78" rx="4"/>
+            <text x="360" y="30" class="arch-box-title">SharePoint Proposals library</text>
+            <text x="360" y="50" class="arch-box-sub">Folder per proposal · typed columns (Client · AE · Status · Budget · Dates · Brands)</text>
+            <text x="360" y="68" class="arch-box-sub">Lifecycle: status transitions · version history · audit</text>
+          </g>
+
+          <!-- Arrow 1: AE ↔ Claude (gap x=170..245 = 75px) -->
+          <line x1="171" y1="475" x2="245" y2="475" class="arch-line emphasis" marker-start="url(#ahe)" marker-end="url(#ahe)"/>
+          <rect class="label-bg" x="172" y="467" width="72" height="16"/>
+          <text x="208" y="479" class="arch-line-sub" text-anchor="middle">RFP + chat</text>
+          <g transform="translate(208,443)">
+            <circle r="11" class="arch-step-bg"/>
+            <text y="0" class="arch-step-num">1</text>
+          </g>
+
+          <!-- Arrow 2: Smartsheet ↔ Claude (vertical, over centered Claude x-axis 245+210=455) -->
+          <line x1="455" y1="420" x2="455" y2="378" class="arch-line emphasis" marker-start="url(#ahe)" marker-end="url(#ahe)"/>
+          <rect class="label-bg" x="472" y="391" width="94" height="16"/>
+          <text x="519" y="403" class="arch-line-sub" text-anchor="middle">Pricing · rates</text>
+          <g transform="translate(420,399)">
+            <circle r="11" class="arch-step-bg"/>
+            <text y="0" class="arch-step-num">2</text>
+          </g>
+
+          <!-- Arrow 3: Claude ↔ SharePoint content (gap x=665..755 = 90px) -->
+          <line x1="665" y1="475" x2="755" y2="475" class="arch-line emphasis" marker-start="url(#ahe)" marker-end="url(#ahe)"/>
+          <rect class="label-bg" x="667" y="467" width="86" height="16"/>
+          <text x="710" y="479" class="arch-line-sub" text-anchor="middle">Tagged content</text>
+          <g transform="translate(710,443)">
+            <circle r="11" class="arch-step-bg"/>
+            <text y="0" class="arch-step-num">3</text>
+          </g>
+
+          <!-- Arrow 4: Claude → Save tool (vertical) -->
+          <line x1="450" y1="582" x2="450" y2="628" class="arch-line emphasis" marker-end="url(#ahe)"/>
+          <rect class="label-bg" x="466" y="598" width="190" height="16"/>
+          <text x="561" y="610" class="arch-line-sub" text-anchor="middle">Deck + strategy + metadata</text>
+          <g transform="translate(420,607)">
+            <circle r="11" class="arch-step-bg"/>
+            <text y="0" class="arch-step-num">4</text>
+          </g>
+
+          <!-- Arrow 5: Save tool → Proposals (vertical) -->
+          <line x1="450" y1="710" x2="450" y2="736" class="arch-line emphasis" marker-end="url(#ahe)"/>
+          <rect class="label-bg" x="466" y="716" width="50" height="16"/>
+          <text x="491" y="728" class="arch-line-sub" text-anchor="middle">Save</text>
+          <g transform="translate(420,723)">
+            <circle r="11" class="arch-step-bg"/>
+            <text y="0" class="arch-step-num">5</text>
+          </g>
+
+        </svg>
+      </div>
+
+      <div class="arch-legend" aria-label="Diagram legend">
+        <div class="arch-legend-item">
+          <span class="arch-legend-swatch sw-ae" aria-hidden="true"></span>
+          <span class="arch-legend-label"><b>AE</b> &middot; Human user</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="arch-legend-swatch sw-cl" aria-hidden="true"></span>
+          <span class="arch-legend-label"><b>Claude</b> &middot; Agent</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="arch-legend-swatch sw-ss" aria-hidden="true"></span>
+          <span class="arch-legend-label"><b>Smartsheet</b> &middot; Data store</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="arch-legend-swatch sw-sp" aria-hidden="true"></span>
+          <span class="arch-legend-label"><b>SharePoint</b> &middot; Data store</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="arch-legend-swatch sw-mcp" aria-hidden="true"></span>
+          <span class="arch-legend-label"><b>Save tool</b> &middot; Writes back to SharePoint</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout decision">
+      <strong>Open &mdash; details</strong> Connector setup, the write-only tool surface, pilot cadence, and the scope of content-ingestion automation are the conversation the room and I have next.
+    </div>
+
+    <p class="src">Sources: solution overview (Option 2c); Claude project setup plan; strategic options document; data map (04/22/2026). Pulled 04/2026.</p>
+  </section>
+
+  <!-- SECTION 03 - PHASES -->
+  <section class="primary" id="s3">
+    <div class="kicker"><span class="sec-num">03</span>Phases</div>
+    <h2>Three phases, very TBD. Pending alignment with ops, sales leadership, Finance, and Crain IT.</h2>
+    <p class="lead">High-level only. Detail lives in the appendix.</p>
+
+    <ul class="data-bullets">
+      <li><b>Phase 1 &mdash; MVP <em>(TBD)</em>.</b> Ship on current Smartsheet and SharePoint. Claude reads native PDFs and pricing rows. Free-text reconciliation hint on every line.</li>
+      <li><b>Phase 2 &mdash; bridge on Naviga read access <em>(TBD)</em>.</b> Add structured Naviga foreign keys to every line &mdash; Rate Line ID, Rate Card ID, GL Type, Cost Center, Company, plus snapshot date. Reconciliation becomes a lookup. Unlocks when Naviga API read lands or AdOps cross-brand exports are adopted as the read path.</li>
+      <li><b>Phase 3 &mdash; consolidate on a mart <em>(TBD)</em>.</b> Analytical layer for cross-proposal reporting, cross-brand rollups, and historical win-loss analysis.</li>
+    </ul>
+
+    <div class="callout decision">
+      <strong>Open &mdash; details</strong> Phase scope, triggers, and sequencing are directional. Full detail &mdash; standardization layers, stakeholder view, and technical schema &mdash; lives in the appendix.
+    </div>
+
+    <p class="src">Sources: shipping plan (<span class="mono">02-shipping-plan.md</span>, 04/22/2026); grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); discovery synthesis. Pulled 04/2026.</p>
+  </section>
+
+  <!-- APPENDIX BREAK -->
+  <div class="appx-break">
+    <h2>Appendix</h2>
+    <div class="sub">Requirements inventory. Standardization. Product data model &mdash; stakeholder view and technical view.</div>
+  </div>
+
+  <!-- APPENDIX A1 - INVENTORY -->
+  <section class="appx" id="a1">
+    <div class="kicker"><span class="sec-num">A1</span>Requirements inventory</div>
+    <h3>Each row names the ask, its source, the capability state in the build, and a first-pass directional read.</h3>
+
+    <table>
+      <colgroup>
+        <col class="col-ask">
+        <col class="col-src">
+        <col class="col-state">
+        <col class="col-rec">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Ask / capability</th>
+          <th>Source</th>
+          <th>Build state</th>
+          <th>First-pass recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="group-head"><td colspan="4">Auth and access</td></tr>
+        <tr>
+          <td>Two-factor login for AEs.</td>
+          <td>Kickoff (formal).</td>
+          <td>Email plus one-time code; manual admin provisioning.</td>
+          <td>Replace with Crain single sign-on via Entra.</td>
+        </tr>
+        <tr>
+          <td>Track creator, no roles at MVP.</td>
+          <td>Kickoff (formal).</td>
+          <td>Two roles in the build &mdash; Account Executive and Sales Manager.</td>
+          <td>Replace with Entra-group permissioning on SharePoint.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">Proposal dashboard</td></tr>
+        <tr>
+          <td>Proposal archive with list, filter, and search.</td>
+          <td>Kickoff (formal).</td>
+          <td>Dashboard with filters, search, and status updates.</td>
+          <td>Replace with SharePoint list views on the Proposals library.</td>
+        </tr>
+        <tr>
+          <td>Proposal status lifecycle.</td>
+          <td>Kickoff (inferred) and approved spec (formal).</td>
+          <td>Status enum in the build; AE can update.</td>
+          <td>Port as a SharePoint column with the same choice set.</td>
+        </tr>
+        <tr>
+          <td>Win-loss outcomes feed back into the system.</td>
+          <td>Approved spec (formal).</td>
+          <td>Outcomes captured as status values; no feedback loop reads them.</td>
+          <td>Defer to pilot; revisit as a reporting beat.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">RFP intake</td></tr>
+        <tr>
+          <td>Structured RFP extraction with field-level citations.</td>
+          <td>Kickoff (formal) and approved spec (formal).</td>
+          <td>16-field extraction with page and source-text citations.</td>
+          <td>Port the 16-field contract into the Claude system prompt. Native citations on tool use.</td>
+        </tr>
+        <tr>
+          <td>Informal RFP intake including call recordings and AE notes.</td>
+          <td>Kickoff (formal).</td>
+          <td>Not covered in the build.</td>
+          <td>Native in Claude-based flow; attach audio or notes to the chat.</td>
+        </tr>
+        <tr>
+          <td>Excel and PowerPoint RFP support.</td>
+          <td>Execution-phase (sales review, 04/13/2026).</td>
+          <td>Build accepts PDF and DOCX only.</td>
+          <td>Native in Claude-based flow; multi-format intake at the connector layer.</td>
+        </tr>
+        <tr>
+          <td>Manual entry alternative when no file is available.</td>
+          <td>Approved spec (formal).</td>
+          <td>Manual entry form; AI-extracted fields pre-populate when a file is uploaded.</td>
+          <td>Replace with in-chat manual field entry.</td>
+        </tr>
+        <tr>
+          <td>Smartsheet Proposal Hub integration.</td>
+          <td>Execution-phase (sales review, 10/27/2025).</td>
+          <td>Not covered in the build.</td>
+          <td>Flag for reconciliation with the SharePoint Proposals library design.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">Strategy generation</td></tr>
+        <tr>
+          <td>AE to first-draft proposal in minutes.</td>
+          <td>Kickoff (formal).</td>
+          <td>Strategy generation runs in 30&ndash;90 seconds end-to-end.</td>
+          <td>Native in Claude-based flow with equivalent latency.</td>
+        </tr>
+        <tr>
+          <td>Train on Crain's prior proposals (10&ndash;20+ historicals).</td>
+          <td>Kickoff (formal).</td>
+          <td>Historical proposals not read at runtime in the build.</td>
+          <td>Native in Claude-based flow; historicals read from SharePoint at proposal time.</td>
+        </tr>
+        <tr>
+          <td>Recommendations respect budget, inventory, and eligibility.</td>
+          <td>Approved spec (formal).</td>
+          <td>Constraint enforcement flagged as partial in discovery.</td>
+          <td>Port as a deterministic constraint-check tool the agent calls. Structural rather than prompt-only.</td>
+        </tr>
+        <tr>
+          <td>Product-to-objective mapping.</td>
+          <td>Execution-phase (sales review, 10/27/2025).</td>
+          <td>Not covered in the build.</td>
+          <td>Port as a system-prompt rule referencing the ratified taxonomy.</td>
+        </tr>
+        <tr>
+          <td>Strategy narrative across defined sections.</td>
+          <td>Kickoff (inferred) and approved spec (formal).</td>
+          <td>Nine-section narrative produced by one model call.</td>
+          <td>Port the section list as a convention UAT can edit.</td>
+
+        </tr>
+        <tr>
+          <td>Inline citations on every recommendation.</td>
+          <td>Approved spec (formal).</td>
+          <td>Citations present at RFP extraction; not on generated content.</td>
+          <td>Native in Claude-based flow; agent emits citations as part of tool use.</td>
+        </tr>
+        <tr>
+          <td>Mar 18 reset: simplified Smartsheet + annual media-kit extraction.</td>
+          <td>Execution-phase (weekly meeting, 03/18/2026).</td>
+          <td>Smartsheet delivered 03/20/2026; extractor built as an operator-run script.</td>
+          <td>Obsoleted; Claude reads native media-kit PDFs from SharePoint at proposal time.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">Refinement chat</td></tr>
+        <tr>
+          <td>Conversational refinement of the draft.</td>
+          <td>Kickoff (formal).</td>
+          <td>Chat panel present; operability read pending.</td>
+          <td>Replace with streaming Claude chat and prompt caching on static corpus content.</td>
+        </tr>
+        <tr>
+          <td>Refinement chat taxonomy (seven categories with an unsupported-action gate).</td>
+          <td>Approved spec (formal).</td>
+          <td>Open-ended chat handler in the build.</td>
+          <td>Obsoleted; open-ended Claude chat covers the same surface.</td>
+        </tr>
+        <tr>
+          <td>Block-locking on individual slides.</td>
+          <td>Kickoff (formal).</td>
+          <td>Lock and unlock work; user-message affordance not surfaced.</td>
+          <td>Port as prompt instruction at MVP; promote to a tool if pilot shows drift.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">Export</td></tr>
+        <tr>
+          <td>One-click copy-paste per block.</td>
+          <td>Kickoff (formal).</td>
+          <td>Per-block copy action in block headers.</td>
+          <td>Native in chat-based flow via copy-to-clipboard.</td>
+        </tr>
+        <tr>
+          <td>Document export for paste into Crain templates.</td>
+          <td>Approved spec (formal).</td>
+          <td>PDF export via headless browser.</td>
+          <td>Replace with Claude for PowerPoint native .pptx output.</td>
+        </tr>
+        <tr>
+          <td>PowerPoint generation.</td>
+          <td>Kickoff (out-of-scope) and approved spec (deferred).</td>
+          <td>Export surface present in the build outside the kickoff list.</td>
+          <td>Native in Claude-based flow via Claude for PowerPoint.</td>
+        </tr>
+        <tr>
+          <td>Shareable web link.</td>
+          <td>Kickoff (out-of-scope) and approved spec (deferred).</td>
+          <td>Surface present in the build outside the kickoff list.</td>
+          <td>Replace with SharePoint folder sharing via Entra.</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="4">Data ingestion</td></tr>
+        <tr>
+          <td>Smartsheet as primary data source for pricing.</td>
+          <td>Kickoff (formal).</td>
+          <td>Hourly cron reads the pricing Smartsheet into the product database.</td>
+          <td>Read live via the hosted Smartsheet connector at proposal time.</td>
+        </tr>
+        <tr>
+          <td>SharePoint media-kit ingestion.</td>
+          <td>Approved spec (formal).</td>
+          <td>Not covered in the build.</td>
+          <td>Obsoleted; SharePoint is system of record and Claude reads natively.</td>
+        </tr>
+        <tr>
+          <td>Inventory check at proposal generation.</td>
+          <td>Kickoff (formal); deferred 03/05/2026.</td>
+          <td>Deferred; build assumes all products available.</td>
+          <td>Defer to pilot; flag for the standardization track.</td>
+        </tr>
+        <tr>
+          <td>Manual upload of media kits and past proposals.</td>
+          <td>Kickoff (formal).</td>
+          <td>User-facing upload not covered in the build.</td>
+          <td>Replace with SharePoint library upload owned by content operators.</td>
+        </tr>
+        <tr>
+          <td>Use existing SaaS; minimize custom development.</td>
+          <td>Brief (07/2025); joint decision 10/2025.</td>
+          <td>Custom platform shape shipped per the joint October decision.</td>
+          <td>Returns to the original shape at the Claude-and-connectors layer.</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <p class="src">Sources: approved October 2025 feature and technical specifications; kickoff minutes (09/12/2025); July 2025 brief; execution-phase email threads; discovery 1:1s. Pulled 04/2026.</p>
+  </section>
+
+  <!-- APPENDIX A2 - STANDARDIZATION -->
+  <section class="appx" id="a2">
+    <div class="kicker"><span class="sec-num">A2</span>Standardization</div>
+    <h3>Standardization runs four layers. The agentic direction absorbs the leaf layer at read time.</h3>
+
+    <ul class="data-bullets">
+      <li><b>Layer one &mdash; Sales Family.</b> ~12 candidates per canonical data analysis. Sales-defined, not a Naviga concept. Stage-2 ratifies the final list with sales leadership at the table.</li>
+      <li><b>Layer two &mdash; GL Type.</b> 71 codes enterprise-wide. Finance-owned. Registry-settled. Examples: <span class="mono">DNEW</span> (Newsletters), <span class="mono">CSPC</span> (Custom Sponsored Content), <span class="mono">PDIS</span> (Print Display).</li>
+      <li><b>Layer three &mdash; publications.</b> 21 active across 2 Companies (<span class="mono">01</span> CCI, <span class="mono">02</span> LTD). In Naviga this is Cost Center. Five publications book to LTD (Europe).</li>
+      <li><b>Layer four &mdash; per-product identity.</b> ~4,000&ndash;5,000 Rate Lines enterprise-wide. Naviga IS the register &mdash; no Crain-side minting. 65% of Rate Line IDs persist year-over-year; 35% reissue. Snapshot date at resolve-time handles reissue.</li>
+      <li><b>Directional hypothesis.</b> Semantic match at read time for MVP. Phase 2 anchors on Rate Line ID (<span class="mono">naviga_rate_line_id</span> + snapshot date) once the read path lands. Phase 3 consolidates on a mart.</li>
+    </ul>
+
+    <div class="callout decision">
+      <strong>Open &mdash; discussion</strong> Resolution here shapes how much weight the semantic-match hypothesis has to carry versus the structured-FK Phase-2 path.
+    </div>
+
+    <p class="src">Sources: grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); shipping plan (<span class="mono">02-shipping-plan.md</span>); stakeholder one-pager (04/22/2026); discovery synthesis. Pulled 04/2026.</p>
+  </section>
+
+  <!-- APPENDIX A3 - PRODUCT DATA MODEL, STAKEHOLDER VIEW -->
+  <section class="appx" id="a3">
+    <div class="kicker"><span class="sec-num">A3</span>Product data model &middot; stakeholder view</div>
+    <h3>The three-view framing maps onto five entities, plus a sixth for phase-2. Family splits two ways.</h3>
+
+    <div class="callout tentative">
+      <strong>Tentative</strong> Two things can reshape this: (1) Naviga API access and any schema change that surfaces when it lands; (2) blockers or preferences the stakeholder group raises after review.
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>Brand (1).</b> The publication &mdash; <em>Modern Healthcare</em>, <em>Crain's Chicago Business</em>, <em>Ad Age</em>. In Naviga this is encoded as Cost Center. 21 active publications across 2 Companies.</li>
+      <li><b>Sales Family (2a).</b> How sales talks about the category &mdash; Newsletters, Custom Content, Recognition Programs, Event Sponsorship. ~12 candidates; Stage-2 ratifies.</li>
+      <li><b>GL Type (2b).</b> How Finance books the revenue &mdash; 71 codes enterprise-wide. Finance-owned, already settled.</li>
+      <li><b>Product Offering (3).</b> The sellable unit &mdash; one Naviga Rate Line. Where rate, lead time, and creative specs live. Naviga IS the Offering register.</li>
+      <li><b>Resolved Line Item (4).</b> One row in one proposal's <span class="mono">strategy.json</span> &mdash; which Offering an AE picked, at what price, for what dates, with Claude's reasoning attached.</li>
+      <li><b>Execution Record (5).</b> Delivery-side data from specialist tools &mdash; Jotform leads, event registrations, ad-server logs. Named now; tool builds this phase-2 <em>(TBD)</em>.</li>
+    </ul>
+
+    <div class="panel">
+      <p class="panel-label">Panel 1 &middot; Two products across the layers</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>MH Custom Webinar</th>
+            <th>CCB &ldquo;The Book&rdquo; Editorial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Brand (1)</b></td>
+            <td>Modern Healthcare (Cost Center <span class="mono">026</span>, Company <span class="mono">01</span>)</td>
+            <td>Crain's Chicago Business (Cost Center <span class="mono">007</span>, Company <span class="mono">01</span>)</td>
+          </tr>
+          <tr>
+            <td><b>Sales Family (2a)</b></td>
+            <td>Custom / Webinar</td>
+            <td>Recognition Programs</td>
+          </tr>
+          <tr>
+            <td><b>GL Type (2b)</b></td>
+            <td><span class="mono">CWEB</span> (Custom Webinar)</td>
+            <td><span class="mono">CPRI</span> (Custom Print Ads) + optional <span class="mono">RC2425</span></td>
+          </tr>
+          <tr>
+            <td><b>Product Offering (3)</b></td>
+            <td>Single Sponsored Webinar, 2026, $25,000 &mdash; one Naviga Rate Line</td>
+            <td>The Book &mdash; Full Page, 2026, $15,000 &mdash; one Naviga Rate Line</td>
+          </tr>
+          <tr>
+            <td><b>Resolved Line Item (4)</b></td>
+            <td>One row in <span class="mono">strategy.json.product_mix[]</span> carrying Rate Line ID + snapshot date + structured FK bundle</td>
+            <td>Same shape</td>
+          </tr>
+          <tr>
+            <td><b>Execution Record (5)</b></td>
+            <td>Jotform leads + Excel audit + webinar registration platform. <em>Analogue to whitepapers &mdash; confirm in execution team.</em></td>
+            <td>Print production schedule + nomination platform. <em>Confirm in editorial team.</em></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="src" style="margin-top: 0.25rem; border-top: none; padding-top: 0;">Rates pulled from <span class="mono">Crain Brand Pricing</span> Smartsheet, 2026 column. Webinar row: Modern Healthcare $25,000. The Book row: Chicago full-page $15,000.</p>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 2 &middot; What stays, what changes, what's pending</p>
+
+      <div class="tri-grid">
+        <div class="cmp-card neutral">
+          <div class="cmp-label">What stays</div>
+          <ul>
+            <li><b>Cross-publication category work</b> becomes the Sales Family layer &mdash; applied at the right layer instead of fighting the ID.</li>
+            <li><b>Prior single-publication template</b> already anchored on Naviga's GL Type. The full Naviga master confirms the instinct.</li>
+            <li><b>Cross-brand overlap</b> lands at Sales Family + GL Type, not at a shared product ID.</li>
+            <li><b>Awards and recognition content</b> (40 Under 40, Notable Women, The Book, Best Places to Work) routes through existing GL Types by format plus optional <span class="mono">RC2425</span> Revenue Category. Surfacing what's already in Naviga, not inventing a bucket.</li>
+            <li><b>Earlier Naviga mapping work</b> preserves as a structured set of FKs on every Offering, populated from AdOps's quarterly cross-brand exports (23 files already on SharePoint).</li>
+          </ul>
+        </div>
+        <div class="cmp-card current">
+          <div class="cmp-label">What changes</div>
+          <ul>
+            <li><b>Product ID stops doing three jobs.</b> Offering identity = Naviga's Rate Line ID. Sales Family and GL Type are separate tags. Cost Center + Company carry publication/billing scope.</li>
+            <li><b>Family splits two ways.</b> Sales Family (sales-defined, ~12 candidates, Stage-2 ratifies) and GL Type (Finance-owned, 71 codes, settled). Two views, two cadences.</li>
+            <li><b>Naviga mapping is not one column.</b> It's a nine-key FK bundle on every Offering plus a snapshot date to handle the 35% YoY Rate Line reissue rate.</li>
+            <li><b>2027 rollover handled by Naviga.</b> Ratecard IDs carry year context; Rate Line IDs persist 65% year-over-year; snapshot at resolve-time keeps every past proposal correct. No Smartsheet "never overwrite" rule required.</li>
+          </ul>
+        </div>
+        <div class="cmp-card pending">
+          <div class="cmp-label">What's pending <em>(TBD)</em></div>
+          <ul>
+            <li><b>Naviga API read access.</b> Accelerates Phase 2. AdOps cross-brand exports already cover the schema and work as the interim read path.</li>
+            <li><b>Stakeholder review</b> of this model before team-wide ratification.</li>
+            <li><b>Stage-2 ratification output</b> &mdash; final Sales Family list and alias map for 19 sub-brand Cost Centers. GL Type list already settled.</li>
+            <li><b>Four open validation items</b> &mdash; <span class="mono">CRE2</span> GL Type origin; 46 Editorial rows dropped during Scopic normalization; <span class="mono">RC2425</span> usage pattern; Smartsheet vs. AdOps operational read path.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="src">Sources: stakeholder one-pager (<span class="mono">stakeholder-one-pager.md</span>, 04/22/2026); grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); Crain Brand Pricing Smartsheet. Pulled 04/2026.</p>
+  </section>
+
+  <!-- APPENDIX A4 - PRODUCT DATA MODEL, TECHNICAL VIEW -->
+  <section class="appx" id="a4">
+    <div class="kicker"><span class="sec-num">A4</span>Product data model &middot; technical view</div>
+    <h3>Six entities model the data. Five ship MVP. Execution Record waits phase-2.</h3>
+
+    <div class="callout tentative">
+      <strong>Tentative</strong> Two things can reshape this: (1) Naviga API read access and any schema change that surfaces when it lands; (2) blockers or preferences the stakeholder group raises after review.
+    </div>
+
+    <p class="lead">Offering identity = Naviga's Rate Line ID + snapshot date. Family splits into Sales Family (sales-defined, ~12 candidates) and GL Type (Finance-owned, 71 codes, settled). Every Offering carries a nine-key Naviga FK bundle. <span class="mono">naviga_reconciliation_hint</span> demotes to a nullable fallback for custom one-offs; structured FKs are the primary path.</p>
+
+    <div class="panel">
+      <p class="panel-label">Panel 1 &middot; Entity-relationship diagram</p>
+
+      <div class="arch-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 1080 940" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Entity-relationship diagram. Six entities. Brand publishes many Product Offerings. Sales Family categorizes many Offerings. GL Type books many Offerings as revenue. Product Offering is sold as many Resolved Line Items. Each Resolved Line Item is delivered by zero or one Execution Record, shown dashed as phase-2. Offering primary key is the composite Naviga Rate Line ID plus snapshot date. Line Item carries a structured offering_ref bundle of nine Naviga foreign keys, highlighted; reconciliation hint remains as a nullable fallback for custom one-offs.">
+
+          <defs>
+            <marker id="erd-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0d1b2a"/>
+            </marker>
+            <marker id="erd-ah-mute" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#9a9178"/>
+            </marker>
+          </defs>
+
+          <!-- BRAND entity -->
+          <g transform="translate(20,40)">
+            <rect class="arch-box box-cl" width="320" height="150" rx="4"/>
+            <text x="160" y="32" class="arch-box-title">BRAND</text>
+            <line x1="12" y1="48" x2="308" y2="48" class="entity-rule"/>
+            <text x="20" y="74" class="entity-field pk">naviga_cost_center</text>
+            <text x="300" y="74" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="96" class="entity-field pk">naviga_company_id</text>
+            <text x="300" y="96" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="118" class="entity-field">canonical_name</text>
+            <text x="300" y="118" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="140" class="entity-field">portfolio_class</text>
+            <text x="300" y="140" class="entity-field-tag" text-anchor="end">string</text>
+          </g>
+
+          <!-- SALES_FAMILY entity -->
+          <g transform="translate(380,40)">
+            <rect class="arch-box box-cl" width="320" height="150" rx="4"/>
+            <text x="160" y="32" class="arch-box-title">SALES_FAMILY</text>
+            <line x1="12" y1="48" x2="308" y2="48" class="entity-rule"/>
+            <text x="20" y="74" class="entity-field pk">canonical_name</text>
+            <text x="300" y="74" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="96" class="entity-field">description</text>
+            <text x="300" y="96" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="118" class="entity-field">primary_objectives</text>
+            <text x="300" y="118" class="entity-field-tag" text-anchor="end">list</text>
+            <text x="160" y="144" class="entity-stub" style="font-style: italic;">~12 candidates &middot; Stage-2 ratifies</text>
+          </g>
+
+          <!-- GL_TYPE entity -->
+          <g transform="translate(740,40)">
+            <rect class="arch-box box-cl" width="320" height="150" rx="4"/>
+            <text x="160" y="32" class="arch-box-title">GL_TYPE</text>
+            <line x1="12" y1="48" x2="308" y2="48" class="entity-rule"/>
+            <text x="20" y="74" class="entity-field pk">naviga_gl_type_id</text>
+            <text x="300" y="74" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="96" class="entity-field">description</text>
+            <text x="300" y="96" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="118" class="entity-field">area</text>
+            <text x="300" y="118" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="160" y="144" class="entity-stub" style="font-style: italic;">71 codes &middot; Finance-owned &middot; settled</text>
+          </g>
+
+          <!-- PRODUCT_OFFERING entity (two columns) -->
+          <g transform="translate(170,240)">
+            <rect class="arch-box box-cl" width="740" height="300" rx="4"/>
+            <text x="370" y="32" class="arch-box-title">PRODUCT_OFFERING</text>
+            <line x1="12" y1="48" x2="728" y2="48" class="entity-rule"/>
+            <!-- Left column -->
+            <text x="20" y="74" class="entity-field pk">naviga_rate_line_id</text>
+            <text x="350" y="74" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="96" class="entity-field pk">naviga_rate_line_snapshot_date</text>
+            <text x="350" y="96" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="118" class="entity-field">naviga_rate_card_id</text>
+            <text x="350" y="118" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="140" class="entity-field">naviga_product_id</text>
+            <text x="350" y="140" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="162" class="entity-field">naviga_ad_type_id</text>
+            <text x="350" y="162" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="184" class="entity-field">naviga_gl_type_id</text>
+            <text x="350" y="184" class="entity-field-tag" text-anchor="end">FK &rarr; GL_TYPE</text>
+            <text x="20" y="206" class="entity-field">naviga_cost_center</text>
+            <text x="350" y="206" class="entity-field-tag" text-anchor="end">FK &rarr; BRAND</text>
+            <text x="20" y="228" class="entity-field">naviga_company_id</text>
+            <text x="350" y="228" class="entity-field-tag" text-anchor="end">FK &rarr; BRAND</text>
+            <text x="20" y="250" class="entity-field">naviga_line_type</text>
+            <text x="350" y="250" class="entity-field-tag" text-anchor="end">enum 4</text>
+            <text x="20" y="272" class="entity-field">naviga_rev_cat_id</text>
+            <text x="350" y="272" class="entity-field-tag" text-anchor="end">nullable</text>
+            <!-- Right column -->
+            <text x="390" y="74" class="entity-field">sales_family_fk</text>
+            <text x="720" y="74" class="entity-field-tag" text-anchor="end">FK &rarr; SALES_FAMILY</text>
+            <text x="390" y="96" class="entity-field">rate</text>
+            <text x="720" y="96" class="entity-field-tag" text-anchor="end">money</text>
+            <text x="390" y="118" class="entity-field">rate_type</text>
+            <text x="720" y="118" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="390" y="140" class="entity-field">lead_time_days</text>
+            <text x="720" y="140" class="entity-field-tag" text-anchor="end">int</text>
+            <text x="390" y="162" class="entity-field">frequency_cap</text>
+            <text x="720" y="162" class="entity-field-tag" text-anchor="end">int nullable</text>
+            <text x="390" y="184" class="entity-field">creative_specifications</text>
+            <text x="720" y="184" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="390" y="206" class="entity-field">audience_reach</text>
+            <text x="720" y="206" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="390" y="228" class="entity-field">format_variant</text>
+            <text x="720" y="228" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="390" y="250" class="entity-field">media_kit_description</text>
+            <text x="720" y="250" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="390" y="272" class="entity-field">naviga_long_product_name</text>
+            <text x="720" y="272" class="entity-field-tag" text-anchor="end">string</text>
+            <!-- Column divider -->
+            <line x1="370" y1="55" x2="370" y2="295" class="entity-rule"/>
+          </g>
+
+          <!-- RESOLVED_LINE_ITEM entity (two columns) -->
+          <g transform="translate(20,600)">
+            <rect class="arch-box box-cl" width="620" height="310" rx="4"/>
+            <text x="310" y="32" class="arch-box-title">RESOLVED_LINE_ITEM</text>
+            <line x1="12" y1="48" x2="608" y2="48" class="entity-rule"/>
+            <!-- Left column -->
+            <text x="20" y="74" class="entity-field pk">line_item_id</text>
+            <text x="290" y="74" class="entity-field-tag" text-anchor="end">PK</text>
+            <text x="20" y="96" class="entity-field">units</text>
+            <text x="290" y="96" class="entity-field-tag" text-anchor="end">int</text>
+            <text x="20" y="118" class="entity-field">unit_price</text>
+            <text x="290" y="118" class="entity-field-tag" text-anchor="end">money</text>
+            <text x="20" y="140" class="entity-field">cost</text>
+            <text x="290" y="140" class="entity-field-tag" text-anchor="end">money</text>
+            <text x="20" y="162" class="entity-field">start_date</text>
+            <text x="290" y="162" class="entity-field-tag" text-anchor="end">date</text>
+            <text x="20" y="184" class="entity-field">end_date</text>
+            <text x="290" y="184" class="entity-field-tag" text-anchor="end">date</text>
+            <text x="20" y="206" class="entity-field">frequency_cap_snapshot</text>
+            <text x="290" y="206" class="entity-field-tag" text-anchor="end">int</text>
+            <text x="20" y="228" class="entity-field">lead_time_days_snapshot</text>
+            <text x="290" y="228" class="entity-field-tag" text-anchor="end">int</text>
+            <text x="20" y="250" class="entity-field">match_rationale</text>
+            <text x="290" y="250" class="entity-field-tag" text-anchor="end">string</text>
+            <text x="20" y="272" class="entity-field">match_confidence</text>
+            <text x="290" y="272" class="entity-field-tag" text-anchor="end">enum</text>
+            <text x="20" y="294" class="entity-field">source.smartsheet_row_id</text>
+            <text x="290" y="294" class="entity-field-tag" text-anchor="end">string</text>
+            <!-- Right column: offering_ref bundle -->
+            <text x="330" y="74" class="entity-field highlight">offering_ref.rate_line_id</text>
+            <text x="600" y="74" class="entity-field-tag highlight" text-anchor="end">FK</text>
+            <text x="330" y="96" class="entity-field highlight">offering_ref.rate_line_snapshot_date</text>
+            <text x="600" y="96" class="entity-field-tag highlight" text-anchor="end">date</text>
+            <text x="330" y="118" class="entity-field highlight">offering_ref.rate_card_id</text>
+            <text x="600" y="118" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="140" class="entity-field highlight">offering_ref.gl_type_id</text>
+            <text x="600" y="140" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="162" class="entity-field highlight">offering_ref.cost_center</text>
+            <text x="600" y="162" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="184" class="entity-field highlight">offering_ref.company_id</text>
+            <text x="600" y="184" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="206" class="entity-field highlight">offering_ref.sales_family</text>
+            <text x="600" y="206" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="228" class="entity-field highlight">offering_ref.brand</text>
+            <text x="600" y="228" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="250" class="entity-field highlight">offering_ref.product_name</text>
+            <text x="600" y="250" class="entity-field-tag highlight" text-anchor="end">string</text>
+            <text x="330" y="278" class="entity-field" style="fill: var(--ink-mute); font-style: italic;">naviga_reconciliation_hint</text>
+            <text x="600" y="278" class="entity-field-tag" text-anchor="end" style="fill: var(--ink-mute);">fallback</text>
+            <text x="330" y="298" class="entity-field" style="fill: var(--ink-mute); font-style: italic;">source.catalog_year &middot; source.attachment_ref</text>
+            <text x="600" y="298" class="entity-field-tag" text-anchor="end" style="fill: var(--ink-mute);">provenance</text>
+            <!-- Column divider -->
+            <line x1="310" y1="55" x2="310" y2="305" class="entity-rule"/>
+          </g>
+
+          <!-- EXECUTION_RECORD entity (phase-2, dashed) -->
+          <g transform="translate(680,660)">
+            <rect class="arch-box phase-two" width="380" height="160" rx="4"/>
+            <text x="190" y="36" class="arch-box-title">EXECUTION_RECORD</text>
+            <line x1="12" y1="54" x2="368" y2="54" class="entity-rule"/>
+            <text x="190" y="90" class="entity-stub">phase-2 stub</text>
+            <text x="190" y="112" class="entity-stub">specifics differ per Sales Family</text>
+            <text x="190" y="138" class="entity-stub" style="font-style: italic;">(TBD)</text>
+          </g>
+
+          <!-- Relationships -->
+
+          <!-- BRAND -> PRODUCT_OFFERING "publishes" -->
+          <path d="M 180 190 L 180 215 L 360 215 L 360 240" class="arch-line emphasis" fill="none" marker-end="url(#erd-ah)"/>
+          <rect class="label-bg" x="220" y="207" width="130" height="16"/>
+          <text x="285" y="219" class="rel-label" text-anchor="middle">publishes &middot; 1..N</text>
+
+          <!-- SALES_FAMILY -> PRODUCT_OFFERING "categorizes" -->
+          <line x1="540" y1="190" x2="540" y2="240" class="arch-line emphasis" marker-end="url(#erd-ah)"/>
+          <rect class="label-bg" x="460" y="207" width="160" height="16"/>
+          <text x="540" y="219" class="rel-label" text-anchor="middle">categorizes &middot; 1..N</text>
+
+          <!-- GL_TYPE -> PRODUCT_OFFERING "books_as" -->
+          <path d="M 900 190 L 900 215 L 720 215 L 720 240" class="arch-line emphasis" fill="none" marker-end="url(#erd-ah)"/>
+          <rect class="label-bg" x="740" y="207" width="120" height="16"/>
+          <text x="800" y="219" class="rel-label" text-anchor="middle">books_as &middot; 1..N</text>
+
+          <!-- PRODUCT_OFFERING -> RESOLVED_LINE_ITEM "sold_as" -->
+          <path d="M 420 540 L 420 570 L 330 570 L 330 600" class="arch-line emphasis" fill="none" marker-end="url(#erd-ah)"/>
+          <rect class="label-bg" x="340" y="562" width="120" height="16"/>
+          <text x="400" y="574" class="rel-label" text-anchor="middle">sold_as &middot; 1..N</text>
+
+          <!-- RESOLVED_LINE_ITEM -> EXECUTION_RECORD "delivered_by" (dashed, 0..1) -->
+          <line x1="640" y1="740" x2="680" y2="740" class="arch-line dashed" marker-end="url(#erd-ah-mute)"/>
+          <rect class="label-bg" x="555" y="732" width="140" height="16"/>
+          <text x="625" y="744" class="rel-label" text-anchor="middle" style="fill: var(--ink-mute);">delivered_by &middot; 0..1</text>
+
+        </svg>
+      </div>
+
+      <div class="arch-legend" aria-label="ERD legend">
+        <div class="arch-legend-item">
+          <span class="legend-mark pk" aria-hidden="true">PK</span>
+          <span class="arch-legend-label"><b>Primary key</b> &middot; bold ink</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="legend-mark new" aria-hidden="true">FK</span>
+          <span class="arch-legend-label"><b>offering_ref bundle</b> &middot; nine-key Naviga FK set on Line Item</span>
+        </div>
+        <div class="arch-legend-item">
+          <span class="legend-mark p2" aria-hidden="true">phase-2</span>
+          <span class="arch-legend-label"><b>Phase-2</b> &middot; dashed border and arrow</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 2 &middot; Structured <span class="mono">offering_ref</span> bundle on each Line Item</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Source</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_rate_line_id</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td>Primary billing-reconciliation key. Naviga's Rate Line is the sellable leaf.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_rate_line_snapshot_date</span></td>
+            <td>date</td>
+            <td>Resolve-time</td>
+            <td>Handles the 35% YoY Rate Line reissue rate &mdash; 65% persist, 35% reissue.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_rate_card_id</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td>Year+context wrapper. 110 Ratecards span multiple years.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_gl_type_id</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td>Finance accounting classifier. 71 codes, settled.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_cost_center</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td>Publication FK. 21 active publications.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.naviga_company_id</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td><span class="mono">01</span> CCI or <span class="mono">02</span> LTD. Billing entity.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.sales_family</span></td>
+            <td>string</td>
+            <td>Direct from Offering</td>
+            <td>Sales-facing category.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.brand</span></td>
+            <td>string</td>
+            <td>Derived from cost_center + company</td>
+            <td>Crain publication long name.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">offering_ref.product_name</span></td>
+            <td>string</td>
+            <td><span class="mono">naviga_long_product_name</span> or <span class="mono">media_kit_description</span></td>
+            <td>Display name for the AE and billing operator.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">match_confidence</span></td>
+            <td>high / medium / low</td>
+            <td>Claude self-assessment</td>
+            <td>AE trust. Focuses review on medium/low lines.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">naviga_reconciliation_hint</span> <em>(nullable fallback)</em></td>
+            <td>free-text string</td>
+            <td>Claude generation</td>
+            <td>Fallback for custom one-offs with no Naviga Rate Line. Demotes from primary to nullable in canonical.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 3 &middot; Governance hooks and POC-verify</p>
+
+      <div class="cmp-grid">
+        <div class="cmp-card current">
+          <div class="cmp-label">Governance &mdash; Stage-2 deliverables <em>(TBD)</em></div>
+          <ul>
+            <li><b>Sales Family ratification.</b> 12 data-derived candidates per canonical 00 &sect;6.3. Cross-brand + events rollup may extend to ~12&ndash;20 with sales-leadership input. GL Type list (71 codes) is already settled.</li>
+            <li><b>Sub-brand Cost Center labels.</b> Finance deliverable. 19 <span class="mono">_00</span>-suffixed Cost Centers (PIC, PIX, AABP, etc.) need usage-weighted labels.</li>
+            <li><b>Four open validation items.</b> <span class="mono">CRE2</span> origin (typo vs. new code), 46 dropped Editorial rows (10 of 56 survived Scopic normalization), <span class="mono">RC2425</span> usage pattern, Smartsheet vs. AdOps operational read-path choice.</li>
+          </ul>
+        </div>
+        <div class="cmp-card future">
+          <div class="cmp-label">POC-verify &mdash; load-bearing</div>
+          <ul>
+            <li><b>Smartsheet MCP returns attachment contents</b>, not just filenames. Load-bearing for industry-brand coverage.</li>
+            <li><b>Hosted M365 connector reads native PPTX layout</b>, not just text extraction. Load-bearing for media-kit comprehension.</li>
+            <li><b>AdOps SharePoint exports parseable</b> with the 18&ndash;20-column schema across all 23 brand files. Load-bearing if Phase 2 selects AdOps as the read path.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 4 &middot; Tradeoffs</p>
+
+      <ul class="data-bullets">
+        <li><b>Day-one reconciliation stays free-text.</b> Phase-1 MVP carries <span class="mono">naviga_reconciliation_hint</span> as primary; Phase-2 extends Line Items with the structured <span class="mono">offering_ref</span> FK bundle. Day-one cost is no worse than today; Phase-2 cost drops.</li>
+        <li><b>Execution Record named but not built.</b> Phase-2 first-class problem after 2c. Naming it now so the team has a word for the Jotform / Excel / ad-server pattern and its analogues.</li>
+        <li><b><span class="mono">frequency_cap</span> near-zero populated today.</b> No tab in existing working files supplies numeric caps. Constraint rule 8 degrades to no-op per Offering on blanks &mdash; correct behavior. Populate over time, not at once.</li>
+      </ul>
+    </div>
+
+    <p class="src">Sources: technical schema proposal (<span class="mono">technical-schema-proposal.md</span>, 04/22/2026); grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); interim mapping contract (<span class="mono">04-interim-mapping-contract.md</span>); Smartsheet MCP spec; Claude project setup plan. Pulled 04/2026.</p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
