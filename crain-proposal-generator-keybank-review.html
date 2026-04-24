@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crain Proposal Generator &middot; KeyBank peer review</title>
+<meta name="description" content="AI-generated proposal for KeyBank 2026 B2B, side-by-side with the real Crain proposal from November 2025.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-line:  rgba(13,27,42,0.25);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --slide-pad-y: clamp(2.25rem, 3.5vw, 3rem);
+  --slide-pad-x: clamp(1.75rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  position: relative;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: transparent; z-index: 10; pointer-events: none; }
+.progress-rail::before { content: ""; display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); transition: transform 0.12s linear; }
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 34px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+  font-weight: 400;
+}
+
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.014em;
+  margin-bottom: 1rem;
+}
+h1 em { font-style: italic; color: var(--ink-soft); }
+
+.hero-standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0 0 0.75rem;
+  max-width: 55ch;
+}
+.hero-standfirst + .hero-standfirst { margin-top: 0; }
+
+h2 {
+  font-size: clamp(1.55rem, 2.4vw, 1.9rem);
+  line-height: 1.18;
+  letter-spacing: -0.008em;
+  margin: 0 0 1rem;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+
+h3 {
+  font-size: clamp(1.1rem, 1.6vw, 1.22rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  margin: 1.25rem 0 0.55rem;
+  font-weight: 500;
+}
+
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.65rem;
+}
+
+p { margin: 0 0 1em; color: var(--ink-soft); }
+p:last-child { margin-bottom: 0; }
+
+strong, b { font-weight: 600; color: var(--ink); }
+em, i { font-style: italic; }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+}
+a:hover { text-decoration-color: var(--accent); }
+
+ul, ol {
+  margin: 0.5rem 0 1em;
+  padding-left: 1.35rem;
+  color: var(--ink-soft);
+}
+li { margin-bottom: 0.5rem; line-height: 1.55; }
+li:last-child { margin-bottom: 0; }
+li > strong:first-child, li > b:first-child { color: var(--ink); }
+
+ol.steps { padding-left: 1.5rem; }
+ol.steps > li { padding-left: 0.3rem; margin-bottom: 0.75rem; }
+
+/* Slide — the core visual unit */
+section.slide {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: var(--slide-pad-y) var(--slide-pad-x);
+  margin: 0 0 clamp(1.5rem, 2.5vw, 2rem);
+  box-shadow:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.05),
+    0 18px 36px rgba(70,50,20,0.04);
+}
+
+section.hero {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 0 clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+section.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.slide-num {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.8rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  margin: 0.5rem 0 1rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+}
+th {
+  text-align: left;
+  padding: 0.6rem 0.7rem 0.55rem 0;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+td {
+  padding: 0.55rem 0.7rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+th.num, td.num { text-align: right; padding-right: 0.2rem; }
+td.num:last-child, th.num:last-child { padding-right: 0; }
+td.total { border-top: 1px solid var(--ink); border-bottom: none; font-weight: 600; color: var(--ink); padding-top: 0.6rem; }
+
+/* Two-column comparison (for the side-by-side slide) */
+.cmp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1rem 0 0;
+}
+.cmp > div {
+  padding: 1rem 1.25rem;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.cmp h4 { margin-bottom: 0.5rem; }
+.cmp ul { margin: 0; padding-left: 1.15rem; font-size: 0.93rem; }
+.cmp ul li { margin-bottom: 0.35rem; line-height: 1.5; }
+@media (max-width: 860px) { .cmp { grid-template-columns: 1fr; } }
+
+.row-label {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 1.5rem 0 0.65rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--rule);
+}
+.row-label:first-of-type { margin-top: 0; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg);
+  padding: 0.08em 0.32em;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+/* Stat cluster on the proposal-built slide — no KPI-chip styling, just numbers */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem 2rem;
+  margin: 0.75rem 0 1.25rem;
+  padding: 1rem 0 0.5rem;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.stat { }
+.stat .num-val {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  line-height: 1.1;
+  font-weight: 400;
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.2rem;
+}
+.stat .stat-label {
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+@media print {
+  body { background: #fff; font-size: 12pt; }
+  main { max-width: none; padding: 1.25cm; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+  section.slide { page-break-inside: avoid; box-shadow: none; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  table { font-size: 0.85rem; }
+  th, td { padding-right: 0.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>04/23/2026</span>
+    </div>
+  </div>
+
+  <!-- 1 — HERO / TITLE -->
+  <section class="hero">
+    <div class="slide-num">Crain Proposal Generator &middot; Peer review</div>
+    <h1>KeyBank RFP. AI proposal vs. what Crain <em>shipped.</em></h1>
+    <p class="hero-standfirst">Fourth test of the Crain Proposal Generator. Real KeyBank 2026 B2B RFP. Full context, the way Enterprise Claude will see it at deploy. Side by side with Andy Rasero&rsquo;s actual November 2025 proposal.</p>
+    <p class="hero-standfirst">This is what the AI produced. Not the production render. In production, AE gets a PowerPoint shaped like Crain&rsquo;s standard decks. Treat this as &ldquo;what Claude thought and wrote,&rdquo; not &ldquo;what the pilot AE hands the client.&rdquo;</p>
+  </section>
+
+  <!-- 2 — THE SETUP -->
+  <section class="slide">
+    <div class="slide-num">Slide 01 &middot; The setup</div>
+    <h2>What we tested.</h2>
+    <h4>The RFP</h4>
+    <p>KeyBank 2026 B2B LOB Expansion. Routed through Fallon (Publicis Groupe). $300,000 budget. Chicago market. Consideration as the primary KPI.</p>
+
+    <h4>The context</h4>
+    <p>Agent given the same files an AE would open at deploy: the RFP, Fallon&rsquo;s kick-off email, Crain&rsquo;s Chicago Business 2026 media kit, and the CCB 2026 product toolkit.</p>
+
+    <h4>The brain</h4>
+    <p>Updated this week. Events, Editorial, and Recognition now first-class program families. Rule added for programs that live on both the editorial calendar and the event calendar. Fallback named for events that don&rsquo;t surface a published tier.</p>
+
+    <h4>What the agent did not see</h4>
+    <p>No prior Crain proposals. No institutional memory. Fresh composition against the RFP as written.</p>
+  </section>
+
+  <!-- 3 — THE RFP -->
+  <section class="slide">
+    <div class="slide-num">Slide 02 &middot; The RFP</div>
+    <h2>What KeyBank asked for.</h2>
+    <table>
+      <tbody>
+        <tr><td><b>Client</b></td><td>KeyBank</td></tr>
+        <tr><td><b>Agency</b></td><td>Fallon (Publicis Groupe) &middot; Kassidy Schneider, Senior Media Planner</td></tr>
+        <tr><td><b>Budget</b></td><td>$300,000. Fallon&rsquo;s email asks Crain to recommend &mdash; $300K is a ceiling, not a floor.</td></tr>
+        <tr><td><b>Geography</b></td><td>Chicago, IL.</td></tr>
+        <tr><td><b>Audience</b></td><td>C-suite and decision-makers at $10M&ndash;$2B revenue companies. CEO, CFO, COO, CIO, CTO, CRO, President, VP, EVP.</td></tr>
+        <tr><td><b>Objective</b></td><td>Consideration among middle-market decision-makers. Down-funnel engagement through thought leadership.</td></tr>
+        <tr><td><b>Measurement</b></td><td>Primary KPI: Consideration. Sub-metrics: Key.com traffic, content engagement, lead gen, form submits, completions.</td></tr>
+        <tr><td><b>Tactics wanted</b></td><td>Event sponsorship. Custom sponsorships or takeovers. Crain&rsquo;s recommendations welcome.</td></tr>
+        <tr><td><b>Creative ready</b></td><td>Video :30 / :15 / :06 with vertical cuts. Scripts. Pre-produced :30 audio. Display sizes TBD.</td></tr>
+        <tr><td><b>Must satisfy</b></td><td>75%+ MRC viewability. Non-skippable video preferred. MOAT-compatible. Monthly reporting. Exclude Kids / Politics / Religious / Spanish-language / egregious content.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4 — THE CONVERSATION -->
+  <section class="slide">
+    <div class="slide-num">Slide 03 &middot; The conversation</div>
+    <h2>Six steps, in order.</h2>
+    <ol class="steps">
+      <li>Read the RFP. Pulled 16 key fields. Flagged three real issues up front: flight dates are &ldquo;TBD 2026,&rdquo; RFP was due November 2025 (we&rsquo;re already five months past), and Fallon&rsquo;s email softens the $300K ceiling.</li>
+      <li>Paused for confirmation. Asked whether to build for H2 2026 fresh, or treat this as a mid-year rebuild.</li>
+      <li>Confirmed: H2 2026 flight (May&ndash;November), Chicago only, Sean Bales as AE, $300K as working ceiling.</li>
+      <li>Pulled live pricing from Smartsheet. 44 Crain&rsquo;s Chicago Business products for 2026.</li>
+      <li>Cross-referenced the CCB 2026 product toolkit for event tiers and Content Studio programs the main pricing sheet doesn&rsquo;t carry.</li>
+      <li>Built the mix. Ran the constraint checks. All nine clean. Wrote it up.</li>
+    </ol>
+  </section>
+
+  <!-- 5 — THE PROPOSAL BUILT -->
+  <section class="slide">
+    <div class="slide-num">Slide 04 &middot; The proposal</div>
+    <h2>Twelve lines. Seven families. Events and thought leadership anchor.</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="num-val">$299,100</div>
+        <div class="stat-label">Proposed spend</div>
+      </div>
+      <div class="stat">
+        <div class="num-val">99.7%</div>
+        <div class="stat-label">Budget used</div>
+      </div>
+      <div class="stat">
+        <div class="num-val">12</div>
+        <div class="stat-label">Line items</div>
+      </div>
+      <div class="stat">
+        <div class="num-val">3</div>
+        <div class="stat-label">Named events</div>
+      </div>
+      <div class="stat">
+        <div class="num-val">4</div>
+        <div class="stat-label">Thought leadership pieces</div>
+      </div>
+      <div class="stat">
+        <div class="num-val">13.3%</div>
+        <div class="stat-label">Max single line</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Product</th>
+          <th>Flight</th>
+          <th class="num">Cost</th>
+          <th>Family</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>C-Suite Conversations &mdash; Presenting Partner</td><td>May 2026</td><td class="num">$40,000</td><td>Event Sponsorship</td></tr>
+        <tr><td>2</td><td>Fast 50 Reveal &mdash; Corporate Partner</td><td>June 12, 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
+        <tr><td>3</td><td>Family Business Lunch &mdash; Corporate Partner</td><td>November 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
+        <tr><td>4</td><td>Executive Insights Roundtable</td><td>July&ndash;August 2026</td><td class="num">$40,000</td><td>Custom Content</td></tr>
+        <tr><td>5</td><td>Thought Leader Report (2&times;)</td><td>May + October 2026</td><td class="num">$24,000</td><td>Custom Content</td></tr>
+        <tr><td>6</td><td>Sponsored Content Series (3&times;, Crain-produced)</td><td>June&ndash;September 2026</td><td class="num">$22,950</td><td>Custom Content</td></tr>
+        <tr><td>7</td><td>Custom Webcast</td><td>September 2026</td><td class="num">$20,000</td><td>Custom Content</td></tr>
+        <tr><td>8</td><td>Morning 10 Newsletter (3 weeks)</td><td>Staggered H2</td><td class="num">$29,400</td><td>Newsletter</td></tr>
+        <tr><td>9</td><td>Daily Gist Podcast (2 months)</td><td>H2 2026</td><td class="num">$18,800</td><td>Podcast</td></tr>
+        <tr><td>10</td><td>Audience Targeting Display</td><td>Always-on H2</td><td class="num">$25,000</td><td>Display</td></tr>
+        <tr><td>11</td><td>Video Masthead Unit</td><td>Event-tentpole weeks</td><td class="num">$15,750</td><td>Video</td></tr>
+        <tr><td>12</td><td>Sponsored E-mail (25K+)</td><td>Webcast promo window</td><td class="num">$13,200</td><td>Email</td></tr>
+        <tr><td></td><td class="total">Total</td><td></td><td class="num total">$299,100</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 6 — BUDGET BY PILLAR -->
+  <section class="slide">
+    <div class="slide-num">Slide 05 &middot; Budget by pillar</div>
+    <h2>74% in events and thought leadership. That&rsquo;s the RFP&rsquo;s primary ask.</h2>
+    <table>
+      <thead>
+        <tr><th>Pillar</th><th>Spend</th><th class="num">% of budget</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Event sponsorship (3 events)</td><td>$90,000</td><td class="num">30.1%</td></tr>
+        <tr><td>Custom content / thought leadership (4 lines)</td><td>$106,950</td><td class="num">35.8%</td></tr>
+        <tr><td>Newsletter, podcast, email (3 lines)</td><td>$61,400</td><td class="num">20.5%</td></tr>
+        <tr><td>Display and video (2 lines)</td><td>$40,750</td><td class="num">13.6%</td></tr>
+        <tr><td class="total">Total</td><td class="total">$299,100</td><td class="num total">99.7%</td></tr>
+      </tbody>
+    </table>
+    <p>The 26% in newsletter, podcast, email, display, and video sustains always-on presence between event moments. Nothing is pure reach. Every line has a KPI anchor.</p>
+  </section>
+
+  <!-- 7 — RISKS FLAGGED -->
+  <section class="slide">
+    <div class="slide-num">Slide 06 &middot; What the AI flagged for AE review</div>
+    <h2>Seven items worth a second read before send.</h2>
+    <ol>
+      <li><b>C-Suite Conversations date is TBD.</b> If it lands before May 7, the 14-day booking lead is tight. Confirm with events team immediately.</li>
+      <li><b>Executive Insights Roundtable has 84-day lead.</b> Earliest print insert publishes mid-July. Scheduled accordingly.</li>
+      <li><b>Politics exclusion vs. CCB editorial.</b> CCB covers Chicago politics as core editorial (Pritzker, mayoral races, pension reform). Resolved via content-category targeting exclusions at ad-server level. Confirm with ad ops.</li>
+      <li><b>Publicis rates.</b> Fallon is Publicis Worldwide. If Crain holds a Publicis MSA, final invoicing may differ. AE to confirm with finance.</li>
+      <li><b>Viewability guarantee.</b> CCB inventory typically exceeds 75% MRC. MOAT tags accepted. Will state explicitly in the PPT deck.</li>
+      <li><b>Budget framing.</b> $300K treated as a working ceiling. Fallon&rsquo;s email asked for recommendation. Mix scales cleanly if agency returns asking to go higher.</li>
+      <li><b>Frequency caps not published.</b> CCB&rsquo;s sheet carries no per-product caps. Standard best-practice caps will be configured at ad-server level to Fallon&rsquo;s preference.</li>
+    </ol>
+  </section>
+
+  <!-- 8 — SIDE BY SIDE -->
+  <section class="slide">
+    <div class="slide-num">Slide 07 &middot; Side by side</div>
+    <h2>AI vs. Andy Rasero&rsquo;s actual November 2025 proposal.</h2>
+    <p>Real proposal was a pillar-based menu for KeyBank to pick from. AI built a specific committed mix. Comparing by pillar below. Rates match where the agent reached the same source data.</p>
+
+    <div class="row-label">Event sponsorship</div>
+    <div class="cmp">
+      <div>
+        <h4>Real Nov 2025 (Andy Rasero)</h4>
+        <ul>
+          <li>Newsmaker of The Year (Mar 4) &middot; Pres $50K / Corp $30K / Sup $20K</li>
+          <li>C-Suite Conversations (May) &middot; Pres $40K / Corp $25K / Sup $18K</li>
+          <li>Fast 50 (June) &middot; Pres $40K / Corp $25K / Sup $18K</li>
+          <li>Fireside Chat add-on &middot; $35K</li>
+          <li>Custom Event &middot; $75K</li>
+          <li>Presented as menu &mdash; KeyBank picks</li>
+        </ul>
+      </div>
+      <div>
+        <h4>AI Test 4</h4>
+        <ul>
+          <li>C-Suite Conversations &middot; Presenting $40K</li>
+          <li>Fast 50 Reveal &middot; Corporate $25K</li>
+          <li>Family Business Lunch &middot; Corporate $25K</li>
+          <li>Three specific picks, $90K total</li>
+          <li>Tier prices match real proposal</li>
+          <li>Newsmakers already passed (March 4) &mdash; correctly excluded from H2 mix</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row-label">Thought leadership</div>
+    <div class="cmp">
+      <div>
+        <h4>Real Nov 2025 (Andy Rasero)</h4>
+        <ul>
+          <li>Executive Insights Roundtable &middot; $35K / $45K with video</li>
+          <li>Middle Market Growth Toolkit &middot; $35K</li>
+          <li>Private Executive Dinners &middot; $25K</li>
+          <li>White Papers &middot; $7.2K client-submitted / $20K Crain-written</li>
+          <li>Webcast &middot; $20K</li>
+          <li>Content Hub &middot; added value at 3+ custom pieces</li>
+        </ul>
+      </div>
+      <div>
+        <h4>AI Test 4</h4>
+        <ul>
+          <li>Executive Insights Roundtable &middot; $40K</li>
+          <li>Thought Leader Report &times;2 &middot; $24K</li>
+          <li>Sponsored Content Series &times;3 &middot; $22,950 at tier rate</li>
+          <li>Custom Webcast &middot; $20K</li>
+          <li>Answered Fallon&rsquo;s &ldquo;last year&rsquo;s Content Stories&rdquo; ask directly</li>
+          <li><b>Missed:</b> Middle Market Growth Toolkit &middot; named in product toolkit, not selected</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row-label">Always-on digital</div>
+    <div class="cmp">
+      <div>
+        <h4>Real Nov 2025 (Andy Rasero)</h4>
+        <ul>
+          <li>Targeted ROS &middot; $15K</li>
+          <li>Video Masthead &middot; $15.75K</li>
+          <li>Interstitial &middot; $16.25K</li>
+          <li>In-Text Video &middot; $11.25K</li>
+          <li>App Takeover &middot; $16K / 2 months</li>
+          <li>Daily Gist Podcast &middot; $18.8K / 2 months</li>
+        </ul>
+      </div>
+      <div>
+        <h4>AI Test 4</h4>
+        <ul>
+          <li>Audience Targeting Display &middot; $25K</li>
+          <li>Video Masthead Unit &middot; $15.75K (matches real rate)</li>
+          <li>Morning 10 Newsletter &times;3 weeks &middot; $29.4K</li>
+          <li>Daily Gist Podcast &times;2 months &middot; $18.8K</li>
+          <li>Sponsored E-mail &middot; $13.2K</li>
+          <li><b>Missed:</b> Interstitial, App Takeover, In-Text Video</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row-label">Measurement and added value</div>
+    <div class="cmp">
+      <div>
+        <h4>Real Nov 2025 (Andy Rasero)</h4>
+        <ul>
+          <li>Brand Perception Module &middot; $20K &mdash; added value at $125K+</li>
+          <li>Brand Lift Study &middot; $20K &mdash; added value at $200K+</li>
+          <li>Tiered thresholds explicit</li>
+        </ul>
+      </div>
+      <div>
+        <h4>AI Test 4</h4>
+        <ul>
+          <li>Brand study mentioned as added value welcomed</li>
+          <li><b>Missed:</b> Tiered threshold structure ($125K / $200K)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 — WHAT THE AI GOT RIGHT -->
+  <section class="slide">
+    <div class="slide-num">Slide 08 &middot; What the AI got right</div>
+    <h2>Five strong signals.</h2>
+    <ol>
+      <li><b>Events priced at real tier rates.</b> C-Suite Conversations Presenting at $40K. Fast 50 Corporate at $25K. Family Business Lunch Corporate at $25K. These match what Andy Rasero put in the real proposal. AI pulled them from the product toolkit extract.</li>
+      <li><b>Pillar-based narrative.</b> Budget reads &ldquo;Events / Thought Leadership / Digital / Always-On&rdquo; &mdash; not a product family dump. Same frame as the real proposal.</li>
+      <li><b>Calendar reality checked.</b> RFP was due November 2025. Proposal date is April 2026. Agent caught that March and early-April events already passed and asked about H2 flight before composing. Did not force a Jan 1 start.</li>
+      <li><b>Fallon&rsquo;s kick-off nudge answered.</b> &ldquo;Last year we ran Content Stories &mdash; should we look into this again?&rdquo; AI proposed a 3&times; Sponsored Content series at the 3-piece tier rate. Directly addresses the agency&rsquo;s specific question.</li>
+      <li><b>Audience data cited from the media kit.</b> 63% director+, 37% C-suite, 6.5&times; Bombora multiplier on local business topics, 79% newsletter engagement, 3,400+ annual event attendees. Same stats the real proposal opens with.</li>
+    </ol>
+  </section>
+
+  <!-- 10 — WHAT THE AI MISSED -->
+  <section class="slide">
+    <div class="slide-num">Slide 09 &middot; What the AI missed</div>
+    <h2>Three gaps worth closing.</h2>
+    <ol>
+      <li><b>Middle Market Growth Toolkit.</b> $35K flagship lead-gen engine in the real proposal &mdash; gated downloadable resource built by Crain&rsquo;s Content Studio, purpose-shaped for KeyBank&rsquo;s mid-market audience. Named in the product toolkit. Agent didn&rsquo;t pick it. Either swap into the mix in place of one Thought Leader Report, or add if budget accommodates.</li>
+      <li><b>Interstitial and App Takeover.</b> Real proposal includes both as always-on digital. AI chose Audience Targeting Display instead. Similar shape, different units. Judgment call &mdash; worth asking whether a real AE would actually pick Interstitial over Audience Targeting for KeyBank.</li>
+      <li><b>Tiered added-value framing.</b> Real proposal structures Brand Perception Module as added value at $125K+ and Brand Lift Study as added value at $200K+. AI mentions brand study as an option but doesn&rsquo;t tier it. Small polish; real AE would structure it as a differentiator.</li>
+    </ol>
+  </section>
+
+  <!-- 11 — WHAT THIS MEANS FOR PRODUCTION -->
+  <section class="slide">
+    <div class="slide-num">Slide 10 &middot; What this means for production</div>
+    <h2>In production, this is native.</h2>
+    <ul>
+      <li><b>Files read automatically.</b> Enterprise Claude reaches the media kit, product toolkit, and prior proposals through the hosted Microsoft 365 connector. The same files we attached manually for this test load at turn zero.</li>
+      <li><b>Output is a PowerPoint.</b> Enterprise Claude renders the deliverable as a <code>.pptx</code> shaped like Crain&rsquo;s standard decks. This webpage is the test artifact, not the production render.</li>
+      <li><b>AE refines conversationally.</b> &ldquo;Drop Family Business Lunch, add Power Breakfast.&rdquo; &ldquo;Swap Audience Targeting for Interstitial.&rdquo; &ldquo;Add Middle Market Toolkit.&rdquo; Minutes, not restarts.</li>
+      <li><b>AI is the starting point.</b> AE is still the author.</li>
+    </ul>
+  </section>
+
+  <!-- 12 — WHAT TO REVIEW -->
+  <section class="slide">
+    <div class="slide-num">Slide 11 &middot; For your review</div>
+    <h2>Three questions for your eye.</h2>
+    <ol>
+      <li><b>The three events.</b> C-Suite Conversations Presenting, Fast 50 Corporate, Family Business Lunch Corporate. $90K on events. Does the mix of events fit the KeyBank middle-market banking narrative? Any swap you&rsquo;d make &mdash; e.g., Power Lunch in place of Family Business, Fast 50 Presenting instead of Corporate?</li>
+      <li><b>What&rsquo;s missing.</b> Middle Market Growth Toolkit is the obvious one. If you&rsquo;d add it, what comes out? One Thought Leader Report? Sponsored Content series? Or scale the overall mix up against the $300K ceiling?</li>
+      <li><b>Does it read like a draft or a machine?</b> The audience-alignment section and the seven AE flags are the two places a real AE&rsquo;s voice shows. Do those land, or does something feel off?</li>
+    </ol>
+  </section>
+
+  <footer class="endnote">
+    Feedback welcome in a Slack DM. The audience-alignment and risks-flagged sections are the two closest to human judgment and the most useful place for &ldquo;you&rsquo;d never say it this way&rdquo; feedback. Event-tier prices were pulled live from the 2026 product toolkit; spot-check any that look off.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
