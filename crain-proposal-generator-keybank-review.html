@@ -272,34 +272,6 @@ code {
   color: var(--ink);
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1.25rem 1.75rem;
-  margin: 0.5rem 0 1rem;
-  padding: 0.85rem 0 0.65rem;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-}
-.stat .num-val {
-  font-family: var(--font-display);
-  font-size: clamp(1.45rem, 2.3vw, 1.85rem);
-  line-height: 1.1;
-  font-weight: 400;
-  color: var(--ink);
-  font-variant-numeric: lining-nums tabular-nums;
-  letter-spacing: -0.01em;
-  margin-bottom: 0.15rem;
-}
-.stat .stat-label {
-  font-family: var(--font-ui);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-
 .cite {
   font-family: var(--font-ui);
   font-size: 0.76rem;
@@ -310,6 +282,16 @@ code {
   border-radius: 2px;
   margin-left: 0.35rem;
   white-space: nowrap;
+}
+
+.source-note {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  margin-top: 0.9rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  line-height: 1.55;
 }
 
 footer.endnote {
@@ -333,7 +315,6 @@ footer.endnote {
 @media (max-width: 720px) {
   body { font-size: 16px; }
   .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-  .stats { grid-template-columns: 1fr 1fr; }
   table { font-size: 0.85rem; }
   th, td { padding-right: 0.4rem; }
 }
@@ -376,13 +357,13 @@ footer.endnote {
   <section class="slide">
     <div class="slide-n">02</div>
     <h2>The RFP.</h2>
-    <p><strong>KeyBank 2026 B2B Expansion Markets.</strong> Routed through Fallon. Due EOD Nov 19, 2025. Quick context to jog memory:</p>
+    <p><strong>KeyBank 2026 B2B Expansion Markets.</strong> Routed through Fallon (Minneapolis). Due EOD Nov 19, 2025. Quick context to jog memory:</p>
     <ul>
       <li>$300K budget. Chicago market.</li>
       <li>Middle-market C-suite audience ($10M&ndash;$2B revenue).</li>
       <li>Primary KPI: consideration. Sub-metrics: Key.com traffic, content engagement, lead gen, form submits.</li>
       <li>Tactics: event sponsorship, custom sponsorships, takeovers.</li>
-      <li>Creative ready: video, scripts, pre-produced audio.</li>
+      <li>Creative ready: video :30/:15/:06, vertical cuts, scripts, pre-produced :30 audio.</li>
     </ul>
     <p>Fed to the agent: the RFP PDF, Fallon&rsquo;s kick-off email, Crain&rsquo;s 2026 CCB media kit, CCB 2026 product toolkit. Kicked off the process.</p>
   </section>
@@ -394,56 +375,58 @@ footer.endnote {
     <p>Agent read the docs. Flagged three real issues before composing a single product pick:</p>
     <ul>
       <li>Flight dates marked &ldquo;TBD 2026.&rdquo;</li>
-      <li>RFP due date five months past.</li>
+      <li>RFP due date five months past (Nov 19, 2025).</li>
       <li>$300K fixed in the RFP but framed as &ldquo;recommend a budget&rdquo; in Fallon&rsquo;s email.</li>
     </ul>
-    <p>Asked me for direction.</p>
-    <p>My answer: H2 2026 flight (May&ndash;November), Chicago only, Sean Bales as AE, $300K as working ceiling.</p>
+    <p>Offered two paths and asked me to pick.</p>
+    <p>My answer: H2 2026 fresh push (option A). Agent locked the flight at May&ndash;November 2026, Chicago only, $300K as working ceiling. Pulled Laura Warren as AE of record from the kick-off email forwarder.</p>
     <p>What it did next:</p>
     <ul>
       <li>Pulled live pricing from Smartsheet. 44 Crain&rsquo;s Chicago Business products for 2026.</li>
       <li>Cross-referenced the product toolkit for event tiers and Content Studio programs.</li>
       <li>Tied audience data, product pricing, and RFP asks together.</li>
       <li>Built the proposal. Ran constraint checks. All clean.</li>
-      <li>Presented the draft. Asked for approval or changes.</li>
+      <li>Presented the draft with three sanity-check questions before save.</li>
     </ul>
+    <p>I approved. Agent emitted the final strategy document and structured output.</p>
   </section>
 
   <!-- 04 — CAMPAIGN OBJECTIVES -->
   <section class="slide">
     <div class="slide-n">04</div>
     <h2>Campaign objectives.</h2>
-    <p>Two goals. Drive consideration among C-suite decision-makers at middle-market Chicago companies. Drive down-funnel engagement through thought leadership.</p>
+    <p>Two goals anchor the plan. Drive consideration among C-suite decision-makers at middle-market Chicago companies. Drive down-funnel engagement through thought leadership.</p>
     <p>Every line in the mix maps to one or both.</p>
     <ul>
       <li>Event sponsorships and Executive Insights Roundtable: KeyBank in the room with its exact target.</li>
       <li>Thought Leader Report, Sponsored Content series, Custom Webcast: ownable platforms for KeyBank&rsquo;s POV on middle-market banking.</li>
       <li>Display, video, newsletter, podcast, email: sustained presence in the daily workflow.</li>
     </ul>
+    <p>Mix weights 30% on events, 36% on custom thought leadership. That&rsquo;s 66% in the RFP&rsquo;s primary tactic ask. Remaining 34% sustains consideration between event moments.</p>
   </section>
 
   <!-- 05 — AUDIENCE ALIGNMENT -->
   <section class="slide">
     <div class="slide-n">05</div>
     <h2>Audience alignment.</h2>
-    <p>Crain&rsquo;s Chicago Business maps directly to KeyBank&rsquo;s target. All figures cited from the 2026 CCB media kit so a reviewer can cross-check.</p>
+    <p>Crain&rsquo;s Chicago Business maps tightly to KeyBank&rsquo;s target. All figures cited from the 2026 CCB media kit so any reviewer can cross-check.</p>
     <ul>
       <li>75% lead or work at privately-held companies <span class="cite">Media Kit p.13</span></li>
       <li>62% work at small-to-mid-sized businesses <span class="cite">p.13</span></li>
       <li>63% director-level or higher <span class="cite">p.5</span></li>
-      <li>37% C-suite <span class="cite">p.5</span></li>
+      <li>46% VP+ &middot; 37% C-suite <span class="cite">p.5</span></li>
       <li>Average HHI $410K, net worth $3M <span class="cite">p.13</span></li>
       <li>6.5&times; more likely than rest of B2B web to reach pros researching local business <span class="cite">p.14</span></li>
-      <li>79% engage via newsletter <span class="cite">p.15</span></li>
-      <li>Audience intent signals: business banking, M&amp;A, commercial real estate <span class="cite">p.13</span></li>
+      <li>Audience intent signals: commercial real estate, M&amp;A, cybersecurity, business and personal banking <span class="cite">p.13</span></li>
     </ul>
+    <p>The three selected events reach three distinct consideration moments: peer executive networking (May), growth-company leadership (June), multi-generational family-business owners (November).</p>
   </section>
 
   <!-- 06 — BUDGET ALLOCATION -->
   <section class="slide">
     <div class="slide-n">06</div>
     <h2>Budget allocation.</h2>
-    <p>$299,100 committed against $300,000 ceiling. 99.7% used.</p>
+    <p>$299,100 committed against $300,000 ceiling. $900 held as deliberate buffer for final-scope adjustments on Executive Insights and Sponsored Content series.</p>
     <table>
       <thead>
         <tr><th>Pillar</th><th class="num">Spend</th><th class="num">% of budget</th></tr>
@@ -456,14 +439,14 @@ footer.endnote {
         <tr><td class="total">Total</td><td class="num total">$299,100</td><td class="num total">99.7%</td></tr>
       </tbody>
     </table>
-    <p>74% in events and thought leadership. Matches the RFP&rsquo;s stated primary ask. Remaining 26% sustains always-on presence between event moments.</p>
+    <p>Weighted toward event sponsorship and thought leadership because those are the RFP&rsquo;s primary tactic asks. Display, video, newsletter, podcast, and email sustain always-on presence.</p>
   </section>
 
   <!-- 07 — PRODUCT MIX -->
   <section class="slide">
     <div class="slide-n">07</div>
     <h2>Product mix.</h2>
-    <p>Twelve lines. Seven product families. All rates pulled live from Smartsheet V1 Product Sheet-Scopic for 2026. Event tiers pulled from CCB 2026 product toolkit.</p>
+    <p>Twelve lines. Seven product families. Event-tier prices sourced from the 2026 CCB product toolkit. All other rates pulled live from Smartsheet.</p>
     <table>
       <thead>
         <tr>
@@ -479,17 +462,18 @@ footer.endnote {
         <tr><td>2</td><td>Fast 50 Reveal &mdash; Corporate Partner</td><td>Jun 12, 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
         <tr><td>3</td><td>Family Business Lunch &mdash; Corporate Partner</td><td>Nov 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
         <tr><td>4</td><td>Executive Insights Roundtable</td><td>Jul&ndash;Aug 2026</td><td class="num">$40,000</td><td>Custom Content</td></tr>
-        <tr><td>5</td><td>Thought Leader Report (2&times;)</td><td>May + Oct 2026</td><td class="num">$24,000</td><td>Custom Content</td></tr>
+        <tr><td>5</td><td>Thought Leader Report &mdash; May (Small Business) + Oct (Manufacturing)</td><td>May + Oct 2026</td><td class="num">$24,000</td><td>Custom Content</td></tr>
         <tr><td>6</td><td>Sponsored Content Series (3&times;, Crain-produced)</td><td>Jun&ndash;Sep 2026</td><td class="num">$22,950</td><td>Custom Content</td></tr>
         <tr><td>7</td><td>Custom Webcast</td><td>Sep 2026</td><td class="num">$20,000</td><td>Custom Content</td></tr>
-        <tr><td>8</td><td>Morning 10 Newsletter (3 weeks)</td><td>Staggered H2</td><td class="num">$29,400</td><td>Newsletter</td></tr>
-        <tr><td>9</td><td>Daily Gist Podcast (2 months)</td><td>H2 2026</td><td class="num">$18,800</td><td>Podcast</td></tr>
+        <tr><td>8</td><td>Morning 10 Newsletter (3 weeks, staggered)</td><td>May / Aug / Nov</td><td class="num">$29,400</td><td>Newsletter</td></tr>
+        <tr><td>9</td><td>Daily Gist Podcast (2 months, non-consecutive)</td><td>Jun + Oct 2026</td><td class="num">$18,800</td><td>Podcast</td></tr>
         <tr><td>10</td><td>Audience Targeting Display</td><td>Always-on H2</td><td class="num">$25,000</td><td>Display</td></tr>
         <tr><td>11</td><td>Video Masthead Unit</td><td>Event tentpole weeks</td><td class="num">$15,750</td><td>Video</td></tr>
-        <tr><td>12</td><td>Sponsored E-mail (25K+)</td><td>Webcast promo window</td><td class="num">$13,200</td><td>Email</td></tr>
+        <tr><td>12</td><td>Sponsored E-mail (25K+)</td><td>Aug 2026 webcast promo</td><td class="num">$13,200</td><td>Email</td></tr>
         <tr><td></td><td class="total">Total</td><td></td><td class="num total">$299,100</td><td></td></tr>
       </tbody>
     </table>
+    <p class="source-note">Every line carries full provenance in the agent&rsquo;s structured output: Smartsheet row ID, sheet name, catalog year, and product-toolkit slide reference where pricing sourced from an attachment. Billing can reconcile each line to Naviga codes without guesswork.</p>
   </section>
 
   <!-- 08 — RISKS AND ASSUMPTIONS -->
@@ -498,13 +482,13 @@ footer.endnote {
     <h2>Risks and assumptions.</h2>
     <p>Seven items the agent flagged for AE review before send. Verbatim from the output.</p>
     <ol>
-      <li><strong>C-Suite Conversations date TBD.</strong> If it lands before May 7, the 14-day booking lead is tight. Confirm with events team.</li>
-      <li><strong>Executive Insights Roundtable 84-day lead.</strong> Earliest print insert publishes mid-July. Scheduled accordingly.</li>
-      <li><strong>Politics exclusion vs. CCB editorial.</strong> CCB covers Chicago politics as core editorial. Resolve via content-category targeting exclusions at ad-server level. Confirm with ad ops.</li>
-      <li><strong>Publicis rates.</strong> Fallon is Publicis Worldwide. If Crain holds a Publicis MSA, final invoicing may shift. Confirm with finance.</li>
-      <li><strong>75% MRC viewability.</strong> CCB display typically exceeds 75%. MOAT tags accepted. State explicitly in deck.</li>
-      <li><strong>Budget framing.</strong> $300K as ceiling. Fallon&rsquo;s email asked for a recommendation. Mix scales if agency goes higher.</li>
-      <li><strong>Frequency caps not published.</strong> No per-product caps on CCB&rsquo;s sheet. Standard caps configured at ad-server level to Fallon&rsquo;s preference.</li>
+      <li><strong>Event dates TBD.</strong> C-Suite Conversations and Family Business Lunch show TBD in the 2026 toolkit. If C-Suite lands before May 7, 14-day standard lead is tight. Confirm with Crain events team this week.</li>
+      <li><strong>Executive Insights 84-day lead.</strong> Earliest launch from today is mid-July 2026. Plan assumes Q3 publication; magazine insert timing drives schedule.</li>
+      <li><strong>Politics exclusion vs. CCB editorial.</strong> CCB covers Chicago politics and policy as core editorial. Resolve via content-category targeting at ad-server level. Confirm implementation with ad ops.</li>
+      <li><strong>Publicis rates.</strong> Fallon is Publicis Worldwide. If Crain holds a Publicis MSA, final invoicing may shift. AE to confirm with Crain finance before submission.</li>
+      <li><strong>75% MRC viewability.</strong> CCB display typically exceeds 75%. MOAT tags accepted. Include explicit guarantee language in the final PPT.</li>
+      <li><strong>Budget framing.</strong> $300K stated flat in RFP, framed as recommendation in Fallon&rsquo;s email. Built to $300K ceiling. Mix scales if agency invites a higher recommendation.</li>
+      <li><strong>Frequency caps not published.</strong> CCB pricing sheet carries no per-product caps. Coordinate with ad ops if KeyBank trafficking has specific requirements.</li>
     </ol>
   </section>
 
@@ -614,9 +598,9 @@ footer.endnote {
     <h2>For your review.</h2>
     <p>Three questions.</p>
     <ol>
-      <li><strong>The three events.</strong> $90K across C-Suite Conversations, Fast 50, Family Business Lunch. Fit the KeyBank middle-market banking narrative? Any swap you&rsquo;d make?</li>
+      <li><strong>The three events.</strong> $90K across C-Suite Conversations Presenting, Fast 50 Corporate, Family Business Lunch Corporate. Fit the KeyBank middle-market banking narrative? Any swap you&rsquo;d make?</li>
       <li><strong>What&rsquo;s missing.</strong> Middle Market Growth Toolkit is the obvious gap. If you&rsquo;d add it, what comes out?</li>
-      <li><strong>Does it read like a draft or a machine?</strong> Audience-alignment section and the seven AE flags are the two places a real AE&rsquo;s voice shows. Do they land?</li>
+      <li><strong>Does it read like a draft or a machine?</strong> The audience-alignment section and the seven AE flags are the two places a real AE&rsquo;s voice shows. Do they land?</li>
     </ol>
   </section>
 
