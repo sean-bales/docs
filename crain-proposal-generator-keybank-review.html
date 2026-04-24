@@ -324,20 +324,20 @@ td.total { border-top: 1px solid var(--ink); border-bottom: none; font-weight: 6
 
 .cmp {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   margin: 0.85rem 0 0;
 }
 .cmp > div {
-  padding: 0.9rem 1.15rem;
+  padding: 0.85rem 1rem;
   background: var(--bg);
   border: 1px solid var(--rule);
   border-radius: 2px;
 }
 .cmp h4 { margin-bottom: 0.45rem; }
-.cmp ul { margin: 0; padding-left: 1.1rem; font-size: 0.91rem; }
+.cmp ul { margin: 0; padding-left: 1.1rem; font-size: 0.88rem; }
 .cmp ul li { margin-bottom: 0.3rem; line-height: 1.5; }
-@media (max-width: 860px) { .cmp { grid-template-columns: 1fr; } }
+@media (max-width: 1020px) { .cmp { grid-template-columns: 1fr; } }
 
 .row-label {
   font-family: var(--font-ui);
@@ -497,7 +497,7 @@ footer.endnote {
     <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
     <div class="byline">
       <b>Sean Bales</b>
-      <span>04/23/2026</span>
+      <span>04/24/2026</span>
     </div>
   </div>
 
@@ -530,27 +530,28 @@ footer.endnote {
   <!-- 03 — DISCOVERY -->
   <section class="slide">
     <div class="kicker"><span class="sec-num">03</span><span class="sec-rule" aria-hidden="true"></span>Discovery</div>
-    <h2>It flagged three issues, asked two questions, then drafted the proposal.</h2>
-    <p>Before picking a single product, the agent flagged three gaps in the brief:</p>
+    <h2>It pulled 16 fields, asked four questions, then drafted the proposal.</h2>
+    <p>Before picking a single product, the agent pulled 16 fields from the RFP and Fallon&rsquo;s email &mdash; each tied to the page or line it came from. One field flagged ambiguous:</p>
     <ul>
-      <li>Flight dates marked &ldquo;TBD 2026.&rdquo;</li>
-      <li>RFP due date five months past (Nov 19, 2025).</li>
-      <li>$300K stated flat in the RFP, framed as &ldquo;recommend a budget&rdquo; in Fallon&rsquo;s email.</li>
+      <li><strong>Budget.</strong> $300K stated flat in the RFP. &ldquo;Recommend a budget&rdquo; in Fallon&rsquo;s email.</li>
     </ul>
-    <p>Then it went further on the flight question. Before asking anything, it did the homework:</p>
+    <p>Flight dates came back &ldquo;TBD 2026&rdquo; &mdash; not actionable for lead-time or date constraint checks. Surfaced as one of the confirmation questions.</p>
+    <p>The agent asked four questions in one turn before composing:</p>
     <ul>
-      <li>Named the 2026 CCB events already past as of today: Newsmakers, Women of Influence, Forum Thought Leadership, Power Breakfast #1, Spring Real Estate Breakfast.</li>
-      <li>Named the 11 H2 events still open &mdash; C-Suite Conversations, GC Breakfast Brief, Fast 50 Reveal, Power Lunch, Best Places to Work, Elevate, Fall Real Estate Breakfast, Power Breakfast #3, Family Business Lunch, Most Innovative Companies, Future of Food &mdash; and flagged which aligned with KeyBank&rsquo;s middle-market / thought-leadership positioning.</li>
+      <li>Budget treatment &mdash; $300K as working ceiling, or draft against the &ldquo;recommend&rdquo; framing?</li>
+      <li>Flight window &mdash; full year, a specific quarter, tied to a named CCB event?</li>
+      <li>Geography scope &mdash; Chicago-only, or multi-market per the &ldquo;Expansion Markets&rdquo; title?</li>
+      <li>Recognition programs &mdash; events in scope, or surface the full H2 CCB slate?</li>
     </ul>
-    <p>Then it proposed two paths for me to pick between:</p>
-    <div class="choice-block">
-      <div class="choice"><span class="choice-label">a</span><span>H2 2026 as a fresh push.</span></div>
-      <div class="choice"><span class="choice-label">b</span><span>Something else &mdash; partial placement from the original window, 2027 shift, etc.</span></div>
-    </div>
-    <p>Plus a separate question on budget: is $300K firm or flexible?</p>
-    <p>My reply was one letter: <span class="reply-letter">a</span>. Budget confirmed as $300K working ceiling. From there the agent pulled pricing from Smartsheet, cross-referenced the toolkit for event tiers, ran constraint checks, and drafted the proposal.</p>
+    <p>My reply was one sentence: <span class="reply-letter">300k ceiling, h2 2026 for date and scoped to chicago</span>. The agent locked context, pulled Smartsheet, and flagged three catalog findings on its way to drafting:</p>
+    <ul>
+      <li><strong>Print rate-card anomaly.</strong> Row for &ldquo;Full page ad 2&rdquo; at $171,542 &mdash; inconsistent with neighboring print rates (half page $9,163, quarter page $5,050). Excluded from the mix, flagged for catalog review.</li>
+      <li><strong>No 2026 event-tier pricing in Smartsheet.</strong> Agent used the Executive Insights flat-rate row ($40,000) as a Corporate-tier proxy rather than inventing a number. Event line flagged low confidence pending firm 2026 quote from the events team.</li>
+      <li><strong>Audio creative ask unmatched.</strong> RFP requests :30s pre-produced audio. CCB Smartsheet surfaces no host-read podcast or programmatic audio inventory. Agent flagged as a brief-back decision rather than forcing a stretch product into the mix.</li>
+    </ul>
+    <p>Then it ran the nine-rule constraint check, composed the mix, and returned a draft.</p>
     <div class="callout decision">
-      <strong>Context-awareness</strong> The agent knew the product catalog. Understood today&rsquo;s date. Flagged that the RFP&rsquo;s due date was five months past. Surfaced the events still open for H2. Asked clarifying questions and offered context-aware options.
+      <strong>Context-awareness</strong> Pulled 16 fields with per-source citations. Flagged an ambiguous field before asking. Asked four scoped questions in one turn, not drip-by-drip. Caught a data anomaly and excluded it. Named a proxy when the 2026 event-tier card was missing, and surfaced the audio-creative gap rather than guessing a product into the mix.
     </div>
   </section>
 
@@ -564,8 +565,8 @@ footer.endnote {
       <span>Client: <b>KeyBank</b> (via Fallon)</span>
       <span>AE: <b>Laura Warren</b></span>
       <span>Brand: <b>Crain&rsquo;s Chicago Business</b></span>
-      <span>Flight: <b>May &ndash; November 2026</b></span>
-      <span>Budget: <b>$299,100 of $300,000</b> (99.7%)</span>
+      <span>Flight: <b>Jul 1 &ndash; Dec 31, 2026</b></span>
+      <span>Budget: <b>$300,000 of $300,000</b> (100%)</span>
     </div>
 
     <div class="panel">
@@ -575,44 +576,44 @@ footer.endnote {
 
     <div class="panel">
       <p class="panel-label">Panel 2 &middot; Audience alignment</p>
-      <p>Crain&rsquo;s Chicago Business maps tightly to KeyBank&rsquo;s target. All figures cited from the 2026 CCB media kit so any reviewer can cross-check.</p>
+      <p>Crain&rsquo;s Chicago Business maps tightly to KeyBank&rsquo;s target. Scale and composition figures cited from the 2026 CCB media kit so any reviewer can cross-check.</p>
       <ul>
+        <li>52K subscribers, 1.8M monthly page views, 129K newsletter subscribers, 3,400+ annual event attendees</li>
         <li>75% lead or work at privately-held companies <span class="cite">p.13</span></li>
         <li>62% work at small-to-mid-sized businesses <span class="cite">p.13</span></li>
-        <li>63% director-level or higher; 46% VP+; 37% C-suite <span class="cite">p.5</span></li>
-        <li>Average HHI $410K, net worth $3M <span class="cite">p.13</span></li>
-        <li>6.5&times; more likely than rest of B2B web to reach pros researching local business <span class="cite">p.14</span></li>
-        <li>Intent signals: commercial real estate, M&amp;A, cybersecurity, business and personal banking <span class="cite">p.13</span></li>
+        <li>63% director-level or higher; 46% VP+; 37% C-suite <span class="cite">p.5 &mdash; corporate network figure; CCB-specific cut not published in the 2026 kit</span></li>
+        <li>Audience indexes for business and personal banking, M&amp;A, tax services, commercial real estate</li>
+        <li>Regional bank case study: white paper + webcast generated 246 leads, 207% above benchmark, with 111 indicating explicit interest in promoted services <span class="cite">p.23</span></li>
       </ul>
-      <p>The three selected events hit three distinct consideration moments: peer executive networking (May), growth-company leadership (June), multi-generational family-business owners (November).</p>
+      <p>Elevate (Sept) is CCB&rsquo;s flagship thought-leadership discussion and the most direct event match for KeyBank&rsquo;s down-funnel engagement objective <span class="cite">p.19</span>.</p>
     </div>
 
     <div class="panel">
       <p class="panel-label">Panel 3 &middot; Budget allocation</p>
-      <p>$299,100 committed against a $300,000 ceiling. $900 held as a deliberate buffer for final-scope adjustments on Executive Insights and the Sponsored Content series.</p>
+      <p>$300,000 committed exactly against a $300,000 ceiling. Mix fully allocated, no buffer held.</p>
       <table>
         <thead>
           <tr><th>Pillar</th><th class="num">Spend</th><th class="num">% of budget</th></tr>
         </thead>
         <tbody>
-          <tr><td>Event sponsorship (3 events)</td><td class="num">$90,000</td><td class="num">30.1%</td></tr>
-          <tr><td>Custom content / thought leadership (4 lines)</td><td class="num">$106,950</td><td class="num">35.8%</td></tr>
-          <tr><td>Newsletter, podcast, email (3 lines)</td><td class="num">$61,400</td><td class="num">20.5%</td></tr>
-          <tr><td>Display and video (2 lines)</td><td class="num">$40,750</td><td class="num">13.6%</td></tr>
-          <tr><td class="total">Total</td><td class="num total">$299,100</td><td class="num total">99.7%</td></tr>
+          <tr><td>Custom (event + thought leadership + content, 5 lines)</td><td class="num">$135,000</td><td class="num">45.0%</td></tr>
+          <tr><td>Digital (3 lines)</td><td class="num">$94,200</td><td class="num">31.4%</td></tr>
+          <tr><td>Newsletter (2 lines)</td><td class="num">$70,800</td><td class="num">23.6%</td></tr>
+          <tr><td class="total">Total</td><td class="num total">$300,000</td><td class="num total">100%</td></tr>
         </tbody>
       </table>
-      <p>Weighted toward event sponsorship and thought leadership because those are the RFP&rsquo;s primary tactic asks. Display, video, newsletter, podcast, and email sustain always-on presence between event moments.</p>
+      <p>Custom leads at 45% across event sponsorship, webcast, thought leader reports, Quick Take video, and Crain-produced sponsored content &mdash; anchoring the consideration-via-thought-leadership KPI. Digital at 31% carries the 75% MRC viewability and multi-duration video asks. Newsletter at 24% delivers the high-engagement weekly touchpoint where 79% of CCB readers engage, with Morning 10 100% SOV for four weeks. Largest single line is Morning 10 at 18% &mdash; well under the 50% concentration ceiling.</p>
     </div>
 
     <div class="panel">
       <p class="panel-label">Panel 4 &middot; Creative requirements</p>
-      <p>KeyBank&rsquo;s ready creative maps to the mix with no gaps. Video :30/:15/:06 activates the Video Masthead Unit and Sponsored Content amplification. Pre-produced :30 audio activates the Daily Gist live-read. Display sizes confirmed once KeyBank shares final assets.</p>
+      <p>KeyBank&rsquo;s ready creative maps to most of the mix. Video in :30s, :15s, and :06s runs across the Video Masthead Unit and in-text video &mdash; both non-skippable per RFP preference; agent flagged non-skippable status on Video Masthead for ad-ops confirmation. Display uses CCB&rsquo;s standard sizes: 300&times;250, 300&times;600, 300&times;50, 728&times;90, 970&times;90, 970&times;250. Morning 10 and Afternoon 10 newsletters use 728&times;90 and 300&times;250. Sponsored email is HTML with web-hosted images (max 100 KB, 700px wide) plus subject line.</p>
+      <p>One creative gap surfaced honestly: the RFP requests a :30s pre-produced audio asset. CCB Smartsheet surfaces no host-read podcast or programmatic audio inventory (the Daily Gist Podcast row is a banner-ad sponsorship, not host-read audio). Agent flagged this as a brief-back decision rather than forcing a stretch product &mdash; either remove audio from Fallon&rsquo;s ask for this campaign, or source via a Crain audio partner outside this proposal.</p>
     </div>
 
     <div class="panel">
       <p class="panel-label">Panel 5 &middot; Product mix</p>
-      <p>Twelve lines. Seven product families. Event-tier prices sourced from the 2026 CCB product toolkit. All other rates pulled live from Smartsheet.</p>
+      <p>Ten lines. Three product families. Custom Event priced at $40,000 using the Executive Insights flat-rate row as a Corporate-tier proxy (no 2026 event-tier card in the catalog yet). All other rates pulled live from Smartsheet.</p>
       <table>
         <thead>
           <tr>
@@ -624,28 +625,86 @@ footer.endnote {
           </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td>C-Suite Conversations &mdash; Presenting Partner</td><td>May 2026</td><td class="num">$40,000</td><td>Event Sponsorship</td></tr>
-          <tr><td>2</td><td>Fast 50 Reveal &mdash; Corporate Partner</td><td>Jun 12, 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
-          <tr><td>3</td><td>Family Business Lunch &mdash; Corporate Partner</td><td>Nov 2026</td><td class="num">$25,000</td><td>Event Sponsorship</td></tr>
-          <tr><td>4</td><td>Executive Insights Roundtable</td><td>Jul&ndash;Aug 2026</td><td class="num">$40,000</td><td>Custom Content</td></tr>
-          <tr><td>5</td><td>Thought Leader Report &mdash; May (Small Business) + Oct (Manufacturing)</td><td>May + Oct 2026</td><td class="num">$24,000</td><td>Custom Content</td></tr>
-          <tr><td>6</td><td>Sponsored Content Series (3&times;, Crain-produced)</td><td>Jun&ndash;Sep 2026</td><td class="num">$22,950</td><td>Custom Content</td></tr>
-          <tr><td>7</td><td>Custom Webcast</td><td>Sep 2026</td><td class="num">$20,000</td><td>Custom Content</td></tr>
-          <tr><td>8</td><td>Morning 10 Newsletter (3 weeks, staggered)</td><td>May / Aug / Nov</td><td class="num">$29,400</td><td>Newsletter</td></tr>
-          <tr><td>9</td><td>Daily Gist Podcast (2 months, non-consecutive)</td><td>Jun + Oct 2026</td><td class="num">$18,800</td><td>Podcast</td></tr>
-          <tr><td>10</td><td>Audience Targeting Display</td><td>Always-on H2</td><td class="num">$25,000</td><td>Display</td></tr>
-          <tr><td>11</td><td>Video Masthead Unit</td><td>Event tentpole weeks</td><td class="num">$15,750</td><td>Video</td></tr>
-          <tr><td>12</td><td>Sponsored E-mail (25K+)</td><td>Aug 2026 webcast promo</td><td class="num">$13,200</td><td>Email</td></tr>
-          <tr><td></td><td class="total">Total</td><td></td><td class="num total">$299,100</td><td></td></tr>
+          <tr><td>1</td><td>Custom Event &mdash; Crain&rsquo;s Elevate sponsor</td><td>Sept 15, 2026</td><td class="num">$40,000</td><td>Custom</td></tr>
+          <tr><td>2</td><td>Crain&rsquo;s Quick Take Video (2&times;)</td><td>Aug 15 &ndash; Oct 31</td><td class="num">$17,000</td><td>Custom</td></tr>
+          <tr><td>3</td><td>Webcast &mdash; single-sponsored</td><td>Oct 15, 2026</td><td class="num">$20,000</td><td>Custom</td></tr>
+          <tr><td>4</td><td>Crain&rsquo;s Thought Leader Report (2&times;)</td><td>Sept 1 &ndash; Nov 1</td><td class="num">$24,000</td><td>Custom</td></tr>
+          <tr><td>5</td><td>Sponsored Content (Crain-produced, 4&times;)</td><td>Aug 1 &ndash; Dec 15</td><td class="num">$34,000</td><td>Custom</td></tr>
+          <tr><td>6</td><td>Audience Targeting display (1M imps)</td><td>Jul 1 &ndash; Dec 31</td><td class="num">$50,000</td><td>Digital</td></tr>
+          <tr><td>7</td><td>Video Masthead Unit (200K imps)</td><td>Jul 15 &ndash; Dec 15</td><td class="num">$21,000</td><td>Digital</td></tr>
+          <tr><td>8</td><td>Home page takeover (4 days)</td><td>H2 2026</td><td class="num">$23,200</td><td>Digital</td></tr>
+          <tr><td>9</td><td>Morning 10 Newsletter &mdash; 100% SOV (4 weeks)</td><td>H2 2026</td><td class="num">$54,000</td><td>Newsletter</td></tr>
+          <tr><td>10</td><td>Afternoon 10 Newsletter (2 weeks)</td><td>Aug + Dec 2026</td><td class="num">$16,800</td><td>Newsletter</td></tr>
+          <tr><td></td><td class="total">Total</td><td></td><td class="num total">$300,000</td><td></td></tr>
         </tbody>
       </table>
-      <p class="source-note">Every line carries full provenance in the agent&rsquo;s structured output: Smartsheet row ID, sheet name, catalog year, and toolkit slide reference where pricing sourced from an attachment. Billing can reconcile each line to Naviga without guesswork. See slide 05 for the full provenance table.</p>
+      <p class="source-note">Every line carries full provenance in the agent&rsquo;s structured output: Smartsheet row ID, sheet name, catalog year, and naviga reconciliation hint. Billing can reconcile each line to Naviga without guesswork. See the Provenance section below for the full table.</p>
     </div>
   </section>
 
-  <!-- 05 — PROVENANCE -->
+  <!-- 05 — SCOPIC OUTPUT -->
   <section class="slide">
-    <div class="kicker"><span class="sec-num">05</span><span class="sec-rule" aria-hidden="true"></span>Provenance</div>
+    <div class="kicker"><span class="sec-num">05</span><span class="sec-rule" aria-hidden="true"></span>Scopic output</div>
+    <h2>What the existing Scopic-built app produced on the same RFP.</h2>
+    <p>Uploaded the same RFP PDF and Fallon kickoff email. Configured output through the app&rsquo;s UI. One pass, no refinement.</p>
+    <div class="proposal-tag">Verbatim from the Scopic app&rsquo;s output &middot; no edits</div>
+
+    <div class="proposal-header">
+      <span>Client: <b>KeyBank</b> (via Fallon)</span>
+      <span>Flight: <b>Apr 25 &ndash; Dec 31, 2026</b></span>
+      <span>Budget: <b>$300,000 of $300,000</b> (100%)</span>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 1 &middot; Budget allocation</p>
+      <p>Family rollup as printed in the output. &ldquo;Custom&rdquo; and &ldquo;custom&rdquo; appear as separate rows &mdash; Thought Leader Report files under lowercase <code>custom</code> while every other custom product files under <code>Custom</code>.</p>
+      <table>
+        <thead>
+          <tr><th>Pillar</th><th class="num">Spend</th><th class="num">% of budget</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Custom</td><td class="num">$163,000</td><td class="num">54.3%</td></tr>
+          <tr><td>Email</td><td class="num">$72,000</td><td class="num">24.0%</td></tr>
+          <tr><td>Digital</td><td class="num">$41,000</td><td class="num">13.7%</td></tr>
+          <tr><td>custom</td><td class="num">$24,000</td><td class="num">8.0%</td></tr>
+          <tr><td class="total">Total</td><td class="num total">$300,000</td><td class="num total">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">Panel 2 &middot; Product mix</p>
+      <p>Nine lines. No event sponsorship. No video product.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Flight</th>
+            <th class="num">Cost</th>
+            <th>Family</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Executive Insights</td><td>Sep 1 &ndash; 30, 2026</td><td class="num">$40,000</td><td>Custom</td></tr>
+          <tr><td>2</td><td>Webcasts (2&times;)</td><td>Jun 1 &ndash; Oct 31</td><td class="num">$40,000</td><td>Custom</td></tr>
+          <tr><td>3</td><td>Crain&rsquo;s White Paper (partner-submitted)</td><td>May 15 &ndash; Dec 31</td><td class="num">$20,000</td><td>Custom</td></tr>
+          <tr><td>4</td><td>Ask the Expert (2&times;)</td><td>Jul 1 &ndash; Nov 30</td><td class="num">$29,000</td><td>Custom</td></tr>
+          <tr><td>5</td><td>Crain&rsquo;s Thought Leader Report (2&times;)</td><td>Aug 1 &ndash; Dec 15</td><td class="num">$24,000</td><td>custom</td></tr>
+          <tr><td>6</td><td>Sponsored Content (Crain-produced, 4&times;)</td><td>May 1 &ndash; Dec 15</td><td class="num">$34,000</td><td>Custom</td></tr>
+          <tr><td>7</td><td>Sponsored E-mail (51K+, 3&times;)</td><td>May 15 &ndash; Nov 15</td><td class="num">$72,000</td><td>Email</td></tr>
+          <tr><td>8</td><td>Audience Targeting (500 CPM)</td><td>Apr 25 &ndash; Jun 30</td><td class="num">$25,000</td><td>Digital</td></tr>
+          <tr><td>9</td><td>Run of Site (400 CPM)</td><td>Sep 1 &ndash; Dec 31</td><td class="num">$16,000</td><td>Digital</td></tr>
+          <tr><td></td><td class="total">Total</td><td></td><td class="num total">$300,000</td><td></td></tr>
+        </tbody>
+      </table>
+      <p class="source-note">Source: <code>Proposal-391.pdf</code>, Scopic-built proposal generator, same KeyBank RFP &middot; 04/24/2026.</p>
+    </div>
+  </section>
+
+  <!-- 06 — PROVENANCE -->
+  <section class="slide">
+    <div class="kicker"><span class="sec-num">06</span><span class="sec-rule" aria-hidden="true"></span>Provenance</div>
     <h2>Every claim traces back to a source.</h2>
     <p>Every extracted RFP field and every priced line in the proposal carries a source reference in the agent&rsquo;s structured output. An AE can walk any claim back to its document.</p>
 
@@ -679,54 +738,53 @@ footer.endnote {
 
     <div class="panel">
       <p class="panel-label">Panel 2 &middot; Pricing</p>
-      <p>Every priced line carries a Smartsheet row ID, sheet name, and &mdash; where pricing sits in an attachment &mdash; a specific product-toolkit slide reference.</p>
+      <p>Every priced line carries a Smartsheet row ID. The Custom Event line uses a proxy rate from a second Smartsheet row, flagged explicitly because no 2026 event-tier catalog exists.</p>
       <table>
         <thead>
           <tr><th>Product</th><th>Source</th></tr>
         </thead>
         <tbody>
-          <tr><td>C-Suite Conversations &mdash; Presenting</td><td>Smartsheet row <span class="mono">1181775944286084</span> &middot; Toolkit pp.104&ndash;108</td></tr>
-          <tr><td>Fast 50 Reveal &mdash; Corporate</td><td>Smartsheet row <span class="mono">1181775944286084</span> &middot; Toolkit pp.113&ndash;116</td></tr>
-          <tr><td>Family Business Lunch &mdash; Corporate</td><td>Smartsheet row <span class="mono">1181775944286084</span> &middot; Toolkit pp.121&ndash;124</td></tr>
-          <tr><td>Executive Insights Roundtable</td><td>Smartsheet row <span class="mono">4559475664813956</span> &middot; Toolkit p.40</td></tr>
-          <tr><td>Thought Leader Report</td><td>Smartsheet row <span class="mono">7831622269075332</span> &middot; Toolkit pp.47&ndash;48</td></tr>
-          <tr><td>Sponsored Content Series (3&times;)</td><td>Smartsheet row <span class="mono">8957522175917956</span> &middot; Toolkit pp.34&ndash;35 (investment menu)</td></tr>
-          <tr><td>Custom Webcast</td><td>Smartsheet row <span class="mono">2307675851128708</span> &middot; Toolkit pp.41&ndash;42</td></tr>
-          <tr><td>Morning 10 Newsletter</td><td>Smartsheet row <span class="mono">4172447571836804</span></td></tr>
-          <tr><td>Daily Gist Podcast</td><td>Smartsheet row <span class="mono">6424247385522052</span> &middot; Toolkit pp.59&ndash;60</td></tr>
+          <tr><td>Custom Event &mdash; Crain&rsquo;s Elevate sponsor</td><td>Smartsheet row <span class="mono">1181775944286084</span> (Custom Event placeholder, no catalog rate) &middot; proxied at $40,000 to Executive Insights row <span class="mono">4559475664813956</span> pending firm 2026 quote</td></tr>
+          <tr><td>Crain&rsquo;s Quick Take Video (2&times;)</td><td>Smartsheet row <span class="mono">4453922548547460</span></td></tr>
+          <tr><td>Webcast &mdash; single-sponsored</td><td>Smartsheet row <span class="mono">2307675851128708</span></td></tr>
+          <tr><td>Crain&rsquo;s Thought Leader Report (2&times;)</td><td>Smartsheet row <span class="mono">7831622269075332</span></td></tr>
+          <tr><td>Sponsored Content (Crain-produced, 4&times;)</td><td>Smartsheet row <span class="mono">8957522175917956</span></td></tr>
           <tr><td>Audience Targeting Display</td><td>Smartsheet row <span class="mono">2483597711572868</span></td></tr>
-          <tr><td>Video Masthead Unit</td><td>Smartsheet row <span class="mono">5298347478679428</span> &middot; Toolkit pp.27&ndash;28</td></tr>
-          <tr><td>Sponsored E-mail (25K+)</td><td>Smartsheet row <span class="mono">7550147292364676</span></td></tr>
+          <tr><td>Video Masthead Unit</td><td>Smartsheet row <span class="mono">5298347478679428</span></td></tr>
+          <tr><td>Home page takeover</td><td>Smartsheet row <span class="mono">8113097245785988</span></td></tr>
+          <tr><td>Morning 10 &mdash; 100% SOV</td><td>Smartsheet row <span class="mono">8676047199207300</span></td></tr>
+          <tr><td>Afternoon 10 Newsletter</td><td>Smartsheet row <span class="mono">513272874598276</span></td></tr>
         </tbody>
       </table>
     </div>
 
-    <p class="source-note">Source: agent structured output, KeyBank validation run &middot; 04/23/2026. Smartsheet: V1 Product Sheet-Scopic. Toolkit: CCB_Product Toolkit_2026.pptx.</p>
+    <p class="source-note">Source: agent structured output, KeyBank validation run &middot; 04/24/2026. Smartsheet: V1 Product Sheet-Scopic.</p>
   </section>
 
-  <!-- 06 — HANDOFF -->
+  <!-- 07 — HANDOFF -->
   <section class="slide">
-    <div class="kicker"><span class="sec-num">06</span><span class="sec-rule" aria-hidden="true"></span>Handoff</div>
+    <div class="kicker"><span class="sec-num">07</span><span class="sec-rule" aria-hidden="true"></span>Handoff</div>
     <h2>What the agent handed the AE to double-check before send.</h2>
     <p>Items the agent wasn&rsquo;t willing to finalize on its own. The handoff from AI to AE.</p>
     <ol>
-      <li><strong>Event dates TBD.</strong> C-Suite Conversations and Family Business Lunch show TBD in the 2026 toolkit. If C-Suite lands before May 7, the 14-day lead is tight. Confirm with the Crain events team this week.</li>
-      <li><strong>Executive Insights 84-day lead.</strong> Earliest launch from today is mid-July 2026. Plan assumes Q3 publication; magazine insert timing drives the schedule.</li>
-      <li><strong>Politics exclusion vs. CCB editorial.</strong> CCB covers Chicago politics and policy as core editorial. Resolve via content-category targeting at the ad-server level. Confirm implementation with ad ops.</li>
-      <li><strong>Publicis rates.</strong> Fallon is Publicis Worldwide. If Crain holds a Publicis MSA, final invoicing may shift. AE to confirm with Crain finance before submission.</li>
-      <li><strong>75% MRC viewability.</strong> CCB display typically exceeds 75%. MOAT tags accepted. Include explicit guarantee language in the final PPT.</li>
-      <li><strong>Budget framing.</strong> $300K stated flat in the RFP, framed as recommendation in Fallon&rsquo;s email. Built to $300K ceiling. Mix scales if agency invites a higher recommendation.</li>
-      <li><strong>Frequency caps not published.</strong> CCB pricing sheet carries no per-product caps. Coordinate with ad ops if KeyBank trafficking has specific requirements.</li>
+      <li><strong>Event-tier pricing is a proxy.</strong> Crain&rsquo;s Elevate (Sept) priced at $40,000 using the Executive Insights flat-rate row as a Corporate-tier proxy. No 2026 event-tier card in the catalog yet. Confirm firm 2026 quote with the Crain events team before contract; split into Sponsored Content units if tier pricing differs materially.</li>
+      <li><strong>75% MRC viewability and MOAT.</strong> CCB display typically exceeds 75%. Confirm with ad ops that the measurement vendor is on Publicis&rsquo;s accepted list and that MOAT specifically can be accepted.</li>
+      <li><strong>Audio creative ask unmatched.</strong> RFP requests :30s pre-produced audio. CCB Smartsheet surfaces no host-read podcast or programmatic audio inventory. Either remove audio from Fallon&rsquo;s creative requirements for this campaign, or source via a separate Crain audio partner outside this proposal.</li>
+      <li><strong>Publicis rates.</strong> Fallon is Publicis Worldwide. Smartsheet catalog does not reflect agency discount. Apply contracted Publicis discount at contract stage.</li>
+      <li><strong>Content exclusions.</strong> RFP excludes Kids, Politics, Religious, and Spanish-language inventory. CCB B2B inventory aligns. Resolve Politics overlap via content-category targeting at the ad-server level; confirm implementation with ad ops.</li>
+      <li><strong>Budget framing.</strong> $300K stated flat in the RFP, framed as recommendation in Fallon&rsquo;s email. Built to $300K ceiling. If Fallon opens a higher recommendation, natural expansion paths: second webcast flight, Presenting-tier event escalation, extended Morning 10 cadence.</li>
+      <li><strong>Brand-study added value not scoped.</strong> RFP welcomes brand-study added value; no specific line in the mix. If Fallon pushes at brief-back, propose a topline brand-lift study attached to the Webcast or Crain&rsquo;s Elevate sponsorship as a no-cost added-value layer.</li>
+      <li><strong>Print rate-card anomaly.</strong> Smartsheet row for &ldquo;Full page ad 2&rdquo; at $171,542 is inconsistent with neighboring print rates (half page $9,163, quarter page $5,050). Row excluded from this mix and flagged for catalog review.</li>
     </ol>
     <p class="source-note">Source: agent structured output &middot; risks_and_assumptions section.</p>
   </section>
 
-  <!-- 07 — COMPARISON -->
+  <!-- 08 — COMPARISON -->
   <section class="slide">
-    <div class="kicker"><span class="sec-num">07</span><span class="sec-rule" aria-hidden="true"></span>Comparison</div>
-    <h2>The shipped proposal and the agent&rsquo;s draft, side by side.</h2>
-    <p>Same RFP. Same four pillars down each column. Left is what Crain shipped last November. Right is what the agent produced.</p>
-    <p>One note on flight windows: shipped runs 12-month always-on (Jan&ndash;Dec 2026); draft runs H2 only. Not a miss &mdash; we tested the agent against an old RFP, and it correctly flagged that early-year events were already past before building anything. The H2 window came from my answer, not a guess.</p>
+    <div class="kicker"><span class="sec-num">08</span><span class="sec-rule" aria-hidden="true"></span>Comparison</div>
+    <h2>The shipped proposal, the Scopic output, and the agent&rsquo;s draft, side by side.</h2>
+    <p>Same RFP. Same four pillars. Shipped is what Crain delivered last November. Middle is the Scopic-built app. Right is the agent.</p>
+    <p>One note on flight windows: shipped runs 12-month always-on (Jan&ndash;Dec 2026); Scopic runs Apr 25 &ndash; Dec 31; agent runs H2 only. Agent window came from the reply in section 03, not a guess.</p>
 
     <div class="row-label">Event sponsorship</div>
     <div class="cmp">
@@ -741,12 +799,17 @@ footer.endnote {
         </ul>
       </div>
       <div>
-        <h4>Agent draft &middot; Apr 2026</h4>
+        <h4>Scopic &middot; Apr 2026</h4>
         <ul>
-          <li>C-Suite Conversations &middot; Presenting $40K</li>
-          <li>Fast 50 Reveal &middot; Corporate $25K</li>
-          <li>Family Business Lunch &middot; Corporate $25K</li>
-          <li>Newsmakers excluded (past on an H2 flight)</li>
+          <li>No event sponsorship product in the mix</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agent &middot; Apr 2026</h4>
+        <ul>
+          <li>Custom Event &mdash; Crain&rsquo;s Elevate sponsor &middot; $40K (Sept)</li>
+          <li>Priced via Executive Insights flat-rate proxy</li>
+          <li>Flagged low confidence pending firm 2026 quote</li>
         </ul>
       </div>
     </div>
@@ -764,13 +827,23 @@ footer.endnote {
         </ul>
       </div>
       <div>
-        <h4>Agent draft &middot; Apr 2026</h4>
+        <h4>Scopic &middot; Apr 2026</h4>
         <ul>
-          <li>Executive Insights Roundtable &middot; $40K</li>
+          <li>Executive Insights &middot; $40K</li>
+          <li>Webcasts &times;2 &middot; $40K</li>
+          <li>Ask the Expert &times;2 &middot; $29K</li>
           <li>Thought Leader Report &times;2 &middot; $24K</li>
-          <li>Sponsored Content Series &times;3 &middot; $22,950</li>
-          <li>Custom Webcast &middot; $20K</li>
-          <li>Middle Market Growth Toolkit not selected</li>
+          <li>Sponsored Content &times;4 &middot; $34K</li>
+          <li>White Paper (client-submitted) &middot; $20K</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agent &middot; Apr 2026</h4>
+        <ul>
+          <li>Thought Leader Report &times;2 &middot; $24K</li>
+          <li>Webcast (Crain Content Studio) &middot; $20K</li>
+          <li>Sponsored Content (Crain-produced) &times;4 &middot; $34K</li>
+          <li>Quick Take Video &times;2 &middot; $17K</li>
         </ul>
       </div>
     </div>
@@ -789,14 +862,22 @@ footer.endnote {
         </ul>
       </div>
       <div>
-        <h4>Agent draft &middot; Apr 2026</h4>
+        <h4>Scopic &middot; Apr 2026</h4>
         <ul>
-          <li>Audience Targeting Display &middot; $25K</li>
-          <li>Video Masthead Unit &middot; $15.75K</li>
-          <li>Morning 10 Newsletter &times;3 &middot; $29.4K</li>
-          <li>Daily Gist Podcast &middot; $18.8K</li>
-          <li>Sponsored E-mail &middot; $13.2K</li>
-          <li>Interstitial and App Takeover not selected</li>
+          <li>Audience Targeting display &middot; $25K (500 CPM)</li>
+          <li>Run of Site &middot; $16K (400 CPM)</li>
+          <li>Sponsored E-mail &times;3 &middot; $72K</li>
+          <li>No video product</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agent &middot; Apr 2026</h4>
+        <ul>
+          <li>Audience Targeting display &middot; $50K (1M impr at $50 CPM)</li>
+          <li>Video Masthead Unit &middot; $21K (200K impr at $105 CPM, non-skippable flagged for confirmation)</li>
+          <li>Home page takeover &middot; $23.2K (4 days)</li>
+          <li>Morning 10 Newsletter 100% SOV &middot; $54K</li>
+          <li>Afternoon 10 Newsletter &times;2 weeks &middot; $16.8K</li>
         </ul>
       </div>
     </div>
@@ -812,15 +893,35 @@ footer.endnote {
         </ul>
       </div>
       <div>
-        <h4>Agent draft &middot; Apr 2026</h4>
+        <h4>Scopic &middot; Apr 2026</h4>
         <ul>
-          <li>Brand study mentioned as added-value option</li>
+          <li>No added-value commitment</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agent &middot; Apr 2026</h4>
+        <ul>
+          <li>Brand-lift study proposed as brief-back option (no-cost add-on to Webcast or Elevate sponsorship)</li>
           <li>Tiered thresholds not structured</li>
         </ul>
       </div>
     </div>
 
-    <p class="source-note">Source: Crain&rsquo;s Chicago Business &mdash; KeyBank Bank Partner Proposal FY2026, November 2025 (shipped) + agent structured output (draft) &middot; 04/23/2026.</p>
+    <p class="source-note">Source: Crain&rsquo;s Chicago Business &mdash; KeyBank Bank Partner Proposal FY2026, November 2025 (shipped); <code>Proposal-391.pdf</code> (Scopic); agent structured output (agent) &middot; 04/24/2026.</p>
+  </section>
+
+  <!-- 09 — FIRST PASS -->
+  <section class="slide">
+    <div class="kicker"><span class="sec-num">09</span><span class="sec-rule" aria-hidden="true"></span>First pass</div>
+    <h2>First pass against a real RFP. Iterations move quickly.</h2>
+    <p>End-to-end output. Per-line provenance. Constraint checks clean.</p>
+    <p>Open items land in three lanes:</p>
+    <ul>
+      <li>Corpus content &mdash; missing or stale catalog entries (2026 event-tier card, per-product toolkit extracts).</li>
+      <li>Prompt tuning &mdash; output shape, phrasing, added-value surfacing.</li>
+      <li>Stakeholder decisions &mdash; brand voice, library structure, intake process.</li>
+    </ul>
+    <p>Pilot feedback loop with the team closes them in short cycles.</p>
   </section>
 
   <footer class="endnote">
