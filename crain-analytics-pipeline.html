@@ -707,8 +707,6 @@ footer.endnote code {
       <li>Lambda loads Redshift. dbt transforms. Tableau, KPI reports, and Crain Answers read the presentation layer.</li>
     </ol>
 
-    <p class="callout"><strong>The drift problem</strong> Four configuration layers. Four owners. No test asserts they agree. That's why the same shape of bug keeps surfacing.</p>
-
     <div class="diagram-wrap">
 
     <svg viewBox="0 0 1600 1300" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -1327,20 +1325,7 @@ Proposed fix: ALTER column type to varchar; re-COPY from S3; ~27 other columns s
       </ul>
     </div>
 
-    <h3 style="margin-top: 2.5rem;">What not to ask reporters</h3>
-    <p class="body">Reporters send symptoms. Translate yourself.</p>
-    <ul style="font-size: 1rem; color: var(--ink-soft); line-height: 1.65; padding-left: 1.25rem; margin: 0.5rem 0 1rem;">
-      <li>eVar / prop / event numbers</li>
-      <li>Data layer field paths</li>
-      <li>Tag manager rule names</li>
-      <li>Root-cause hypotheses</li>
-    </ul>
-    <p class="body" style="font-style: italic; color: var(--ink-mute);">Triage's job: symptom → fault class → developer-ready ticket.</p>
   </section>
-
-  <footer class="endnote">
-    Companion docs: <code>analytics-how-it-works.md</code> and <code>analytics-triage-cheat-sheet.md</code> carry the same content as standalone markdown for cases where this consolidated HTML doesn't fit. Canonical reference for the broader source-system inventory: <code>architecture-overview.html</code>. Source of truth for every claim: the substrate at <code>knowledge/**</code>.
-  </footer>
 
 </main>
 
