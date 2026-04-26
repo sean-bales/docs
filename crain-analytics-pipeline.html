@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crain Website Analytics — How It Works, Where It Breaks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  /* Surfaces */
+  --bg:           #f5efe0;
+  --paper-warm:   #fcf8ec;
+  --paper-dim:    #ede4ce;
+  --card:         #fffdf6;
+
+  /* Ink */
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+
+  /* Rules */
+  --rule:         #d9cfb5;
+
+  /* Primary accent — ink-blue */
+  --accent:       #0d1b2a;
+  --accent-2:     #2d3c4d;
+  --accent-3:     #556371;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+
+  /* Secondary accent — ochre */
+  --highlight:      #b8821a;
+  --highlight-deep: #8a5f12;
+  --highlight-wash: rgba(184,130,26,0.10);
+
+  /* Structural neutral — sage */
+  --sage:         #8e9285;
+  --sage-deep:    #6f7468;
+  --sage-wash:    rgba(142,146,133,0.08);
+
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+/* Diagram section needs more width */
+main.wide {
+  max-width: 1640px;
+}
+
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+/* ---------- Typography ---------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.18;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+  font-family: var(--font-display);
+}
+
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong, b { font-weight: 600; color: var(--ink); }
+em, i { font-style: italic; color: var(--ink-soft); }
+
+code {
+  font-family: var(--font-mono);
+  background: var(--paper-dim);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 0.86em;
+  color: var(--ink);
+}
+
+/* ---------- Hero ---------- */
+
+header.hero {
+  padding: 0 0 clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 {
+  margin-bottom: 1.25rem;
+  max-width: none;
+}
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: 900px;
+}
+header.hero .meta {
+  margin-top: 1rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* ---------- Kicker ---------- */
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+/* ---------- Section cards ---------- */
+
+section.card-sec {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(2.25rem, 4vw, 3.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.card-sec > .kicker { margin-bottom: 1.5rem; }
+section.card-sec h2 { margin-bottom: 1.5rem; max-width: none; }
+section.card-sec h3 { margin: 2.25rem 0 0.85rem; }
+section.card-sec h3:first-of-type { margin-top: 1.5rem; }
+section.card-sec .body p {
+  font-size: 1.04rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+/* Diagram section gets a different border accent (ochre — the breakage theme) */
+section.card-sec.diagram { border-top-color: var(--highlight); }
+
+/* ---------- Numbered steps (used in section 1 lede + step panels) ---------- */
+
+ol.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  color: var(--ink);
+  line-height: 1.5;
+}
+ol.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 4px 0 4px 48px;
+  margin-bottom: 14px;
+  min-height: 28px;
+}
+ol.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  border: 1.6px solid var(--highlight);
+  color: var(--highlight);
+  background: var(--paper-warm);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: var(--font-ui);
+}
+ol.steps code {
+  font-family: var(--font-mono);
+  background: var(--paper-dim);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 0.85em;
+}
+
+/* ---------- Closer callout ---------- */
+
+.callout {
+  margin: 1.75rem 0;
+  padding: 1.15rem 1.4rem;
+  background: var(--highlight-wash);
+  border-left: 3px solid var(--highlight);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  line-height: 1.45;
+  color: var(--ink);
+  font-style: italic;
+  border-radius: 0 2px 2px 0;
+}
+.callout strong {
+  font-style: normal;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--highlight-deep);
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.callout.neutral {
+  background: var(--accent-wash);
+  border-left-color: var(--accent);
+  font-style: normal;
+}
+.callout.neutral strong { color: var(--accent-deep); }
+
+/* ---------- Tables ---------- */
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.96rem;
+  margin: 0.85rem 0 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+table.data th {
+  text-align: left;
+  padding: 0.8rem 1rem 0.6rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+table.data td {
+  padding: 0.7rem 1rem 0.7rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+table.data td:first-child, table.data th:first-child { padding-left: 0; }
+table.data tr:last-child td { border-bottom: none; }
+table.data td b, table.data td strong { color: var(--ink); font-weight: 600; }
+table.data td code { font-size: 0.86em; }
+table.data tbody tr:nth-child(even) td { background: var(--sage-wash); }
+
+/* ---------- Code block ---------- */
+
+pre.code-block {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--highlight);
+  border-radius: 2px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--ink);
+  overflow-x: auto;
+}
+pre.code-block .comment { color: var(--ink-mute); font-style: italic; }
+pre.code-block .arrow { color: var(--highlight); }
+
+/* ---------- Step panel (Section 02) ---------- */
+
+.step-panel {
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+.step-panel:first-of-type { border-top: none; padding-top: 0.5rem; }
+
+.step-panel .step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--highlight);
+  color: var(--paper-warm);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-right: 0.85rem;
+  vertical-align: -0.4rem;
+}
+.step-panel h3 {
+  display: inline-block;
+  margin: 0;
+}
+
+/* ---------- Worked-example panel (Section 03) ---------- */
+
+.example-panel {
+  margin: 0 0 2.75rem;
+  padding: 1.75rem 1.6rem 1.6rem;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.example-panel:last-of-type { margin-bottom: 1.5rem; }
+
+.example-panel .ex-num {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.example-panel h3 {
+  font-size: 1.3rem;
+  margin: 0 0 1.1rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.example-panel .ex-block {
+  margin: 1.1rem 0 0;
+}
+.example-panel .ex-block .ex-label {
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.45rem;
+}
+.example-panel .ex-block .ex-quote {
+  padding: 0.85rem 1.1rem;
+  background: var(--card);
+  border-left: 2px solid var(--ink-faint);
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  border-radius: 0 2px 2px 0;
+}
+.example-panel .ex-block p {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.example-panel .ex-block ul {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+.example-panel .ex-block ul li {
+  margin-bottom: 0.35rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.example-panel pre.code-block { margin: 0.5rem 0 0; }
+
+/* ---------- Anti-patterns block ---------- */
+
+.gotchas {
+  background: var(--sage-wash);
+  border-left: 2px solid var(--sage);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 2px 2px 0;
+  margin: 1.5rem 0 0;
+}
+.gotchas h4 { margin-bottom: 0.85rem; }
+.gotchas ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gotchas ul li {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+.gotchas ul li:last-child { border-bottom: none; }
+.gotchas ul li b { color: var(--ink); font-weight: 600; }
+
+/* ---------- Diagram-specific (the SVG section) ---------- */
+
+.diagram-wrap {
+  background: var(--card);
+  padding: 1.75rem 1.25rem 1.25rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  margin: 1rem 0 1.5rem;
+}
+.diagram-wrap svg { display: block; max-width: 100%; height: auto; margin-bottom: 1.5rem; }
+
+.legend {
+  margin: 1rem 0 0;
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--ink-mute);
+  flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 0.55rem; }
+.legend-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  border: 1px solid var(--ink-mute);
+}
+.legend-swatch.site { background: var(--card); border-top: 4px solid var(--sage-deep); }
+.legend-swatch.tag { background: var(--card); border-top: 4px solid var(--highlight); }
+.legend-swatch.adobe { background: var(--card); border-top: 4px solid var(--accent-2); }
+.legend-swatch.warehouse { background: var(--accent); border-color: var(--ink); }
+.legend-swatch.breakage { background: var(--paper-warm); border: 1px dashed var(--highlight); }
+
+/* ---------- Breakage callouts (HTML, below the diagram) ---------- */
+
+.breakage-section {
+  margin: 2.5rem 0 0;
+  padding: 1.5rem 1.5rem 1.25rem;
+  border-top: 1px dashed var(--highlight);
+}
+.breakage-heading {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  text-align: center;
+  margin: 0 0 0.6rem;
+}
+.breakage-sub {
+  text-align: center;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-mute);
+  margin: 0 0 1.5rem;
+  font-family: var(--font-display);
+}
+.breakage {
+  margin: 0 0 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--paper-warm);
+  border: 1.4px dashed var(--highlight);
+  border-radius: 2px;
+}
+.breakage-label {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--highlight);
+  margin: 0 0 0.75rem;
+}
+.breakage-line {
+  font-size: 1.1rem;
+  color: var(--ink);
+  line-height: 1.5;
+  margin: 0 0 0.4rem;
+}
+.breakage-line:last-of-type { margin-bottom: 0.65rem; }
+.breakage-example {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-mute);
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px dotted var(--rule);
+}
+.breakage-closer {
+  margin: 1.5rem 0 0;
+  padding: 1.2rem 1.5rem;
+  background: var(--sage-wash);
+  border-left: 3px solid var(--sage);
+  border-radius: 0 2px 2px 0;
+}
+.breakage-closer-label {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink-mute);
+  margin: 0 0 0.65rem;
+}
+.breakage-closer-body {
+  font-size: 1.1rem;
+  color: var(--ink);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------- Footer ---------- */
+
+footer.endnote {
+  margin-top: 3rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+footer.endnote code {
+  font-size: 0.85em;
+  background: var(--paper-dim);
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1cm; }
+  section.card-sec, .step-panel, .example-panel { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+}
+
+/* ---------- Mobile fallback ---------- */
+
+@media (max-width: 860px) {
+  body { font-size: 16px; }
+  section.card-sec { padding: 1.5rem 1.25rem; }
+  .kicker .sec-num::after { display: none; }
+  .legend { gap: 0.85rem 1.25rem; font-size: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main class="wide">
+
+  <header class="hero">
+    <h1>Crain Website Analytics<br>How It Works, Where It Breaks</h1>
+    <p class="standfirst">Reader clicks a page. The click becomes a row in a warehouse table that someone else queries to make a business decision. Four layers in between. Five places things go wrong.</p>
+    <p class="meta">Snapshot 2026-04-26</p>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 01 — THE PIPELINE (diagram + breakages)                -->
+  <!-- ============================================================ -->
+
+  <section class="card-sec diagram">
+    <div class="kicker"><span class="sec-num">01</span><span>The pipeline</span></div>
+    <h2>Reader visits a page. The click becomes a row in a warehouse.</h2>
+
+    <ol class="steps">
+      <li>Reader visits a Crain brand page.</li>
+      <li>Site code fills <code>window.crainDataLayer</code>. Twelve named groups — page, article, user, consent, paywall, more.</li>
+      <li>Site fires a trigger like <code>analytics.page-article</code>.</li>
+      <li>Adobe Launch hears it. Runs a rule. Reads data layer fields. Writes Adobe's numbered slots — eVars, props, events.</li>
+      <li>Adobe stores the hit. Exports hourly to S3.</li>
+      <li>Lambda loads Redshift. dbt transforms. Tableau, KPI reports, and Crain Answers read the presentation layer.</li>
+    </ol>
+
+    <p class="callout"><strong>The drift problem</strong> Four configuration layers. Four owners. No test asserts they agree. That's why the same shape of bug keeps surfacing.</p>
+
+    <div class="diagram-wrap">
+
+    <svg viewBox="0 0 1600 1300" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Four-layer flow in a 2x2 grid: site code top-left, tag manager top-right, Adobe Analytics bottom-left, data warehouse bottom-right. Arrows trace the path between them.">
+
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b6248" />
+        </marker>
+      </defs>
+
+      <!-- ================================================================ -->
+      <!-- LAYER 1 — SITE CODE (top-left, sage)                              -->
+      <!-- ================================================================ -->
+
+      <g>
+        <rect x="20" y="40" width="740" height="540" fill="#fffdf6" stroke="#6b6248" stroke-width="1.4" rx="2" />
+        <rect x="20" y="40" width="740" height="6" fill="#6f7468" />
+
+        <text x="44" y="84" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#0f0e0a">Site code</text>
+        <text x="44" y="108" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#6b6248">16 brand sites · Next.js mono-repo</text>
+
+        <line x1="44" y1="126" x2="736" y2="126" stroke="#d9cfb5" />
+
+        <text x="44" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#6f7468" letter-spacing="0.14em">FILLS THE DATA LAYER</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="56" cy="183" r="2.5" fill="#6f7468" />
+          <text x="68" y="188" font-weight="600">window.crainDataLayer</text>
+
+          <circle cx="56" cy="207" r="2.5" fill="#6f7468" />
+          <text x="68" y="212">JavaScript object on the page</text>
+
+          <circle cx="56" cy="231" r="2.5" fill="#6f7468" />
+          <text x="68" y="236">twelve named groups of facts:</text>
+        </g>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#3a3828">
+          <text x="80" y="262">page · article · user · consent · sophi · wall</text>
+          <text x="80" y="284">product · site · analytics · event · content · blueconic</text>
+        </g>
+
+        <line x1="44" y1="312" x2="736" y2="312" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="44" y="344" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#6f7468" letter-spacing="0.14em">FIRES A TRIGGER</text>
+        <text x="44" y="367" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic">browser event named analytics.&lt;something&gt;</text>
+
+        <!-- Two-column triggers layout -->
+        <text x="44" y="404" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f0e0a">Page triggers</text>
+        <text x="44" y="424" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#6b6248" font-style="italic">fire once per page when ready</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0f0e0a">
+          <circle cx="56" cy="447" r="2.5" fill="#6f7468" />
+          <text x="68" y="452">page-article</text>
+          <circle cx="56" cy="471" r="2.5" fill="#6f7468" />
+          <text x="68" y="476">page-section · page-search</text>
+          <circle cx="56" cy="495" r="2.5" fill="#6f7468" />
+          <text x="68" y="500">page-sub5 · page-sub6</text>
+          <circle cx="56" cy="519" r="2.5" fill="#6f7468" />
+          <text x="68" y="524">page-logindone · twenty-some others</text>
+        </g>
+
+        <text x="408" y="404" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f0e0a">Click triggers</text>
+        <text x="408" y="424" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#6b6248" font-style="italic">fire on user action</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0f0e0a">
+          <circle cx="420" cy="447" r="2.5" fill="#6f7468" />
+          <text x="432" y="452">click-articleread</text>
+          <circle cx="420" cy="471" r="2.5" fill="#6f7468" />
+          <text x="432" y="476">click-articlegiftshr</text>
+          <circle cx="420" cy="495" r="2.5" fill="#6f7468" />
+          <text x="432" y="500">click-searchmore · click-emailexch · more</text>
+        </g>
+
+        <line x1="44" y1="546" x2="736" y2="546" stroke="#d9cfb5" stroke-dasharray="3 4" />
+        <text x="44" y="568" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#6b6248">~25 slots also bypass Launch (direct call to Adobe)</text>
+      </g>
+
+      <!-- Arrow 1→2 (horizontal, top row) -->
+      <g fill="none" stroke="#6b6248" stroke-width="1.6">
+        <path d="M 762 310 L 838 310" marker-end="url(#arrow)" />
+      </g>
+      <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic" text-anchor="middle">
+        <text x="800" y="294">trigger fires;</text>
+        <text x="800" y="332">data layer ready</text>
+      </g>
+
+      <!-- ================================================================ -->
+      <!-- LAYER 2 — TAG MANAGER (top-right, ochre)                          -->
+      <!-- ================================================================ -->
+
+      <g>
+        <rect x="840" y="40" width="740" height="540" fill="#fffdf6" stroke="#6b6248" stroke-width="1.4" rx="2" />
+        <rect x="840" y="40" width="740" height="6" fill="#b8821a" />
+
+        <text x="864" y="84" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#0f0e0a">Tag manager</text>
+        <text x="864" y="108" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#6b6248">Adobe Launch (also called Reactor)</text>
+
+        <line x1="864" y1="126" x2="1556" y2="126" stroke="#d9cfb5" />
+
+        <text x="864" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#b8821a" letter-spacing="0.14em">HEARS THE TRIGGER</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="876" cy="183" r="2.5" fill="#b8821a" />
+          <text x="888" y="188">subscribes to every analytics.* event on the page</text>
+        </g>
+
+        <line x1="864" y1="206" x2="1556" y2="206" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="864" y="234" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#b8821a" letter-spacing="0.14em">RUNS A RULE</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="876" cy="259" r="2.5" fill="#b8821a" />
+          <text x="888" y="264">one rule per trigger per brand</text>
+          <circle cx="876" cy="283" r="2.5" fill="#b8821a" />
+          <text x="888" y="288">reads named pointers (data elements)</text>
+          <circle cx="876" cy="307" r="2.5" fill="#b8821a" />
+          <text x="888" y="312">writes values into Adobe's numbered slots</text>
+        </g>
+
+        <line x1="864" y1="332" x2="1556" y2="332" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="864" y="360" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#b8821a" letter-spacing="0.14em">EXAMPLE RULE — page-article on Ad Age</text>
+
+        <rect x="864" y="374" width="692" height="138" fill="#fcf8ec" stroke="#d9cfb5" stroke-width="0.8" rx="2" />
+
+        <g font-family="JetBrains Mono, Consolas, monospace" font-size="14" fill="#0f0e0a">
+          <text x="880" y="396">article.id        → eVar5</text>
+          <text x="880" y="416">article.author    → eVar9</text>
+          <text x="880" y="436">user.subscription → eVar72</text>
+          <text x="880" y="456">prop62 = "page-article"</text>
+          <text x="880" y="476">fire event3</text>
+          <text x="880" y="500" fill="#6b6248" font-style="italic">→ send the hit to Adobe</text>
+        </g>
+
+        <text x="864" y="540" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#6b6248">~87 rules per brand · ~175 named pointers (data elements) per brand</text>
+        <text x="864" y="562" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#6b6248">8 brand-group properties · 8+ editors · forks drift over time</text>
+      </g>
+
+      <!-- Arrow 2→3 (routed: Tag bottom → middle gap → Adobe top) -->
+      <g fill="none" stroke="#6b6248" stroke-width="1.6">
+        <path d="M 1210 580 L 1210 660 L 390 660 L 390 720" marker-end="url(#arrow)" />
+      </g>
+      <text x="800" y="650" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic" text-anchor="middle">rule sends structured row to Adobe</text>
+
+      <!-- ================================================================ -->
+      <!-- LAYER 3 — ADOBE ANALYTICS (bottom-left, navy)                     -->
+      <!-- ================================================================ -->
+
+      <g>
+        <rect x="20" y="720" width="740" height="540" fill="#fffdf6" stroke="#6b6248" stroke-width="1.4" rx="2" />
+        <rect x="20" y="720" width="740" height="6" fill="#2d3c4d" />
+
+        <text x="44" y="764" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#0f0e0a">Adobe Analytics</text>
+        <text x="44" y="788" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#6b6248">one report suite per brand · ~22 active</text>
+
+        <line x1="44" y1="806" x2="736" y2="806" stroke="#d9cfb5" />
+
+        <text x="44" y="838" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2d3c4d" letter-spacing="0.14em">RECEIVES THE HIT</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="56" cy="863" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="868">structured ~400-column row from Launch</text>
+        </g>
+
+        <line x1="44" y1="886" x2="736" y2="886" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="44" y="914" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2d3c4d" letter-spacing="0.14em">STORES IN NUMBERED SLOTS</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="56" cy="940" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="945" font-weight="600">eVars 1–250</text>
+        </g>
+        <text x="80" y="965" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248">persistent values — user id, content type, brand</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="56" cy="990" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="995" font-weight="600">props 1–75</text>
+        </g>
+        <text x="80" y="1015" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248">per-hit values — trigger name, page section</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0f0e0a">
+          <circle cx="56" cy="1040" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="1045" font-weight="600">events 1–100+</text>
+        </g>
+        <text x="80" y="1065" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248">counters — login completed, purchase, paywall shown</text>
+
+        <line x1="44" y1="1088" x2="736" y2="1088" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="44" y="1112" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic">whichever slots the rule wrote, those fill on this hit;</text>
+        <text x="44" y="1132" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic">other slots stay empty for this hit.</text>
+
+        <line x1="44" y1="1154" x2="736" y2="1154" stroke="#d9cfb5" stroke-dasharray="3 4" />
+
+        <text x="44" y="1182" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2d3c4d" letter-spacing="0.14em">EXPORTS HOURLY</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0f0e0a">
+          <circle cx="56" cy="1207" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="1212">Adobe Data Feed → Crain's S3 bucket (full row, every hit)</text>
+          <circle cx="56" cy="1233" r="2.5" fill="#2d3c4d" />
+          <text x="68" y="1238">AWS Lambda picks up the file; COPY into Redshift raw_hits</text>
+        </g>
+      </g>
+
+      <!-- Arrow 3→4 (horizontal, bottom row) -->
+      <g fill="none" stroke="#6b6248" stroke-width="1.6">
+        <path d="M 762 990 L 838 990" marker-end="url(#arrow)" />
+      </g>
+      <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#6b6248" font-style="italic" text-anchor="middle">
+        <text x="800" y="974">Lambda</text>
+        <text x="800" y="1012">COPY</text>
+      </g>
+
+      <!-- ================================================================ -->
+      <!-- LAYER 4 — DATA WAREHOUSE (bottom-right, navy fill)                -->
+      <!-- ================================================================ -->
+
+      <g>
+        <rect x="840" y="720" width="740" height="540" fill="#0d1b2a" stroke="#0f0e0a" stroke-width="1.4" rx="2" />
+        <rect x="840" y="720" width="740" height="6" fill="#b8821a" />
+
+        <text x="864" y="764" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#f5efe0">Data warehouse</text>
+        <text x="864" y="788" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#a5adb5">Redshift · dbt medallion · ~700 tables</text>
+
+        <line x1="864" y1="806" x2="1556" y2="806" stroke="#556371" />
+
+        <!-- cdw_01_raw -->
+        <rect x="864" y="822" width="692" height="118" fill="#2d3c4d" rx="2" />
+        <text x="884" y="848" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#f5efe0">cdw_01_raw</text>
+        <text x="884" y="868" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#a5adb5">where every hit lands · 109 tables</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#f5efe0">
+          <circle cx="896" cy="892" r="2.5" fill="#b8821a" />
+          <text x="908" y="897">raw_hits  ←  Adobe Data Feed (~400 columns · one row per hit)</text>
+          <circle cx="896" cy="916" r="2.5" fill="#b8821a" />
+          <text x="908" y="921" fill="#a5adb5" font-style="italic">+ pelcro · sailthru · GAM · cvent · …</text>
+        </g>
+
+        <!-- cdw_02_stg -->
+        <rect x="864" y="952" width="692" height="118" fill="#2d3c4d" rx="2" />
+        <text x="884" y="978" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#f5efe0">cdw_02_stg</text>
+        <text x="884" y="998" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#a5adb5">cleaned · joined · renamed · 160 tables</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#f5efe0">
+          <circle cx="896" cy="1022" r="2.5" fill="#b8821a" />
+          <text x="908" y="1027">digital_events (the curated view)</text>
+          <circle cx="896" cy="1046" r="2.5" fill="#b8821a" />
+          <text x="908" y="1051">eVars renamed via evar_mapping.csv seed; stamped with pelcro_customeraccountid</text>
+        </g>
+
+        <!-- cdw_03_prs -->
+        <rect x="864" y="1082" width="692" height="118" fill="#2d3c4d" rx="2" />
+        <text x="884" y="1108" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#f5efe0">cdw_03_prs</text>
+        <text x="884" y="1128" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#a5adb5">business-ready KPIs · 90 tables</text>
+
+        <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#f5efe0">
+          <circle cx="896" cy="1152" r="2.5" fill="#b8821a" />
+          <text x="908" y="1157">kpi_dashboard · article_performance · pelcro_weekly_summary</text>
+          <circle cx="896" cy="1176" r="2.5" fill="#b8821a" />
+          <text x="908" y="1181" fill="#a5adb5" font-style="italic">read by Tableau · KPI reports · Crain Answers · analyst SQL</text>
+        </g>
+
+        <line x1="864" y1="1216" x2="1556" y2="1216" stroke="#556371" />
+        <text x="1210" y="1240" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#8e9285" text-anchor="middle">~480 tables in legacy schemas being mapped in later phases</text>
+      </g>
+
+    </svg>
+
+    <!-- Breakage callouts as HTML below the diagram -->
+    <div class="breakage-section">
+      <h4 class="breakage-heading">Three places things go wrong</h4>
+      <p class="breakage-sub">All three live upstream of the warehouse — in site code or in Adobe Launch. Each one is silent at the moment of edit and surfaces months later in a dashboard.</p>
+
+      <div class="breakage">
+        <div class="breakage-label">1 · FIELD-NAME DRIFT  ·  SITE CODE ↔ TAG MANAGER</div>
+        <p class="breakage-line">Site writes one name. Launch reads a different name.</p>
+        <p class="breakage-line">Both layers look healthy in isolation. Slot stays empty in the warehouse.</p>
+        <p class="breakage-example">example: site writes <code>site.iadcmp</code> · Launch reads <code>site.iad_cmp</code></p>
+      </div>
+
+      <div class="breakage">
+        <div class="breakage-label">2 · PER-BRAND SLOT DIVERGENCE  ·  TAG MANAGER</div>
+        <p class="breakage-line">Same field, different Adobe slot per brand. Wired separately, drifted apart.</p>
+        <p class="breakage-line">Cross-brand reports silently lose half the data.</p>
+        <p class="breakage-example">example: <code>site.piano_ab</code> → eVar89 on AMW; eVar136 on Ad Age and Crain's Chicago</p>
+      </div>
+
+      <div class="breakage">
+        <div class="breakage-label">3 · DISABLED OR LEFTOVER RULES  ·  TAG MANAGER</div>
+        <p class="breakage-line">Rules turned off per brand. Or marked TEMPORARY and never removed.</p>
+        <p class="breakage-example">example: TEMPORARY bypass Piano paywall rule resident on two brand properties since Sept 2025</p>
+      </div>
+
+      <div class="breakage-closer">
+        <div class="breakage-closer-label">WHY THESE PERSIST</div>
+        <p class="breakage-closer-body">Site code and tag manager are owned by different groups. Per-brand wiring is owned by per-brand editors. None of them feel a bug at the moment of edit — drift surfaces months later in a dashboard query, far from the layer that introduced it.</p>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch site"></span>Site code</span>
+      <span class="legend-item"><span class="legend-swatch tag"></span>Tag manager (Adobe Launch)</span>
+      <span class="legend-item"><span class="legend-swatch adobe"></span>Adobe Analytics</span>
+      <span class="legend-item"><span class="legend-swatch warehouse"></span>Data warehouse</span>
+      <span class="legend-item"><span class="legend-swatch breakage"></span>Where breakages live</span>
+    </div>
+
+    </div><!-- /diagram-wrap -->
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 02 — A CLOSER LOOK                                     -->
+  <!-- ============================================================ -->
+
+  <section class="card-sec">
+    <div class="kicker"><span class="sec-num">02</span><span>A closer look</span></div>
+    <h2>Six steps in detail.</h2>
+    <p class="body" style="font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 1.25rem;">Same path as the diagram, with concrete examples. Walk through this when the room wants to know what each layer actually does — not just the box it sits in.</p>
+
+    <!-- Step 1 -->
+    <div class="step-panel">
+      <h3><span class="step-num">1</span>Site code fills the data layer</h3>
+      <p class="body">Page renders. Site code populates one object — <code>window.crainDataLayer</code>. A JavaScript object on the page. Browser dev tools can read it. Twelve named groups inside. Each group holds facts about one thing.</p>
+
+      <table class="data">
+        <thead>
+          <tr><th style="width: 22%;">Group</th><th>What's in it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>page</code></td><td>page type, section path, URL</td></tr>
+          <tr><td><code>article</code></td><td>article id, headline, author, publish date, paywall state</td></tr>
+          <tr><td><code>user</code></td><td>logged-in flag, user id, subscription tier, industry</td></tr>
+          <tr><td><code>consent</code></td><td>what the reader consented to (advertising, functional, performance)</td></tr>
+          <tr><td><code>wall</code></td><td>paywall outcome — shown, dismissed, converted</td></tr>
+          <tr><td><code>sophi</code></td><td>content recommendation decisions</td></tr>
+          <tr><td><code>product</code></td><td>subscription product details — only set during checkout</td></tr>
+          <tr><td><code>site</code></td><td>campaign codes, internal test markers</td></tr>
+          <tr><td><code>analytics</code></td><td>the trigger string for the current event</td></tr>
+          <tr><td><code>event</code> · <code>content</code> · <code>blueconic</code></td><td>secondary fields — Adobe-event flags, content metadata, CDP profile data</td></tr>
+        </tbody>
+      </table>
+
+      <p class="body">Different pages fill different groups. An article page fills <code>page</code> and <code>article</code>. A checkout page also fills <code>product</code>. A logged-in reader's hits also fill <code>user</code>. By the time the page is ready, the object is full.</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-panel">
+      <h3><span class="step-num">2</span>Site fires a trigger</h3>
+      <p class="body">Site dispatches a browser event. Format: <code>analytics.&lt;name&gt;</code>. The event name is the trigger. Two kinds.</p>
+
+      <h4 style="margin-top: 1.25rem; margin-bottom: 0.65rem;">Page triggers — fire once per page when the page is ready</h4>
+      <table class="data">
+        <thead>
+          <tr><th style="width: 38%;">Trigger</th><th>When it fires</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>analytics.page-article</code></td><td>article view</td></tr>
+          <tr><td><code>analytics.page-section</code></td><td>section or homepage view</td></tr>
+          <tr><td><code>analytics.page-search</code></td><td>search results page</td></tr>
+          <tr><td><code>analytics.page-sub5</code></td><td>subscription checkout, step 5</td></tr>
+          <tr><td><code>analytics.page-sub6</code></td><td>subscription completed</td></tr>
+          <tr><td><code>analytics.page-logindone</code></td><td>login completed</td></tr>
+          <tr><td>…twenty-some others</td><td></td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top: 1.25rem; margin-bottom: 0.65rem;">Click triggers — fire when reader clicks a specific element</h4>
+      <table class="data">
+        <thead>
+          <tr><th style="width: 38%;">Trigger</th><th>When it fires</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>analytics.click-articleread</code></td><td>reader finished reading article</td></tr>
+          <tr><td><code>analytics.click-articlegiftshr</code></td><td>reader clicked gift-share</td></tr>
+          <tr><td><code>analytics.click-searchmore</code></td><td>reader clicked "load more results"</td></tr>
+          <tr><td><code>analytics.click-emailexch</code></td><td>email exchange form submitted</td></tr>
+        </tbody>
+      </table>
+
+      <p class="body">When the trigger fires, <code>window.crainDataLayer</code> is already populated. The trigger is the site saying <em>something happened. here's the name.</em></p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-panel">
+      <h3><span class="step-num">3</span>Adobe Launch hears the trigger</h3>
+      <p class="body">Adobe Launch is a tag manager. Browser-side code. Subscribes to every <code>analytics.*</code> event. Trigger fires; Launch hears it; Launch looks up its rules.</p>
+      <p class="body">A rule is a recipe. One rule, one trigger. Example rule on Ad Age for the <code>analytics.page-article</code> trigger:</p>
+
+<pre class="code-block">read crainDataLayer.article.id          <span class="arrow">→</span> write to eVar5
+read crainDataLayer.article.author      <span class="arrow">→</span> write to eVar9
+read crainDataLayer.user.subscription   <span class="arrow">→</span> write to eVar72
+set prop62 = "page-article"
+fire event3</pre>
+
+      <p class="body">Rule reads named fields out of the data layer. Rule writes those values into Adobe's numbered slots. Roughly 87 rules per brand. Roughly 175 named pointers (data elements) per brand backing those rules. Eight separate Launch properties — one per brand-group.</p>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-panel">
+      <h3><span class="step-num">4</span>Adobe stores the hit</h3>
+      <p class="body">Launch sends a structured row to Adobe. ~400 columns. That's the hit. Adobe Analytics stores it. Slots in three flavors.</p>
+
+      <table class="data">
+        <thead>
+          <tr><th style="width: 14%;">Flavor</th><th style="width: 14%;">Range</th><th>What for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>eVar</b></td><td>1–250</td><td>persistent values — user id, content type, brand</td></tr>
+          <tr><td><b>prop</b></td><td>1–75</td><td>per-hit values — trigger name, page section</td></tr>
+          <tr><td><b>event</b></td><td>1–100+</td><td>counters — login completed, purchase</td></tr>
+        </tbody>
+      </table>
+
+      <p class="body">Whichever slots the rule wrote, those slots fill on this hit. Other slots stay empty for this hit. One report suite per brand. Roughly 22 active across Crain.</p>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-panel">
+      <h3><span class="step-num">5</span>Adobe exports to S3, Lambda loads Redshift</h3>
+      <p class="body">Adobe exports hourly. Drops the full row into Crain's S3 bucket — Adobe Data Feed. AWS Lambda picks up the file. COPY into Redshift. Lands in <code>cdw_01_raw.raw_hits</code>. dbt promotes through three layers.</p>
+
+      <table class="data">
+        <thead>
+          <tr><th style="width: 22%;">Layer</th><th>What's there</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>cdw_01_raw</code></td><td>raw landing — every hit, every column</td></tr>
+          <tr><td><code>cdw_02_stg</code></td><td>cleaned, joined, renamed — <code>digital_events</code> is the curated view</td></tr>
+          <tr><td><code>cdw_03_prs</code></td><td>KPI tables — <code>kpi_dashboard</code>, <code>article_performance</code></td></tr>
+        </tbody>
+      </table>
+
+      <p class="body">Tableau, KPI reports, Crain Answers, analyst SQL — they all read the presentation layer.</p>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-panel">
+      <h3><span class="step-num">6</span>A second path, used sparingly</h3>
+      <p class="body">Some on-page React hooks bypass Launch. Call Adobe directly. Hardcoded list of which fields go to which slots. About 25 slots. Faster path. But the rule-attribution stamp — <code>prop62</code>, <code>prop63</code> — never gets set on those hits.</p>
+      <p class="body">Why some hits in the warehouse have an empty <code>prop62</code>: those are the bypass hits.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 03 — TRIAGE CHEAT SHEET                                -->
+  <!-- ============================================================ -->
+
+  <section class="card-sec">
+    <div class="kicker"><span class="sec-num">03</span><span>Triage cheat sheet</span></div>
+    <h2>When a bug lands in your queue.</h2>
+    <p class="body" style="font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 1.5rem;">Four real-shaped examples. Each shows what lands in your queue, how to triage it in thirty seconds, and what the developer-ready ticket looks like. Reporters send symptoms. Translate yourself.</p>
+
+    <!-- Example 1 -->
+    <div class="example-panel">
+      <div class="ex-num">Example 01</div>
+      <h3>"Adobe page tags stopped firing on [brand]"</h3>
+
+      <div class="ex-block">
+        <div class="ex-label">What's happening</div>
+        <p>Tags not firing. Adobe is recording nothing. Not a warehouse problem.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Suspect first</div>
+        <p>Adobe Launch — rule disabled, consent gate stuck — or site-side script-load regression.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Two questions before you escalate</div>
+        <ul>
+          <li>Did anything ship near the date? TrustArc, Piano, Sophi, BlueConic, ARC migration, compliance refactor, feature flag. If yes, that's the lead.</li>
+          <li>Whole brand, or one page type? Whole brand → consent gating or property-level rule. One page type → specific rule.</li>
+        </ul>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Developer-ready ticket</div>
+<pre class="code-block">Brand / RSID: [brand].com / [rsid]
+Drop window: hits/hour [N] → [M] starting [date]
+Scope: all page types / one page type
+Recent changes: [list anything that shipped near the date]
+Likely layer: Adobe Launch (rule status, consent gate) OR site-side script load
+Evidence: network tab on representative page; Adobe debugger output; change log</pre>
+      </div>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="example-panel">
+      <div class="ex-num">Example 02</div>
+      <h3>"Industry / license_id missing for logged-in users on [brand]"</h3>
+
+      <div class="ex-block">
+        <div class="ex-label">What's happening</div>
+        <p>Field-name drift between site code and Launch — or site never writes the field. Not a recent regression. Chronic shape.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Suspect first</div>
+        <p>Site code ↔ tag manager interface.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Diagnostic</div>
+        <p>Open dev tools on a logged-in test user. Inspect <code>window.crainDataLayer.user</code>.</p>
+        <ul>
+          <li>Field present in browser → drift. Compare data layer key vs Launch data element path character-by-character.</li>
+          <li>Field missing in browser → site never writes it for this segment. Engineering owns.</li>
+        </ul>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Developer-ready ticket</div>
+<pre class="code-block">Brand / RSID: [brand].com / [rsid]
+Symptom: logged-in segment shows blank for industry / license_id / supexpire
+Browser dump: window.crainDataLayer.user = [paste]
+Launch DE path: [paste data element settings]
+Likely layer: site code ↔ tag manager (drift) OR site code (field never written)
+Evidence: dev tools dump; Launch DE screenshot; Adobe debugger view</pre>
+      </div>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="example-panel">
+      <div class="ex-num">Example 03</div>
+      <h3>"eVar70 (article_type) shows coupon codes"</h3>
+
+      <div class="ex-block">
+        <div class="ex-label">What's happening</div>
+        <p>Stale warehouse label. The Adobe slot was repurposed in Launch. The warehouse seed kept the old name. Six eVars currently mislabeled this way.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Suspect first</div>
+        <p>dbt seed. Not Launch, not Adobe.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Confirm in 30 seconds</div>
+        <ul>
+          <li>Live wiring: <code>Adobe Analytics | page-sub5</code> and <code>page-sub6</code> write <code>crainDataLayer.product.coupon</code> to eVar70.</li>
+          <li>Seed: <code>evar_mapping.csv</code> still labels eVar70 as <code>article_type</code>.</li>
+          <li>Coupon codes are correct content. Column is mislabeled.</li>
+        </ul>
+        <p style="margin-top: 0.65rem;">Not a data bug. Labeling bug.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Developer-ready ticket</div>
+<pre class="code-block">Slot: eVar70 (column: post_evar70_article_type)
+Top-5 distinct values last 30d: [list — confirm coupon-shaped]
+Live wiring: Launch writes crainDataLayer.product.coupon on subscription rules
+Seed says: article_type
+Likely layer: dbt seed (cdw-dbt/cdw/seeds/evar_mapping.csv)
+Proposed fix: rename column OR new column + deprecate old. Both need consumer migration.</pre>
+      </div>
+    </div>
+
+    <!-- Example 4 -->
+    <div class="example-panel">
+      <div class="ex-num">Example 04</div>
+      <h3>"post_evar1 is empty even though Adobe shows the data"</h3>
+
+      <div class="ex-block">
+        <div class="ex-label">What's happening</div>
+        <p>Redshift column-type drop. Column is <code>bigint</code>. Adobe sends text. COPY drops the text as NULL. ~28 columns affected.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Suspect first</div>
+        <p>Redshift load. Not Launch, not Adobe, not site.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Diagnostic in two queries</div>
+<pre class="code-block">select count(*) from raw_hits where post_evar1 is not null;  <span class="comment">-- 16</span>
+select count(*) from raw_hits where post_prop1 is not null;  <span class="comment">-- 46.2M</span></pre>
+        <p style="margin-top: 0.65rem;">Companion prop carries content. eVar empty. Bigint typing. S3 sources are append-only — content recoverable on re-COPY after type fix.</p>
+      </div>
+
+      <div class="ex-block">
+        <div class="ex-label">Developer-ready ticket</div>
+<pre class="code-block">Column: post_evar1 (current type: bigint per information_schema.columns)
+90-day non-null: 16 rows
+Companion post_prop1 (text-typed): 46.2M rows, same content
+Likely layer: Redshift COPY into raw_hits
+Proposed fix: ALTER column type to varchar; re-COPY from S3; ~27 other columns same shape</pre>
+      </div>
+    </div>
+
+    <!-- Five places quick-reference -->
+    <h3 style="margin-top: 2.75rem;">Quick reference — the five places things go wrong</h3>
+
+    <table class="data">
+      <thead>
+        <tr><th style="width: 8%;">#</th><th style="width: 32%;">Shape</th><th>Layer</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Field-name drift</td><td>site code ↔ tag manager</td></tr>
+        <tr><td>2</td><td>Per-brand slot divergence</td><td>tag manager (per-brand wiring)</td></tr>
+        <tr><td>3</td><td>Disabled or leftover rules</td><td>tag manager</td></tr>
+        <tr><td>4</td><td>Stale warehouse label</td><td>warehouse seed</td></tr>
+        <tr><td>5</td><td>Column-type drop</td><td>warehouse load</td></tr>
+      </tbody>
+    </table>
+    <p class="body" style="font-size: 0.95rem; color: var(--ink-mute); font-style: italic;">Examples 1, 2, 3, 4 above cover shapes 1, 1, 4, 5. Shape 2 surfaces as cross-brand-comparison gaps. Shape 3 surfaces as "fires on three brands, not the fourth."</p>
+
+    <!-- Anti-patterns -->
+    <div class="gotchas">
+      <h4>Not a bug — common false alarms</h4>
+      <ul>
+        <li><b>Empty-string defaults on Adobe slots.</b> Most data elements default to <code>""</code>. "Field not present" looks identical to "field empty." Confirm the field was supposed to be set on this page, flow, or user state.</li>
+        <li><b>Pre-2025-05-01 step changes on eVars 126+.</b> Schema split that date. Pre-cutoff rows NULL-stuff those columns by design.</li>
+        <li><b>78% null on customer account id.</b> Anonymous traffic. Right denominator for join health is non-null hits, not total hits.</li>
+        <li><b>Three GenomeWeb-related report suites collapse to one warehouse code.</b> Intentional. One Pelcro tenant covers all three.</li>
+        <li><b><code>prop62</code> / <code>prop63</code> carrying long strings.</b> Design. Those slots are the rule-attribution forensic trail. If they look broken, the bug is shape 5 (bigint drop), not Launch leaking debug data.</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top: 2.5rem;">What not to ask reporters</h3>
+    <p class="body">Reporters send symptoms. Translate yourself.</p>
+    <ul style="font-size: 1rem; color: var(--ink-soft); line-height: 1.65; padding-left: 1.25rem; margin: 0.5rem 0 1rem;">
+      <li>eVar / prop / event numbers</li>
+      <li>Data layer field paths</li>
+      <li>Tag manager rule names</li>
+      <li>Root-cause hypotheses</li>
+    </ul>
+    <p class="body" style="font-style: italic; color: var(--ink-mute);">Triage's job: symptom → fault class → developer-ready ticket.</p>
+  </section>
+
+  <footer class="endnote">
+    Companion docs: <code>analytics-how-it-works.md</code> and <code>analytics-triage-cheat-sheet.md</code> carry the same content as standalone markdown for cases where this consolidated HTML doesn't fit. Canonical reference for the broader source-system inventory: <code>architecture-overview.html</code>. Source of truth for every claim: the substrate at <code>knowledge/**</code>.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
