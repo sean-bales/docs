@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crain Data Architecture — CTO Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+}
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover { text-decoration-color: var(--accent); color: var(--accent-deep); }
+a:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; border-radius: 1px; }
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.005em;
+}
+.num.neg { color: var(--neg); }
+.num.pos { color: var(--pos); }
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+  background: transparent;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 { margin-bottom: 1.35rem; max-width: none; }
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: none;
+}
+
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+
+.panel + .panel { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+
+ul.data-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.25rem;
+}
+ul.data-bullets > li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+ul.data-bullets > li:last-child { border-bottom: none; }
+ul.data-bullets > li > b,
+ul.data-bullets > li > strong { color: var(--ink); font-weight: 600; }
+
+.src {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  margin-top: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  line-height: 1.55;
+}
+
+.chart-card {
+  margin: 1.5rem -0.5rem 1.75rem;
+  padding: 1.25rem 1rem 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.chart-card svg { width: 100%; height: auto; display: block; margin: 0.5rem 0 0.25rem; }
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0 0 0.2rem 0;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.chart-footnote {
+  padding: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary { page-break-inside: avoid; }
+  .chart-card { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .kicker .sec-num::after { display: none; }
+  section.primary { padding: clamp(1.25rem, 4vw, 1.75rem); }
+  .chart-card { margin-left: 0; margin-right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>04/27/2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Make data trustworthy. Make the warehouse the source. <em>Make it AI-ready.</em></h1>
+    <p class="standfirst">Three destinations. Today&rsquo;s stack hits none; tomorrow&rsquo;s hits all.</p>
+  </header>
+
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Today&rsquo;s stack</div>
+    <h2>The data flows. The architecture connecting it doesn&rsquo;t.</h2>
+
+    <div class="panel">
+      <div class="chart-card">
+        <h3 class="chart-title">Four upstream surfaces. No contract. Tableau reads the result.</h3>
+        <svg viewBox="0 0 1200 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Current state architecture diagram. Five boxes left-to-right: Site Data Layer in TypeScript owned by web engineering, Adobe Launch tag manager owned by eight distributed editors, Adobe Analytics owned by analytics, Redshift and dbt owned by data engineering, and Tableau / Best Report as the business visual layer owned by Biz Intel. Arrows connect each layer to the next. A dashed ochre line spans the four upstream boxes: no contract between layers.">
+
+          <rect x="20" y="60" width="200" height="110" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="120" y="100" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Site Data Layer</text>
+          <text x="120" y="125" text-anchor="middle" fill="#3a3828" font-family="'Source Serif 4', Georgia, serif" font-size="13" font-style="italic">TypeScript</text>
+          <text x="120" y="152" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">OWNER&#160;&#183;&#160;WEB&#160;ENG</text>
+
+          <line x1="225" y1="115" x2="255" y2="115" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="255,115 247,111 247,119" fill="#9a9178"/>
+
+          <rect x="260" y="60" width="200" height="110" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="360" y="100" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Adobe Launch</text>
+          <text x="360" y="125" text-anchor="middle" fill="#3a3828" font-family="'Source Serif 4', Georgia, serif" font-size="13" font-style="italic">Tag manager</text>
+          <text x="360" y="152" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">OWNER&#160;&#183;&#160;8&#160;EDITORS</text>
+
+          <line x1="465" y1="115" x2="495" y2="115" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="495,115 487,111 487,119" fill="#9a9178"/>
+
+          <rect x="500" y="60" width="200" height="110" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="600" y="100" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Adobe Analytics</text>
+          <text x="600" y="125" text-anchor="middle" fill="#3a3828" font-family="'Source Serif 4', Georgia, serif" font-size="13" font-style="italic">eVars, props, hits</text>
+          <text x="600" y="152" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">OWNER&#160;&#183;&#160;ANALYTICS</text>
+
+          <line x1="705" y1="115" x2="735" y2="115" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="735,115 727,111 727,119" fill="#9a9178"/>
+
+          <rect x="740" y="60" width="200" height="110" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="840" y="100" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Redshift / dbt</text>
+          <text x="840" y="125" text-anchor="middle" fill="#3a3828" font-family="'Source Serif 4', Georgia, serif" font-size="13" font-style="italic">Warehouse</text>
+          <text x="840" y="152" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">OWNER&#160;&#183;&#160;DATA&#160;ENG</text>
+
+          <line x1="945" y1="115" x2="975" y2="115" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="975,115 967,111 967,119" fill="#9a9178"/>
+
+          <rect x="980" y="60" width="200" height="110" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="1080" y="100" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Tableau / Best Report</text>
+          <text x="1080" y="125" text-anchor="middle" fill="#3a3828" font-family="'Source Serif 4', Georgia, serif" font-size="13" font-style="italic">Visual layer</text>
+          <text x="1080" y="152" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">OWNER&#160;&#183;&#160;BIZ&#160;INTEL</text>
+
+          <line x1="20" y1="220" x2="940" y2="220" stroke="#b8821a" stroke-width="1" stroke-dasharray="4 4"/>
+          <rect x="290" y="208" width="380" height="24" fill="#f7f1e3"/>
+          <text x="480" y="225" text-anchor="middle" fill="#8a5f12" font-family="Inter, sans-serif" font-size="12" font-weight="700" letter-spacing="3">NO&#160;CONTRACT&#160;BETWEEN&#160;UPSTREAM&#160;LAYERS</text>
+
+        </svg>
+        <div class="chart-footnote">Each layer maintained by different people on different cadences. No automated test asserts the four agree on what a field means.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <ul class="data-bullets">
+        <li><b>Four config surfaces, four cadences and no data contract between them.</b> Names drift. eVars carry labels that no longer match their content.</li>
+        <li><b>Adobe Launch config schema drift across brand websites,</b> no single schema.</li>
+        <li><b>28 Redshift columns silently dropped 2+ years of Adobe text content</b> at load. Data intact in S3. Fix is mechanical.</li>
+        <li><b>~175 data elements configured in Adobe Launch; only 25 of those reach the warehouse.</b> 31 of 49 active Adobe variables unread by any dbt model (they sit unused in the raw Adobe tables).</li>
+        <li><b>50&ndash;75% of Adobe Analytics data being captured is noise, dead, or redundant.</b> Executive reporting already runs on Pelcro and Redshift, not Adobe directly.</li>
+      </ul>
+    </div>
+
+    <p class="src">Source: cdw-dbt knowledge substrate &mdash; Phases 0&ndash;8 + Audits 1&ndash;3. Compiled 04/27/2026. Universe: 7-system Crain web data estate (data layer, Launch, Analytics, Pelcro, Redshift raw / staging / presentation). Per-system depth: <span class="mono">knowledge/</span>.</p>
+  </section>
+
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Tomorrow&rsquo;s stack</div>
+    <h2>Warehouse native AI-ready data.</h2>
+
+    <div class="panel">
+      <div class="chart-card">
+        <h3 class="chart-title">Contract anchors the stack.</h3>
+        <svg viewBox="0 0 1200 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Future state architecture diagram. At top center, an ochre-bordered box reads Website Data Contract, data contract schema and test guardrails. An arrow runs down to a four-box pipeline left to right: Website Data with contract data label, API Gateway on AWS, Redshift as system of record, and Business Insights as the AI reporting layer.">
+
+          <rect x="360" y="20" width="480" height="80" fill="#fcf8ec" stroke="#b8821a" stroke-width="2.5" rx="2"/>
+          <text x="600" y="50" text-anchor="middle" fill="#8a5f12" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="3">WEBSITE&#160;DATA&#160;CONTRACT</text>
+          <text x="600" y="78" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Data contract schema &middot; test guardrails</text>
+
+          <line x1="600" y1="105" x2="600" y2="155" stroke="#b8821a" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <polygon points="600,158 596,150 604,150" fill="#b8821a"/>
+          <text x="615" y="135" fill="#8a5f12" font-family="'Source Serif 4', Georgia, serif" font-size="12" font-style="italic">shapes everything below</text>
+
+          <rect x="25" y="180" width="250" height="100" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="150" y="220" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Website Data</text>
+          <text x="150" y="258" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">CONTRACT&#160;DATA</text>
+
+          <line x1="280" y1="230" x2="320" y2="230" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="320,230 312,226 312,234" fill="#9a9178"/>
+
+          <rect x="325" y="180" width="250" height="100" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="450" y="220" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">API Gateway</text>
+          <text x="450" y="258" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">AWS</text>
+
+          <line x1="580" y1="230" x2="620" y2="230" stroke="#9a9178" stroke-width="1.5"/>
+          <polygon points="620,230 612,226 612,234" fill="#9a9178"/>
+
+          <rect x="625" y="180" width="250" height="100" fill="#fcf8ec" stroke="#0d1b2a" stroke-width="1.5" rx="2"/>
+          <text x="750" y="220" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Redshift</text>
+          <text x="750" y="258" text-anchor="middle" fill="#6b6248" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="2">SYSTEM&#160;OF&#160;RECORD</text>
+
+          <line x1="880" y1="230" x2="920" y2="230" stroke="#b8821a" stroke-width="1.5"/>
+          <polygon points="920,230 912,226 912,234" fill="#b8821a"/>
+
+          <rect x="925" y="180" width="250" height="100" fill="#fcf8ec" stroke="#b8821a" stroke-width="2" rx="2"/>
+          <text x="1050" y="220" text-anchor="middle" fill="#0f0e0a" font-family="'Iowan Old Style', Palatino, Georgia, serif" font-size="18" font-weight="500">Business Insights</text>
+          <text x="1050" y="258" text-anchor="middle" fill="#8a5f12" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="2">AI&#160;REPORTING</text>
+
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <ul class="data-bullets">
+        <li><b>Website data contract anchors the stack.</b> Schema and test guardrails in code. Every layer downstream consumes the same shape.</li>
+        <li><b>Warehouse-native pipeline.</b> Website data &rarr; API Gateway &rarr; Redshift as system of record. AWS infrastructure end to end.</li>
+        <li><b>Business Insights via AI</b> reading the canonical Redshift store. Replaces dashboards as the primary reporting surface.</li>
+        <li><b>Kill first.</b> Retire what isn&rsquo;t read before adding anything new. Phased dual-publish &mdash; one metric at a time, retire the legacy version on a published date.</li>
+        <li><b>Adobe Analytics and Launch retire.</b> Low-to-mid six-figure annual run-rate savings. One-time implementation in same range. Adobe contract renewal is the natural decision point.</li>
+      </ul>
+    </div>
+
+    <p class="src">Source: working hypothesis derived from cdw-dbt knowledge substrate. Compiled 04/27/2026. Savings figures: rough estimate, assumptive math; firm numbers depend on Adobe contract terms. Discovery work (stakeholder interviews, kill list, metric list) precedes build.</p>
+  </section>
+
+  <footer class="endnote">
+    Prepared by Sean Bales &middot; Crain Communications &middot; Internal use only. For per-system depth and the full known-issues register, point Claude at the <span class="mono">knowledge/</span> folder and <span class="mono">derivatives/known-issues-and-actions.md</span>.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
