@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crain Answers — Portfolio Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+
+  --rule:         #d9cfb5;
+
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+}
+
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover {
+  text-decoration-color: var(--accent);
+  color: var(--accent-deep);
+}
+a:focus-visible {
+  outline: 2px solid var(--accent2);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.005em;
+}
+.num.neg { color: var(--neg); }
+.num.pos { color: var(--pos); }
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+  background: transparent;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 {
+  margin-bottom: 1.35rem;
+  max-width: none;
+}
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: none;
+}
+header.hero .standfirst + .standfirst { margin-top: 0.6rem; }
+
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+
+section.primary .lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.35;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  max-width: none;
+  letter-spacing: -0.005em;
+}
+
+.panel + .panel { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+
+.panel h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.005em;
+}
+.panel .p-meta {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0;
+  margin: 0.5rem 0 1.25rem;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.metric-strip .m {
+  padding: 0.85rem 0.9rem;
+  border-right: 1px solid var(--rule);
+}
+.metric-strip .m:last-child { border-right: none; }
+.metric-strip .m-label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 0.35rem;
+}
+.metric-strip .m-val {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.panel-body {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+@media (max-width: 860px) { .panel-body { grid-template-columns: 1fr; } }
+.panel-body h5 {
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.55rem;
+}
+.panel-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+.panel-body ul > li {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.panel-body ul > li:last-child { border-bottom: none; }
+.panel-body ul > li b { color: var(--ink); font-weight: 600; }
+
+.spark-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.6rem 0.8rem 0.5rem;
+}
+.spark-card svg { width: 100%; height: auto; display: block; }
+.spark-card .spark-label {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0.35rem 0 0.2rem;
+}
+
+.caveat-strip {
+  margin-top: 1rem;
+  padding: 0.65rem 0.95rem;
+  background: var(--sage-wash);
+  border-left: 2px solid var(--ink-faint);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.ifthen {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 1.1rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ifthen:first-of-type { padding-top: 0.5rem; }
+.ifthen:last-of-type { border-bottom: none; padding-bottom: 0.3rem; }
+.ifthen .nn {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.ifthen .cond {
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+  line-height: 1.38;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+  letter-spacing: -0.003em;
+}
+.ifthen .actual {
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  line-height: 1.58;
+}
+.ifthen .actual b {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+  margin-right: 0.55rem;
+}
+
+ul.data-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.25rem;
+}
+ul.data-bullets > li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+ul.data-bullets > li:last-child { border-bottom: none; }
+ul.data-bullets > li > b,
+ul.data-bullets > li > strong { color: var(--ink); font-weight: 600; }
+
+.callout {
+  margin: 1.75rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--accent-wash);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.callout strong {
+  color: var(--accent-deep);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 0.45rem;
+}
+
+.callout.decision {
+  background: var(--accent2-wash);
+  border-left-color: var(--accent2);
+}
+.callout.decision strong { color: var(--accent2-deep); }
+
+.callout.motion {
+  background: var(--accent2-wash);
+  border-left-color: var(--accent2);
+}
+.callout.motion strong { color: var(--accent2-deep); }
+.callout.motion p { margin-bottom: 0.5rem; }
+.callout.motion p:last-child { margin-bottom: 0; }
+
+.callout-muted {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--sage-wash);
+  border-left: 2px solid var(--ink-faint);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.96rem;
+  margin: 0.85rem 0 1.25rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+}
+th {
+  text-align: left;
+  padding: 0.8rem 1rem 0.6rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+td {
+  padding: 0.68rem 1rem 0.68rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+th.num, td.num {
+  text-align: right;
+  padding-right: 0.3rem;
+}
+td.num:last-child, th.num:last-child { padding-right: 0; }
+td.pos { color: var(--pos); font-weight: 500; }
+td.neg { color: var(--neg); font-weight: 500; }
+tbody tr:nth-child(even):not(.emph) td { background: var(--sage-wash); }
+tr.emph td { background: var(--accent-wash); color: var(--ink); font-weight: 500; }
+tr.emph td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 0.75rem;
+}
+
+.next-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1rem 0 0;
+}
+@media (max-width: 860px) { .next-grid { grid-template-columns: 1fr; } }
+.next-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 1.25rem 1.3rem 1.15rem;
+}
+.next-card.motion { border-top: 2px solid var(--accent2); background: linear-gradient(180deg, var(--accent2-wash) 0%, transparent 35%), var(--card); }
+.next-card.queue { border-top: 2px solid var(--accent); }
+.next-card .nc-label {
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 0.65rem;
+}
+.next-card.motion .nc-label { color: var(--accent2-deep); }
+.next-card h4 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.003em;
+  text-transform: none;
+}
+.next-card .nc-def {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-bottom: 0.85rem;
+}
+.next-card ul { list-style: none; padding: 0; margin: 0; }
+.next-card ul > li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.next-card ul > li:last-child { border-bottom: none; }
+.next-card ul > li b { color: var(--ink); font-weight: 600; }
+
+.appx-break {
+  margin: 4rem auto 2rem;
+  padding: 2.5rem 0 0;
+  text-align: center;
+  position: relative;
+}
+.appx-break::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--ink);
+  margin: 0 auto 2rem;
+}
+.appx-break::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  margin: 0.85rem auto 0;
+}
+.appx-break h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  margin: 0;
+}
+.appx-break .sub {
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-top: 0.65rem;
+}
+
+.appx-bucket-break {
+  margin: 2.5rem 0 1rem;
+  padding: 0;
+}
+.appx-bucket-break h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+section.appx {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+}
+section.appx h3 {
+  margin-bottom: 1.15rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+section.appx .kicker { margin-bottom: 0.9rem; color: var(--ink-mute); }
+section.appx .kicker .sec-num { font-size: 1.25rem; }
+
+.supports {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1rem 0 0;
+}
+@media (max-width: 860px) { .supports { grid-template-columns: 1fr; } }
+.supports > div {
+  padding: 1rem 1.15rem;
+  background: var(--sage-wash);
+  border-left: 2px solid var(--rule);
+}
+.supports > div.does-support { border-left-color: var(--accent); }
+.supports > div.does-not { border-left-color: var(--sage); }
+.supports h5 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.7rem;
+}
+.supports ul { margin: 0; padding-left: 1.15rem; }
+.supports li { padding: 0.2rem 0; color: var(--ink-soft); line-height: 1.5; }
+
+.src {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  margin-top: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  line-height: 1.55;
+}
+
+.chart-card {
+  margin: 1.5rem -0.5rem 1.75rem;
+  padding: 1.25rem 1rem 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+.chart-card svg { width: 100%; height: auto; display: block; margin: 0.5rem 0 0.25rem; }
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0 0 0.2rem 0;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+}
+.chart-legend .swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+.chart-footnote {
+  padding: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 2.5rem;
+  margin: 1.25rem 0 0;
+  text-align: left;
+}
+.toc { margin: 0; padding: 0; list-style: none; font-size: 0.96rem; }
+.toc li {
+  break-inside: avoid;
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted var(--rule);
+}
+.toc li.toc-group {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--ink);
+  margin-top: 1rem;
+  padding: 0.3rem 0;
+}
+.toc li.toc-group:first-child { margin-top: 0; }
+.toc li a {
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.toc li a:hover { color: var(--accent); }
+.toc li a b {
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.7rem;
+}
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary, section.appx { page-break-inside: avoid; }
+  .chart-card { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .toc-grid { grid-template-columns: 1fr; gap: 0; }
+  .kicker .sec-num::after { display: none; }
+  .ifthen { grid-template-columns: 1fr; gap: 0.4rem; }
+  table { font-size: 0.9rem; }
+  th, td { padding-right: 0.5rem; }
+  section.primary, section.appx { padding: clamp(1.25rem, 4vw, 1.75rem); }
+  .chart-card { margin-left: 0; margin-right: 0; }
+  .metric-strip { grid-template-columns: 1fr 1fr; }
+  .metric-strip .m { border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Crain Product Team</b>
+      <span>05/15/2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Crain Answers &mdash; State Across Five Brands</h1>
+    <p class="standfirst">Performance overview, what subscribers use it for, and what&rsquo;s next.</p>
+  </header>
+
+  <!-- Section 00: Lead-in -->
+  <section class="primary" id="s0">
+    <div class="kicker"><span class="sec-num">00</span>Snapshot</div>
+    <h2>What the data shows about adoption, quality, and what&rsquo;s next.</h2>
+
+    <ul class="data-bullets">
+      <li><b>Quality is high.</b> The AI answers accurately when the content exists.</li>
+      <li><b>The gap is data.</b> Subscriber demand clearly points to sales numbers, rankings, and financial tables &mdash; the AI doesn&rsquo;t have access to them.</li>
+      <li><b>Half of subscribers don&rsquo;t return after their first query.</b> This pattern is consistent across all brands.</li>
+      <li><b>Adoption peaks in week 2 and settles by week 5 on every brand.</b> The steady level varies 6&ndash;10x. AutoNews leads.</li>
+      <li><b>Two in-flight initiatives address the biggest gaps.</b> New on-site components create contextual entry points to Crain Answers. The Crain IQ initiative gives the AI access to structured rankings and financial data.</li>
+    </ul>
+
+    <p class="src">Snapshot as of 05/15/2026. Five brands live, 23&ndash;100 days each.</p>
+  </section>
+
+  <!-- Section 01: Portfolio at a glance -->
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Portfolio at a glance</div>
+    <h2>Overview by brand since launch.</h2>
+
+    <p style="color: var(--ink-soft); font-size: 1.02rem; line-height: 1.6; margin-bottom: 1.5rem;">3,086 queries. 1,024 subscribers. AutoNews leads on absolute engagement.</p>
+
+    <table aria-label="Per-brand portfolio metrics as of 2026-05-15">
+      <thead>
+        <tr>
+          <th>Brand</th>
+          <th class="num">Days live</th>
+          <th class="num">Users</th>
+          <th class="num">Queries</th>
+          <th class="num">Return %</th>
+          <th class="num">No-answer %</th>
+          <th class="num">Hallucination %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="#s4">Ad Age</a></td><td class="num">100</td><td class="num">325</td><td class="num">974</td><td class="num">23.1</td><td class="num">22.5</td><td class="num">3.5</td></tr>
+        <tr><td><a href="#s5">Automotive News</a></td><td class="num">65</td><td class="num">395</td><td class="num">1,385</td><td class="num">19.2</td><td class="num">15.0</td><td class="num">1.5</td></tr>
+        <tr><td><a href="#s6">Modern Healthcare</a></td><td class="num">38</td><td class="num">99</td><td class="num">308</td><td class="num">10.1</td><td class="num">18.2</td><td class="num">1.0</td></tr>
+        <tr><td><a href="#s7">Crain&rsquo;s Chicago Business</a></td><td class="num">30</td><td class="num">120</td><td class="num">234</td><td class="num">5.0</td><td class="num">28.2</td><td class="num">3.4</td></tr>
+        <tr><td><a href="#s8">Crain&rsquo;s Detroit Business</a></td><td class="num">23</td><td class="num">85</td><td class="num">185</td><td class="num">3.5</td><td class="num">30.9</td><td class="num">3.4</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout-muted">
+      <p style="margin: 0;"><b>Note:</b> Ad Age has had 100 days for returners; CDB has had 23. Cross-brand rate comparisons aren&rsquo;t apples-to-apples. Shape compares; levels don&rsquo;t.</p>
+    </div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: 5 brands, post-launch through 05/15/2026. Excluded: 10,034 internal/test user IDs. n = 3,086 queries, 1,024 users.</p>
+  </section>
+
+  <!-- Section 02: Quality is solid; gap is structured data -->
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Quality and the gap</div>
+    <h2>Quality is high. The gap is data, not hallucinations.</h2>
+
+    <ul class="data-bullets">
+      <li><b>Hallucinations: 1.0&ndash;3.5% per brand.</b> Across 2,100 quality-checked responses.</li>
+      <li><b>Completeness: 4.32&ndash;4.59 of 5.</b></li>
+      <li><b>Relevance: 4.82&ndash;4.89 of 5.</b></li>
+      <li><b>Subscriber feedback is 2-to-1 positive when they rate.</b> Negative feedback is unanimous across brands &mdash; subscribers want sales tables, ranked lists, and financial figures the AI can&rsquo;t pull from articles.</li>
+      <li><b>Same data gap repeats brand by brand.</b> Sales by nameplate (AutoNews). Health-system margins (MH). Cap rates and zoning (CCB). Multi-year archives (CDB). Ad-spend benchmarks (Ad Age).</li>
+    </ul>
+
+    <div class="callout motion">
+      <strong>Plan to address &middot; Crain IQ</strong>
+      <p>AI will answer from data: sales tables, rankings, financial figures. Pilot at Pensions &amp; Investments. AutoNews next. <a href="#a5">See A5.</a></p>
+    </div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase) + Aha! initiative PROD-S-39. Pulled 05/15/2026. Universe: judged responses where evaluation = complete, n = 2,100. Feedback universe: all rated queries, n = 60 of 3,086.</p>
+  </section>
+
+  <!-- Section 03: Trial-to-habit -->
+  <section class="primary" id="s3">
+    <div class="kicker"><span class="sec-num">03</span>The funnel leak</div>
+    <h2>Roughly half of subscribers do not convert to habit.</h2>
+
+    <div class="chart-card">
+      <h3 class="chart-title">One-and-done holds across every brand</h3>
+      <svg id="chart-funnel" viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stacked horizontal bars showing query-count distribution per brand. Across all five brands, between forty-four and sixty-three percent of subscribers ask exactly one query and never return."></svg>
+      <div class="chart-legend">
+        <span><span class="swatch" style="background:#b8821a"></span>1 query only</span>
+        <span><span class="swatch" style="background:#556371"></span>2&ndash;5 queries</span>
+        <span><span class="swatch" style="background:#2d3c4d"></span>6&ndash;15 queries</span>
+        <span><span class="swatch" style="background:#0d1b2a"></span>16+ queries</span>
+      </div>
+      <div class="chart-footnote">Excludes internal/test user IDs. Source: Crain Answers analytics database, pulled 05/15/2026.</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>44&ndash;63% of subscribers query once and never return.</b> Pattern holds on every brand.</li>
+      <li><b>AutoNews retains best</b> (44% one-and-done, 15 heavy users). <b>CCB worst</b> (63%, zero heavy users).</li>
+      <li><b>Suggested prompts dominate first questions.</b> Top 1&ndash;4 queries on every brand are suggested prompts. When subscribers ask their own questions, no single topic gets much volume.</li>
+      <li><b>Quick win:</b> routinely refresh suggested prompts per brand. Counters the click-through decay we see on launch prompts.</li>
+    </ul>
+
+    <div class="callout motion">
+      <strong>Plan to address &middot; on-site components</strong>
+      <p>Contextually relevant entry points on the homepage, on article pages, and a permanent site-nav link replace the promotional banner. Ad Age public launch 06/04, then the other four brands in sequence.</p>
+    </div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase) + Aha! epic PROD-E-106. Pulled 05/15/2026. Universe: unique users per brand, post-launch through 05/15/2026. n = 1,024 users.</p>
+  </section>
+
+  <!-- Section 04: Ad Age -->
+  <section class="primary" id="s4">
+    <div class="kicker"><span class="sec-num">04</span>Ad Age</div>
+    <h2>Ad Age &mdash; longest tenure. Signals point to a sustained-research audience forming.</h2>
+
+    <div class="metric-strip">
+      <div class="m"><div class="m-label">Days live</div><div class="m-val">100</div></div>
+      <div class="m"><div class="m-label">Users</div><div class="m-val">325</div></div>
+      <div class="m"><div class="m-label">Queries</div><div class="m-val">974</div></div>
+      <div class="m"><div class="m-label">Return %</div><div class="m-val">23.1</div></div>
+      <div class="m"><div class="m-label">No-answer %</div><div class="m-val">22.5</div></div>
+      <div class="m"><div class="m-label">Quality</div><div class="m-val">4.44</div></div>
+    </div>
+
+    <div class="spark-card">
+      <svg id="spark-adage" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ad Age weekly active subscribers: launch peak in week 3 of 93 users, decline to single digits by week 7, an email-driven re-spike of 61 users in week 8, then settled at 10 to 15 weekly active."></svg>
+      <div class="spark-label">Weekly active subscribers &middot; weeks 1&ndash;15</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>What subscribers use it for:</b> CMO measurement and team structure. Agency competitive intel (holdco profiles, AOR lookups, mid-tier shops). AI in advertising.</li>
+      <li><b>Where it falls short:</b> Ad-spend benchmarks by brand. Ranked agency leaderboards. Specific-article retrieval (&ldquo;Tim Nudd&rdquo;). Some subscribers treat the assistant as enhanced search.</li>
+      <li><b>Signal worth carrying forward:</b> Top user active 19 distinct days. Three of top five power users on 13+ days. Strongest case in the portfolio for a research-tool persona.</li>
+    </ul>
+
+    <div class="caveat-strip">Ad Age has had the most time on market. Higher return rate (23.1% vs CDB&rsquo;s 3.5%) reflects more weeks for returners to accumulate &mdash; not a structural advantage.</div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: Ad Age, 02/05/2026&ndash;05/15/2026.</p>
+  </section>
+
+  <!-- Section 05: Automotive News -->
+  <section class="primary" id="s5">
+    <div class="kicker"><span class="sec-num">05</span>Automotive News</div>
+    <h2>Automotive News &mdash; portfolio engagement leader on every absolute metric.</h2>
+
+    <div class="metric-strip">
+      <div class="m"><div class="m-label">Days live</div><div class="m-val">65</div></div>
+      <div class="m"><div class="m-label">Users</div><div class="m-val">395</div></div>
+      <div class="m"><div class="m-label">Queries</div><div class="m-val">1,385</div></div>
+      <div class="m"><div class="m-label">Return %</div><div class="m-val">19.2</div></div>
+      <div class="m"><div class="m-label">No-answer %</div><div class="m-val">15.0</div></div>
+      <div class="m"><div class="m-label">Quality</div><div class="m-val">4.32</div></div>
+    </div>
+
+    <div class="spark-card">
+      <svg id="spark-autonews" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Automotive News weekly active subscribers: launch peak in week 2 of 145 users, decline through weeks 3 to 4, sustained 30 to 50 weekly active subscribers from week 4 onward."></svg>
+      <div class="spark-label">Weekly active subscribers &middot; weeks 1&ndash;10</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>What subscribers use it for:</b> EV / hybrid / EREV market intel. Chinese OEMs, tariffs, Mexico operations. Daily Ford news monitor &mdash; a power-user pattern.</li>
+      <li><b>Where it falls short:</b> Unit sales by nameplate / model. Multi-year time series. Ranked dealership-group KPIs. Every thumbs-down is about a sales number the AI couldn&rsquo;t produce.</li>
+      <li><b>Signal worth carrying forward:</b> Two distinct power-user archetypes. Deep-research (top user: 82 queries / 5 days). Daily-news-monitor (rank 3&ndash;4: 8 distinct days each, querying named OEMs). Closest thing to a habitual workflow use case in the portfolio.</li>
+    </ul>
+
+    <div class="caveat-strip">AutoNews is 65 days in &mdash; 35 days younger than Ad Age. On absolute engagement (heavy-user count, steady-state weekly active, feedback volume) AutoNews already leads.</div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: Automotive News, 03/12/2026&ndash;05/15/2026.</p>
+  </section>
+
+  <!-- Section 06: Modern Healthcare -->
+  <section class="primary" id="s6">
+    <div class="kicker"><span class="sec-num">06</span>Modern Healthcare</div>
+    <h2>Modern Healthcare &mdash; highest quality. Exec-briefing workflow emerging.</h2>
+
+    <div class="metric-strip">
+      <div class="m"><div class="m-label">Days live</div><div class="m-val">38</div></div>
+      <div class="m"><div class="m-label">Users</div><div class="m-val">99</div></div>
+      <div class="m"><div class="m-label">Queries</div><div class="m-val">308</div></div>
+      <div class="m"><div class="m-label">Return %</div><div class="m-val">10.1</div></div>
+      <div class="m"><div class="m-label">No-answer %</div><div class="m-val">18.2</div></div>
+      <div class="m"><div class="m-label">Quality</div><div class="m-val">4.59</div></div>
+    </div>
+
+    <div class="spark-card">
+      <svg id="spark-mh" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Modern Healthcare weekly active subscribers: 63-user launch promotion spike in week 2, settled into single digits from week 4 onward."></svg>
+      <div class="spark-label">Weekly active subscribers &middot; weeks 1&ndash;6</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>What subscribers use it for:</b> AI in healthcare &mdash; strategy, governance, ROI, competitive positioning. Value-based care and payer dynamics. Regulatory monitoring (No Surprises Act, MAHA, ACO REACH).</li>
+      <li><b>Where it falls short:</b> Health-system margins. ACA enrollment numbers. Specific quantitative health-policy figures. Format conversion requests.</li>
+      <li><b>Signal worth carrying forward:</b> Exec-briefing workflow. Subscribers paste full press releases or article text, ask for verbatim quote extraction, exec summaries, industry-priority lists with attribution. Deck-building and memo-building &mdash; distinct from research Q&amp;A.</li>
+      <li><b>Quality leader:</b> Highest answer-quality profile of any brand. 4.59 completeness, 4.88 relevance, 1.0% hallucination.</li>
+    </ul>
+
+    <div class="caveat-strip">MH is 38 days in. The week-2 promotion spike (63 users) has settled into single-digit weekly active. Too early to call whether the base rebuilds without intervention.</div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: Modern Healthcare, 04/08/2026&ndash;05/15/2026.</p>
+  </section>
+
+  <!-- Section 07: Crain's Chicago Business -->
+  <section class="primary" id="s7">
+    <div class="kicker"><span class="sec-num">07</span>Crain&rsquo;s Chicago Business</div>
+    <h2>Crain&rsquo;s Chicago Business &mdash; launch promotion drove trial. Trial didn&rsquo;t convert.</h2>
+
+    <div class="metric-strip">
+      <div class="m"><div class="m-label">Days live</div><div class="m-val">30</div></div>
+      <div class="m"><div class="m-label">Users</div><div class="m-val">120</div></div>
+      <div class="m"><div class="m-label">Queries</div><div class="m-val">234</div></div>
+      <div class="m"><div class="m-label">Return %</div><div class="m-val">5.0</div></div>
+      <div class="m"><div class="m-label">No-answer %</div><div class="m-val">28.2</div></div>
+      <div class="m"><div class="m-label">Quality</div><div class="m-val">4.38</div></div>
+    </div>
+
+    <div class="spark-card">
+      <svg id="spark-ccb" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crain&apos;s Chicago Business weekly active subscribers: 86-user launch spike in week 2, immediate drop to single digits from week 3 onward."></svg>
+      <div class="spark-label">Weekly active subscribers &middot; weeks 1&ndash;5</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>What subscribers use it for:</b> Chicago commercial real estate &mdash; office leases, building deals, named projects. Named-entity lookups (Burns &amp; McDonnell, UMCU, Berlin Packaging, Pritzker Group). Civic and political affairs.</li>
+      <li><b>Where it falls short:</b> Ranked archive interrogation. Cap rates and zoning-based land values. Mid-tier company profile retrieval when articles likely exist.</li>
+      <li><b>Signal worth carrying forward:</b> Onboarding confusion is visible. &ldquo;Is this free?&rdquo; &ldquo;Do I need a subscription?&rdquo; &ldquo;What is Crain&rsquo;s Chicago Answers?&rdquo; &ldquo;Do you compete with Bisnow?&rdquo; Most likely predictive risk for the remaining brand launches.</li>
+      <li><b>Feedback volume note:</b> 9 ratings of 234 queries. The 4 up / 5 down ratio is near-noise. Not a directional signal.</li>
+    </ul>
+
+    <div class="caveat-strip">CCB is 30 days in. Return rate (5%) and no-answer rate (28%) aren&rsquo;t directly comparable to Ad Age or AutoNews. MH at 38 days is the closest comparable &mdash; 10% return &mdash; and CCB is trailing it.</div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: Crain&rsquo;s Chicago Business, 04/16/2026&ndash;05/15/2026.</p>
+  </section>
+
+  <!-- Section 08: Crain's Detroit Business -->
+  <section class="primary" id="s8">
+    <div class="kicker"><span class="sec-num">08</span>Crain&rsquo;s Detroit Business</div>
+    <h2>Crain&rsquo;s Detroit Business &mdash; earliest brand. Thinnest archive. Highest no-answer rate.</h2>
+
+    <div class="metric-strip">
+      <div class="m"><div class="m-label">Days live</div><div class="m-val">23</div></div>
+      <div class="m"><div class="m-label">Users</div><div class="m-val">85</div></div>
+      <div class="m"><div class="m-label">Queries</div><div class="m-val">185</div></div>
+      <div class="m"><div class="m-label">Return %</div><div class="m-val">3.5</div></div>
+      <div class="m"><div class="m-label">No-answer %</div><div class="m-val">30.9</div></div>
+      <div class="m"><div class="m-label">Quality</div><div class="m-val">4.37</div></div>
+    </div>
+
+    <div class="spark-card">
+      <svg id="spark-cdb" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crain&apos;s Detroit Business weekly active subscribers: 54-user launch spike in week 2, dropping to 18 and 10 in weeks 3 and 4."></svg>
+      <div class="spark-label">Weekly active subscribers &middot; weeks 1&ndash;4</div>
+    </div>
+
+    <ul class="data-bullets">
+      <li><b>What subscribers use it for:</b> Metro Detroit commercial real estate &mdash; named developments, building deals, neighborhood activity. Named-entity lookups (Elana Rugh, R L Polk, James Group, Carhartt, Sherri Welch). EV and mobility from the Detroit angle.</li>
+      <li><b>Where it falls short:</b> Multi-year ranked archives. Named-list and ranking interrogation. Specific recent-article retrieval.</li>
+      <li><b>Signal worth carrying forward:</b> Highest no-answer rate in the portfolio (30.9%). Local article archive is thinner than the national B2B brands &mdash; the answer ceiling tracks how deep the content is. One emerging power user (20 queries / 6 active days) at the smallest brand scale.</li>
+      <li><b>Feedback volume note:</b> 2 ratings of 185 queries. Too thin to characterize sentiment.</li>
+    </ul>
+
+    <div class="caveat-strip">CDB is 23 days in. Earliest-stage brand. CCB at 30 days is the closest comparable. Direct rate comparisons to older brands aren&rsquo;t meaningful yet.</div>
+
+    <p class="src">Source: Crain Answers analytics database (Supabase). Pulled 05/15/2026. Universe: Crain&rsquo;s Detroit Business, 04/23/2026&ndash;05/15/2026.</p>
+  </section>
+
+  <!-- Section 09: Conclusion -->
+  <section class="primary" id="s9">
+    <div class="kicker"><span class="sec-num">09</span>Conclusion</div>
+    <h2>Crain Answers is mid-transformation with clear traction signals. The biggest gaps have solutions in flight.</h2>
+
+    <ul class="data-bullets">
+      <li><b>Traction is real.</b> Strong answer quality across all brands (1&ndash;3.5% hallucination; completeness 4.32&ndash;4.59 of 5). AutoNews sustains 30&ndash;50 weekly active subscribers. Ad Age has built a sustained-research audience.</li>
+      <li><b>The biggest gaps are clear and addressable.</b> Subscribers want data the AI can&rsquo;t currently reach (sales tables, rankings, financials). Half of subscribers don&rsquo;t return after their first query.</li>
+      <li><b>Crain IQ closes the data gap.</b> Gives the AI access to structured rankings and financial data. Pilot at Pensions &amp; Investments. AutoNews next.</li>
+      <li><b>On-site components close the adoption gap.</b> Contextually relevant entry points on the homepage, on article pages, and a permanent site-nav link replace the promotional banner. Ad Age launches 06/04. Sequential rollout follows.</li>
+      <li><b>Smaller moves queued behind.</b> Refresh suggested prompts monthly. Re-engagement emails 6&ndash;8 weeks post-launch. Auto-respond to &ldquo;is this free?&rdquo; questions. Weekly thumbs-down review.</li>
+    </ul>
+
+    <p class="src">Source: Aha! epic PROD-E-106 (on-site components); Aha! initiative PROD-S-39 (Crain IQ); cross-brand synthesis 05/15/2026.</p>
+  </section>
+
+  <footer class="endnote">
+    Prepared by Crain Product Team &middot; Crain Communications &middot; Internal use only &middot; 05/15/2026
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+<script>
+function niceTop(mx) {
+  const pow = Math.pow(10, Math.floor(Math.log10(mx)));
+  const frac = mx / pow;
+  const step = frac <= 2 ? pow/2 : frac <= 5 ? pow : pow*2;
+  return Math.ceil(mx / step) * step;
+}
+
+// ---------- Funnel stacked bars (Section 03) ----------
+(function(){
+  const data = [
+    { brand: 'Ad Age',            users: 325, pcts: [46, 43, 9, 2] },
+    { brand: 'Automotive News',   users: 395, pcts: [44, 43, 9, 4] },
+    { brand: 'Modern Healthcare', users: 99,  pcts: [51, 38, 9, 2] },
+    { brand: 'CCB',               users: 120, pcts: [63, 33, 4, 0] },
+    { brand: 'CDB',               users: 85,  pcts: [56, 40, 2, 1] }
+  ];
+  const colors = ['#b8821a', '#556371', '#2d3c4d', '#0d1b2a'];
+  const W = 1200, H = 460;
+  const M = { t: 70, r: 60, b: 70, l: 200 };
+  const plotW = W - M.l - M.r;
+  const plotH = H - M.t - M.b;
+  const bandH = plotH / data.length;
+  const barH = Math.min(38, bandH * 0.62);
+
+  const parts = [];
+  parts.push('<g font-family="Inter, system-ui, sans-serif" font-size="14">');
+
+  // X gridlines every 20%
+  for (let v = 0; v <= 100; v += 20) {
+    const x = M.l + (v / 100) * plotW;
+    parts.push('<line x1="'+x+'" x2="'+x+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#d9cfb5" stroke-dasharray="'+(v===0?'0':'2 3')+'" />');
+    parts.push('<text x="'+x+'" y="'+(M.t+plotH+24)+'" text-anchor="middle" fill="#6b6248" font-size="13">'+v+'%</text>');
+  }
+
+  data.forEach((d, i) => {
+    const yCenter = M.t + i * bandH + bandH / 2;
+    const yTop = yCenter - barH / 2;
+
+    // Brand label
+    parts.push('<text x="'+(M.l-14)+'" y="'+(yCenter-2)+'" text-anchor="end" fill="#0f0e0a" font-weight="600">'+d.brand+'</text>');
+    parts.push('<text x="'+(M.l-14)+'" y="'+(yCenter+16)+'" text-anchor="end" fill="#6b6248" font-size="12" font-style="italic">n = '+d.users+'</text>');
+
+    // Stacked segments
+    let cursor = 0;
+    d.pcts.forEach((pct, j) => {
+      if (pct === 0) return;
+      const x = M.l + (cursor / 100) * plotW;
+      const w = (pct / 100) * plotW;
+      parts.push('<rect x="'+x+'" y="'+yTop+'" width="'+w+'" height="'+barH+'" fill="'+colors[j]+'" fill-opacity="0.92" />');
+      if (pct >= 6) {
+        const labelColor = (j === 3 || j === 2) ? '#fcf8ec' : '#0f0e0a';
+        parts.push('<text x="'+(x + w/2)+'" y="'+(yCenter+5)+'" text-anchor="middle" fill="'+labelColor+'" font-weight="600" font-size="13">'+pct+'%</text>');
+      }
+      cursor += pct;
+    });
+  });
+
+  // Plot borders
+  parts.push('<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#0f0e0a" stroke-width="1.2" />');
+  parts.push('<line x1="'+M.l+'" x2="'+M.l+'" y1="'+M.t+'" y2="'+(M.t+plotH)+'" stroke="#0f0e0a" stroke-width="1.2" />');
+
+  // Header label
+  parts.push('<text x="'+M.l+'" y="'+(M.t - 32)+'" text-anchor="start" fill="#3a3828" font-style="italic">Share of unique subscribers by total queries</text>');
+
+  parts.push('</g>');
+  document.getElementById('chart-funnel').innerHTML = parts.join('');
+})();
+
+// ---------- Per-brand sparklines (Section 05) ----------
+function renderSpark(id, series, highlightWeek) {
+  const W = 600, H = 100;
+  const M = { t: 14, r: 14, b: 14, l: 28 };
+  const plotW = W - M.l - M.r;
+  const plotH = H - M.t - M.b;
+
+  let yMax = 0;
+  series.forEach(v => { if (v > yMax) yMax = v; });
+  yMax = niceTop(yMax);
+  const xFor = i => M.l + (series.length === 1 ? plotW/2 : (i / (series.length - 1)) * plotW);
+  const yFor = v => M.t + plotH - (v / yMax) * plotH;
+
+  const parts = [];
+
+  // Baseline
+  parts.push('<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+(M.t+plotH)+'" y2="'+(M.t+plotH)+'" stroke="#d9cfb5" />');
+
+  // y axis label (max)
+  parts.push('<text x="'+(M.l-6)+'" y="'+(M.t+8)+'" text-anchor="end" fill="#6b6248" font-family="Inter, system-ui, sans-serif" font-size="10">'+yMax+'</text>');
+  parts.push('<text x="'+(M.l-6)+'" y="'+(M.t+plotH+2)+'" text-anchor="end" fill="#6b6248" font-family="Inter, system-ui, sans-serif" font-size="10">0</text>');
+
+  // Filled area under line
+  let path = '';
+  let area = 'M ' + xFor(0) + ',' + (M.t+plotH);
+  series.forEach((v, i) => {
+    const x = xFor(i);
+    const y = yFor(v);
+    path += (i === 0 ? 'M ' : ' L ') + x.toFixed(1) + ',' + y.toFixed(1);
+    area += ' L ' + x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  area += ' L ' + xFor(series.length - 1) + ',' + (M.t+plotH) + ' Z';
+
+  parts.push('<path d="'+area+'" fill="#0d1b2a" fill-opacity="0.08" />');
+  parts.push('<path d="'+path+'" fill="none" stroke="#0d1b2a" stroke-width="1.8" stroke-opacity="0.92" />');
+
+  // Dots
+  series.forEach((v, i) => {
+    const x = xFor(i);
+    const y = yFor(v);
+    const isHi = highlightWeek != null && (i + 1) === highlightWeek;
+    parts.push('<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(isHi ? 4.5 : 2.6)+'" fill="'+(isHi ? '#b8821a' : '#0d1b2a')+'" />');
+    if (isHi) {
+      parts.push('<text x="'+x.toFixed(1)+'" y="'+(y-9).toFixed(1)+'" text-anchor="middle" fill="#8a5f12" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600">'+v+'</text>');
+    }
+  });
+
+  // Week labels at first / peak / last
+  let peakI = 0;
+  series.forEach((v, i) => { if (v > series[peakI]) peakI = i; });
+  const labelIdx = new Set([0, peakI, series.length - 1]);
+  labelIdx.forEach(i => {
+    const x = xFor(i);
+    parts.push('<text x="'+x.toFixed(1)+'" y="'+(H - 2)+'" text-anchor="middle" fill="#6b6248" font-family="Inter, system-ui, sans-serif" font-size="9.5">W'+(i+1)+'</text>');
+  });
+
+  document.getElementById(id).innerHTML = parts.join('');
+}
+
+renderSpark('spark-adage',    [8, 72, 93, 68, 13, 16, 7, 61, 18, 18, 12, 12, 10, 14, 12], 8);
+renderSpark('spark-autonews', [62, 145, 51, 42, 44, 20, 34, 36, 30, 26]);
+renderSpark('spark-mh',       [8, 63, 15, 7, 5, 9]);
+renderSpark('spark-ccb',      [9, 86, 11, 12, 5]);
+renderSpark('spark-cdb',      [6, 54, 18, 10]);
+</script>
+
+</body>
+</html>
