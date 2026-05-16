@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audience Login Friction &mdash; Customer Service Ticket Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; background: transparent; z-index: 10; pointer-events: none;
+}
+.progress-rail::before {
+  content: ""; display: block; height: 100%; width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+.brand-strip {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex; align-items: center; gap: 0.85rem;
+  font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); margin: 0; text-wrap: pretty; }
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08; letter-spacing: -0.015em; font-weight: 400;
+}
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15; letter-spacing: -0.008em; font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3; letter-spacing: -0.003em; font-weight: 500;
+}
+h4 {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+}
+h5 {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute);
+  margin: 0 0 0.7rem;
+}
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 3px; text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover { text-decoration-color: var(--accent); color: var(--accent-deep); }
+a:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; border-radius: 1px; }
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum"; letter-spacing: -0.005em;
+}
+.num.neg { color: var(--neg); }
+.num.pos { color: var(--pos); }
+.mono {
+  font-family: var(--font-mono); font-size: 0.85em;
+  font-feature-settings: "tnum"; letter-spacing: -0.01em;
+}
+
+.kicker {
+  display: flex; align-items: center; gap: 0.85rem;
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display); font-size: 1.6rem; font-weight: 400;
+  letter-spacing: -0.005em; color: var(--ink); line-height: 1;
+  text-transform: none; font-style: italic;
+}
+.kicker .sec-num::after {
+  content: ""; display: inline-block; width: 26px; height: 1px;
+  background: var(--accent); vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative; background: transparent;
+}
+header.hero::before {
+  content: ""; display: block; width: 36px; height: 2px;
+  background: var(--accent); margin-bottom: 1.75rem;
+}
+header.hero h1 { margin-bottom: 1.35rem; max-width: none; }
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42; font-weight: 400; color: var(--ink-soft);
+  font-style: italic; letter-spacing: -0.003em; max-width: none;
+}
+
+section.primary {
+  position: relative; background: var(--card);
+  border: 1px solid var(--rule); border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+section.primary .lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.35; font-style: italic; font-weight: 400;
+  color: var(--ink); margin-bottom: 1.5rem; max-width: none;
+  letter-spacing: -0.005em;
+}
+section.primary .panel-label {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  margin: 0 0 0.85rem;
+}
+section.primary .panel-h3 {
+  font-family: var(--font-display); font-size: clamp(1.18rem, 1.8vw, 1.35rem);
+  font-weight: 500; color: var(--ink); margin: 0 0 0.9rem;
+  letter-spacing: -0.004em;
+}
+.panel + .panel { margin-top: 2.25rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+
+.ifthen {
+  display: grid; grid-template-columns: 2.25rem 1fr;
+  gap: 1.1rem; padding: 1.35rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ifthen:first-of-type { padding-top: 0.5rem; }
+.ifthen:last-of-type { border-bottom: none; padding-bottom: 0.3rem; }
+.ifthen .nn {
+  font-family: var(--font-display); font-style: italic;
+  font-size: 1.5rem; font-weight: 400; color: var(--accent);
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.ifthen .cond {
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+  line-height: 1.38; font-weight: 400; color: var(--ink);
+  margin-bottom: 0.55rem; letter-spacing: -0.003em;
+}
+.ifthen .actual {
+  font-size: 0.98rem; color: var(--ink-soft); line-height: 1.58;
+}
+.ifthen .actual b {
+  font-family: var(--font-ui); font-weight: 600; text-transform: uppercase;
+  font-size: 0.78rem; letter-spacing: 0.16em; color: var(--ink-mute);
+  margin-right: 0.55rem;
+}
+
+ul.data-bullets {
+  list-style: none; padding: 0; margin: 1rem 0 1.25rem;
+}
+ul.data-bullets > li {
+  font-size: 1rem; line-height: 1.6; color: var(--ink-soft);
+  padding: 0.85rem 0; border-bottom: 1px solid var(--rule);
+}
+ul.data-bullets > li:last-child { border-bottom: none; }
+ul.data-bullets > li > b, ul.data-bullets > li > strong {
+  color: var(--ink); font-weight: 600;
+}
+
+.callout {
+  margin: 1.75rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--accent-wash);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-size: 1rem; line-height: 1.6; color: var(--ink);
+}
+.callout strong {
+  color: var(--accent-deep);
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  display: inline-block; margin-right: 0.45rem;
+}
+.callout.decision {
+  background: var(--accent2-wash);
+  border-left-color: var(--accent2);
+}
+.callout.decision strong { color: var(--accent2-deep); }
+.callout-muted {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--sage-wash);
+  border-left: 2px solid var(--ink-faint);
+  font-size: 0.95rem; line-height: 1.6; color: var(--ink-soft);
+}
+
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.96rem; margin: 0.85rem 0 1.25rem;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+}
+th {
+  text-align: left; padding: 0.8rem 1rem 0.6rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui); font-weight: 600; color: var(--ink);
+  font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+  vertical-align: bottom;
+}
+td {
+  padding: 0.68rem 1rem 0.68rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft); vertical-align: top; line-height: 1.5;
+}
+td:first-child, th:first-child { padding-left: 0; }
+tr:last-child td { border-bottom: none; }
+th.num, td.num { text-align: right; padding-right: 0.3rem; }
+td.num:last-child, th.num:last-child { padding-right: 0; }
+td.pos { color: var(--pos); font-weight: 500; }
+td.neg { color: var(--neg); font-weight: 500; }
+tbody tr:nth-child(even):not(.emph) td { background: var(--sage-wash); }
+tr.emph td { background: var(--accent-wash); color: var(--ink); font-weight: 500; }
+tr.emph td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 0.75rem;
+}
+
+.appx-break {
+  margin: 4rem auto 2rem;
+  padding: 2.5rem 0 0;
+  text-align: center;
+  position: relative;
+}
+.appx-break::before {
+  content: ""; display: block;
+  width: 3rem; height: 1px;
+  background: var(--ink);
+  margin: 0 auto 2rem;
+}
+.appx-break::after {
+  content: ""; display: block;
+  width: 6px; height: 6px;
+  background: var(--accent2); border-radius: 50%;
+  margin: 0.85rem auto 0;
+}
+.appx-break h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 500; letter-spacing: -0.008em;
+  color: var(--ink); margin: 0;
+}
+.appx-break .sub {
+  font-weight: 400; color: var(--ink-soft);
+  font-style: italic; font-size: 1.05rem; margin-top: 0.65rem;
+}
+
+.toc-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0 2.5rem; margin: 1.25rem 0 0; text-align: left;
+}
+.toc { margin: 0; padding: 0; list-style: none; font-size: 0.96rem; }
+.toc li {
+  break-inside: avoid; padding: 0.5rem 0;
+  border-bottom: 1px dotted var(--rule);
+}
+.toc li.toc-group {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  border-bottom: 1px solid var(--ink);
+  margin-top: 1rem; padding: 0.3rem 0;
+}
+.toc li.toc-group:first-child { margin-top: 0; }
+.toc li a {
+  text-decoration: none; color: var(--ink);
+  display: flex; align-items: baseline; gap: 0.55rem;
+}
+.toc li a:hover { color: var(--accent); }
+.toc li a b {
+  font-weight: 600; color: var(--accent);
+  font-variant-numeric: tabular-nums; min-width: 1.7rem;
+}
+
+.appx-bucket-break {
+  margin: 2.5rem 0 1rem; padding: 0;
+}
+.appx-bucket-break h4 {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  padding-bottom: 0.55rem; border-bottom: 1px solid var(--rule);
+}
+
+section.appx {
+  position: relative; background: var(--card);
+  border: 1px solid var(--rule); border-top: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+}
+section.appx h3 {
+  margin-bottom: 1.15rem; font-size: 1.3rem; font-weight: 500;
+  color: var(--ink); letter-spacing: -0.005em;
+}
+section.appx .kicker { margin-bottom: 0.9rem; color: var(--ink-mute); }
+section.appx .kicker .sec-num { font-size: 1.25rem; }
+
+.supports {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.25rem; margin: 1rem 0 0;
+}
+@media (max-width: 860px) { .supports { grid-template-columns: 1fr; } }
+.supports > div {
+  padding: 1rem 1.15rem; background: var(--sage-wash);
+  border-left: 2px solid var(--rule);
+}
+.supports > div.does-support { border-left-color: var(--accent); }
+.supports > div.does-not { border-left-color: var(--sage); }
+.supports ul { margin: 0; padding-left: 1.15rem; }
+.supports li { padding: 0.2rem 0; color: var(--ink-soft); line-height: 1.5; }
+
+.src {
+  font-family: var(--font-body); font-style: italic;
+  font-size: 0.82rem; color: var(--ink-mute);
+  margin-top: 1rem; padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums; line-height: 1.55;
+}
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.86rem; color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary, section.appx { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .toc-grid { grid-template-columns: 1fr; gap: 0; }
+  .kicker .sec-num::after { display: none; }
+  .ifthen { grid-template-columns: 1fr; gap: 0.4rem; }
+  table { font-size: 0.9rem; }
+  th, td { padding-right: 0.5rem; }
+  section.primary, section.appx { padding: clamp(1.25rem, 4vw, 1.75rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>05 / 15 / 2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Audience Login Friction <em>&mdash; Customer Service Ticket Data Findings</em></h1>
+    <p class="standfirst">Companion to Research &amp; Insights team <a href="https://crain.sharepoint.com/:p:/g/ResearchInsights/IQCs1Ddz4fxRTL9GXPGEcqyZAXPfg420IGW1p_EDtPwXsdY?e=kIWhLJ">&ldquo;Audience Login Friction &ndash; Findings v1&rdquo;</a>.</p>
+  </header>
+
+  <!-- =========================================================
+       §00 — Snapshot (TL;DR top sheet, structural)
+       ========================================================= -->
+  <section class="primary" id="s0">
+    <div class="kicker"><span class="sec-num">00</span>Snapshot</div>
+    <h2>Customer Service data broadly confirms the research findings.</h2>
+    <p class="lead">Symptoms and priorities confirmed. CS data shows login and reset issues are down post-ARC.</p>
+
+    <div class="ifthen">
+      <div class="nn">01</div>
+      <div>
+        <div class="cond">AA, P&amp;I, MH, AN: login issues down 23&ndash;59% post-ARC. City Brands: re-login spiking post-ARC.</div>
+        <div class="actual">AA, P&amp;I, MH, AN post-ARC: reset failures and overall login tickets both down. City Brands post-ARC: Detroit re-login +834%; 81% from engaged subscribers.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">02</div>
+      <div>
+        <div class="cond">17% of password reset failures: user is filing from the wrong email.</div>
+        <div class="actual">22% file from an email not on the Pelcro account; 76% of those have a different email on the same account. Reset goes to the canonical email, not the filing email.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">03</div>
+      <div>
+        <div class="cond">Half of password reset filers are reading email near the ticket. Most &ldquo;unresolvable&rdquo; repeats are a different issue.</div>
+        <div class="actual">Email reaches the engaged half; the friction is after the email. &ldquo;Fix didn&rsquo;t stick&rdquo; = 42% of repeats. The other 54% is a different issue surfacing.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">04</div>
+      <div>
+        <div class="cond">Three in-flight fixes cover real volume. Identity mismatch is the gap.</div>
+        <div class="actual">Passwordless (AdAge 06/08), session TTL 60d&rarr;1y, server-side paywall (CCB 07/30, Piano off 09/30). None addresses the wrong-email problem in &sect;02.</div>
+      </div>
+    </div>
+
+    <p class="src">Source: 24-month Zendesk corpus (107,180 tickets, 13,540 login-related); Sailthru per-user state; Aha PROD-S-5 plus in-flight scope. Pulled 05/15/2026. B2B admin filers excluded.</p>
+  </section>
+
+  <!-- =========================================================
+       §01 — Brand cohorts moving in opposite directions (state)
+       ========================================================= -->
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Brand cohorts</div>
+    <h2>Login issues down 23&ndash;59% at AA, P&amp;I, MH, AN post-ARC. Up at City Brands.</h2>
+
+    <div class="panel">
+      <h3 class="panel-h3">Password reset failures down 23&ndash;59% across AA, P&amp;I, MH, AN post-ARC.</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Brand</th>
+            <th>ARC launch</th>
+            <th class="num">reset failures / day, pre</th>
+            <th class="num">post</th>
+            <th class="num">&Delta;%</th>
+            <th class="num">total login / day, pre</th>
+            <th class="num">post</th>
+            <th class="num">login share pre</th>
+            <th class="num">post</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ad Age</td><td>04/03/2025</td><td class="num">0.67</td><td class="num">0.48</td><td class="num neg">&minus;28%</td><td class="num">3.98</td><td class="num">1.62</td><td class="num">23.1%</td><td class="num">17.1%</td></tr>
+          <tr class="emph"><td>P&amp;I</td><td>07/18/2025</td><td class="num">0.19</td><td class="num">0.08</td><td class="num neg">&minus;59%</td><td class="num">0.99</td><td class="num">0.47</td><td class="num">24.2%</td><td class="num">13.6%</td></tr>
+          <tr><td>Modern Healthcare</td><td>08/13/2025</td><td class="num">0.63</td><td class="num">0.41</td><td class="num neg">&minus;35%</td><td class="num">2.98</td><td class="num">2.01</td><td class="num">24.3%</td><td class="num">18.0%</td></tr>
+          <tr><td>Auto News</td><td>10/24/2025</td><td class="num">0.68</td><td class="num">0.52</td><td class="num neg">&minus;23%</td><td class="num">2.71</td><td class="num">2.26</td><td class="num">11.8%</td><td class="num">11.9%</td></tr>
+        </tbody>
+      </table>
+      <ul class="data-bullets">
+        <li><b>AA (most complete post-window):</b> password resets &minus;62%, re-login &minus;57%.</li>
+        <li><b>+16% YoY portfolio trend driven by City Brands</b> (see below), not AA/P&amp;I/MH/AN.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-h3">Re-login up at all five City Brands post-ARC. Detroit +834%. 81% from engaged subscribers.</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Brand</th>
+            <th>ARC launch</th>
+            <th class="num">re-login / day, pre</th>
+            <th class="num">post</th>
+            <th class="num">&Delta;%</th>
+            <th class="num">reset failures &Delta;%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="emph"><td>Crain&rsquo;s Detroit</td><td>02/06/2026</td><td class="num">0.05</td><td class="num">0.50</td><td class="num pos">+834%</td><td class="num">&minus;3%</td></tr>
+          <tr><td>Crain&rsquo;s Grand Rapids</td><td>03/27/2026</td><td class="num">0.02</td><td class="num">0.06</td><td class="num pos">+177%</td><td class="num">+17%</td></tr>
+          <tr><td>Crain&rsquo;s Cleveland</td><td>03/06/2026</td><td class="num">0.05</td><td class="num">0.13</td><td class="num pos">+157%</td><td class="num">+43%</td></tr>
+          <tr><td>Crain&rsquo;s Chicago</td><td>03/12/2026</td><td class="num">0.21</td><td class="num">0.33</td><td class="num pos">+55%</td><td class="num">&minus;19%</td></tr>
+          <tr><td>Crain&rsquo;s New York</td><td>03/19/2026</td><td class="num">0.10</td><td class="num">0.14</td><td class="num pos">+44%</td><td class="num">+15%</td></tr>
+        </tbody>
+      </table>
+      <ul class="data-bullets">
+        <li><b>Detroit re-login per 1K tickets, 2024&ndash;2025 baseline:</b> 3&ndash;18 range.</li>
+        <li><b>Detroit at ARC launch (02/2026):</b> 8.2 per 1K.</li>
+        <li><b>One month post-ARC (03/2026): 51.1 per 1K</b> &mdash; 4&ndash;10&times; baseline.</li>
+        <li><b>Three months post-launch:</b> 04/2026 = 24.6, 05/2026 = 36.4. Still elevated.</li>
+        <li><b>Detroit re-login engagement flipped pre/post-ARC.</b></li>
+        <li><b>Pre-ARC (n=4):</b> 3 of 4 filers dormant. <b>Post-ARC (n=37):</b> 4 active, 27 recent (real-open within 90d), 3 dormant, 3 not-in-Sailthru.</li>
+        <li><b>Dormant baseline held flat.</b> Post-ARC increase is entirely engaged users.</li>
+        <li><b>Pooled five City Brands:</b> 81% of post-ARC re-login from users with real-email engagement within 90 days. AA/MH/AN baseline: 72%. +9pp shift toward engaged.</li>
+        <li><b>Not portfolio-wide.</b> AA re-login per 1K, 03/2026 = 10.7. Spike concentrated in the City Brands cohort.</li>
+      </ul>
+    </div>
+
+    <p class="src">Source: 24-month Zendesk corpus + Sailthru per-user state + Aha PROD-S-5 ARC dates. Pulled 05/15/2026. Pre/post = &plusmn;90d of <span class="mono">actual_done_at</span>. B2B admin excluded. See <a href="#a4">A4</a>, <a href="#a5">A5</a>.</p>
+  </section>
+
+  <!-- =========================================================
+       §02 — Identity mismatch (state)
+       ========================================================= -->
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Identity mismatch</div>
+    <h2>17% of password reset failures are users filing from the wrong email.</h2>
+
+    <ul class="data-bullets">
+      <li><b>22% file from an email not on the Pelcro account.</b> 33 of 138 resolvable (150-ticket sample, 13 brands).</li>
+      <li><b>76% of those have a different email on the same Pelcro account.</b> 25 of 33, by <span class="mono">account_number</span> lookup.</li>
+      <li><b>Same-domain (different local-part, same employer): 45%.</b> <span class="mono">j.smith@firm.com</span> filing vs <span class="mono">jsmith@firm.com</span> on file.</li>
+      <li><b>Different-domain (personal vs work, or job change): 30%.</b> Common at P&amp;I (job turnover) and AN (personal vs work).</li>
+      <li><b>Typo, Tire Business #290241:</b> filing <span class="mono">***@discounttires.com</span>, on file <span class="mono">***@discounttire.com</span>. The typo&rsquo;d address has been billed and renewed.</li>
+      <li><b>Reset / magic link goes to the canonical email on file,</b> not the email the user is filing from. The 17% recurs with any email-based credential.</li>
+    </ul>
+
+    <p class="src">Source: 150-ticket sample of password-reset-failure tickets, last 180 days. Zendesk resolution + Sailthru lookup by email then by extid. 22% is a lower bound; per-brand n is small. See <a href="#a4">A4</a>.</p>
+  </section>
+
+  <!-- =========================================================
+       §03 — Two refinements (state, two panels)
+       ========================================================= -->
+  <section class="primary" id="s3">
+    <div class="kicker"><span class="sec-num">03</span>Two findings</div>
+    <h2>Half of password reset filers are reading email near time of ticket submission. &ldquo;Unresolvable&rdquo; likely a different issue.</h2>
+
+    <div class="panel">
+      <ul class="data-bullets">
+        <li><b>50 of 150 (33%):</b> real-email open within &plusmn;14 days of ticket, no real-click.</li>
+        <li><b>25 of 150 (17%):</b> real-click within &plusmn;14 days.</li>
+        <li><b>Median time from ticket to user&rsquo;s click:</b> 0.8h &mdash; the customer service agent-rescue pattern.</li>
+        <li><b>Email is reaching the engaged half.</b> The friction is after the email.</li>
+        <li><b>Three possible downstream issues</b> the data can&rsquo;t distinguish: link expired or rendered poorly; sign-in didn&rsquo;t complete; reset arrived slower than expected.</li>
+        <li><b>Magic links remove the password</b> but use the same email channel and sign-in flow.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>Repeat type</th>
+            <th class="num">n</th>
+            <th class="num">% of repeats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="emph"><td>Different issue on 2nd ticket</td><td class="num">727</td><td class="num">54.2%</td></tr>
+          <tr><td>Same issue (&ldquo;fix didn&rsquo;t stick&rdquo;)</td><td class="num">568</td><td class="num">42.3%</td></tr>
+          <tr><td>Different brand on 2nd ticket</td><td class="num">47</td><td class="num">3.5%</td></tr>
+        </tbody>
+      </table>
+      <ul class="data-bullets">
+        <li><b>Convergence with research:</b> survey 14% unresolvable / CS data 13.2% repeat-within-30d. Same population.</li>
+        <li><b>42% &ldquo;fix didn&rsquo;t stick&rdquo;:</b> direct magic-link target (274 chains).</li>
+        <li><b>54% different issue on the repeat:</b> identity mismatch, newsletter delivery, duplicate subs all fit.</li>
+        <li><b>No single fix covers the 54%.</b></li>
+        <li><b>34% of repeats within 1 hour:</b> mostly CS ticket-splitting, not real recurrence.</li>
+        <li><b>True &ldquo;fix didn&rsquo;t stick within a day&rdquo; rate:</b> &asymp; 10%.</li>
+      </ul>
+    </div>
+
+    <p class="src">Source: 24-month Zendesk corpus + 150-ticket sample. Pulled 05/15/2026. Sailthru API exposes no per-send event history; real-open / real-click are most-recent across all sends. See <a href="#a6">A6</a>.</p>
+  </section>
+
+  <!-- =========================================================
+       §04 — Mitigation read (mitigation)
+       ========================================================= -->
+  <section class="primary" id="s4">
+    <div class="kicker"><span class="sec-num">04</span>Mitigation</div>
+    <h2>Three in-flight fixes cover real volume. Identity mismatch is the gap.</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>In-flight fix</th>
+          <th>Targets</th>
+          <th>What the CS data says</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Passwordless / magic link</b></td>
+          <td>Password resets + reset failures (43% of login volume)</td>
+          <td>Largest product-actionable bucket. Doesn&rsquo;t address identity mismatch (17%, &sect;02).</td>
+        </tr>
+        <tr>
+          <td><b>Pelcro session TTL extended to 1 year</b></td>
+          <td>Re-login</td>
+          <td>Targets the City Brands post-ARC spike (&sect;01 Panel B). 81% from engaged subscribers.</td>
+        </tr>
+        <tr>
+          <td><b>Server-side paywall</b></td>
+          <td>&ldquo;Credentials not recognized&rdquo; / sync mismatch</td>
+          <td>CS data shows ~8&ndash;10% of login volume; survey says 24%. The survey label captures multiple causes (account-not-found, paywall-block, post-renewal access). New paywall implementation provides more flexibility for mitigation.</td>
+        </tr>
+        <tr class="emph">
+          <td><b>Identity-mismatch self-serve</b> <span class="chip">Gap</span><br>Pelcro account-merge / email-update path</td>
+          <td>Identity mismatch (17%, &sect;02)</td>
+          <td>Net-new finding from CS data. Not addressed by any in-flight fix; needs scoping. Magic links + session TTL go to the canonical email on file, not the email the user files from &mdash; the 17% recurs without this.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="src">Source: Findings memo &sect;10; in-flight scope from Aha (<a href="https://crain.aha.io/initiatives/PROD-S-45">PROD-S-45</a>, <a href="https://crain.aha.io/initiatives/PROD-S-46">PROD-S-46</a>). Pulled 05/15/2026.</p>
+  </section>
+
+  <!-- =========================================================
+       Appendix
+       ========================================================= -->
+  <div class="appx-break">
+    <h2>Appendix</h2>
+    <div class="sub">Structural patterns, methodology, scope.</div>
+    <div class="toc-grid">
+      <ul class="toc">
+        <li class="toc-group">Structural patterns</li>
+        <li><a href="#a1"><b>A1</b> Plastics News login share is a CSR-template artifact</a></li>
+        <li><a href="#a2"><b>A2</b> B2B admin filers are a distinct workflow class</a></li>
+        <li><a href="#a3"><b>A3</b> Welcome-cohort hardbounce compounds magic-link risk</a></li>
+      </ul>
+      <ul class="toc">
+        <li class="toc-group">Methodology</li>
+        <li><a href="#a4"><b>A4</b> Identity-mismatch methodology and what the data does not support</a></li>
+        <li><a href="#a5"><b>A5</b> ARC pre/post methodology and confounds</a></li>
+        <li><a href="#a6"><b>A6</b> Password-reset-failure cohort engagement and repeat-chain methodology</a></li>
+        <li><a href="#a7"><b>A7</b> Convergence and tension points with the research deck</a></li>
+      </ul>
+      <ul class="toc">
+        <li class="toc-group">Scope</li>
+        <li><a href="#a8"><b>A8</b> What this work does not and cannot address</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="appx-bucket-break"><h4>Bucket 1 &middot; Structural patterns</h4></div>
+
+  <section class="appx" id="a1">
+    <div class="kicker"><span class="sec-num">A1</span>Plastics News</div>
+    <h3>Plastics News&rsquo; 16.5% login share is a CSR-template artifact, not per-capita friction.</h3>
+    <ul class="data-bullets">
+      <li><b>PN leads the portfolio in login share</b> (16.5% vs 12.6% portfolio average). The gap is structural, not a per-capita defect.</li>
+      <li><b>Welcome@1 stock-reset language appears in 42% of PN login tickets</b> vs 31% portfolio. CSR macro mechanically tags any access call as a password reset.</li>
+      <li><b>PN&rsquo;s institutional-access mention rate is the lowest in the portfolio:</b> 2.8% (IP whitelist, VPN, firewall, proxy) vs 8.1% portfolio.</li>
+      <li><b>PN resolves faster than portfolio</b>, not slower. Time-to-first-solve under 1h: 70.5% PN vs 66.2% portfolio. 30-day same-requester repeat rate: 12.9% PN vs 13.5% portfolio.</li>
+      <li><b>Magic links would address ~50% of PN login tickets</b> (password-reset + reset-link-missing). To realize the deflection, the CSR Welcome@1 macro will need updating in parallel or templated-reset behavior will continue to generate password-reset-tagged volume.</li>
+    </ul>
+    <div class="supports">
+      <div class="does-support">
+        <h5>Supports</h5>
+        <ul>
+          <li>PN tag rate, repeat rate, and resolve speed all align with CSR-workflow explanation.</li>
+          <li>Lowest IP/firewall rate rules out the institutional-access framing the research deck slide-10 quote suggests.</li>
+        </ul>
+      </div>
+      <div class="does-not">
+        <h5>Does not support</h5>
+        <ul>
+          <li>Pelcro/Redshift cut by login tickets per 1K active PN subscribers not pulled. Would settle the per-capita question definitively.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: 24-month corpus. Scripts <span class="mono">pn_deepdive.py</span>, <span class="mono">pn_tag_check.py</span>.</p>
+  </section>
+
+  <section class="appx" id="a2">
+    <div class="kicker"><span class="sec-num">A2</span>B2B admin filers</div>
+    <h3>B2B admin filers account for 6.2% of corpus and 3.6% of login volume.</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Firm / source</th>
+          <th class="num">Total tickets</th>
+          <th class="num">Login tickets</th>
+          <th>Top brands</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Internal Crain Sales Ops (batch-filers)</td><td class="num">1,758</td><td class="num">105</td><td>crain, plasticsnews, autonews</td></tr>
+        <tr><td>Williams Lea (Chennai)</td><td class="num">801</td><td class="num">96</td><td>adage, autonews, mhc</td></tr>
+        <tr><td>External admin (Metropole et al.)</td><td class="num">721</td><td class="num">10</td><td>adage, autonews</td></tr>
+        <tr><td>Couranto</td><td class="num">615</td><td class="num">99</td><td>adage, autonews</td></tr>
+        <tr><td>Prenax (Stockholm)</td><td class="num">565</td><td class="num">79</td><td>adage, autonews</td></tr>
+        <tr><td>WT Cox (library agent)</td><td class="num">365</td><td class="num">12</td><td>autonews, ccb</td></tr>
+        <tr><td>Renewals consultant</td><td class="num">166</td><td class="num">20</td><td>hartenergy, pi</td></tr>
+        <tr><td>EBSCO</td><td class="num">129</td><td class="num">6</td><td>hartenergy, autonews</td></tr>
+        <tr><td>Other admin (unclassified)</td><td class="num">1,545</td><td class="num">60</td><td>mixed</td></tr>
+      </tbody>
+    </table>
+    <ul class="data-bullets">
+      <li><b>Distinct workflow class:</b> bulk provisioning, IP-range whitelisting, EDI order intake, named-user transfer. Magic links and session TTL do not address these.</li>
+      <li><b>Internal Crain Sales Ops batch-filers are the largest source</b> (1,758 tickets). The <span class="mono">password_reset</span> tag fires as a side effect of the comp-sub welcome flow CSR macro. Removing this incidental tagging would reduce login-classified noise by ~10%.</li>
+      <li><b>Chronic-repeater profile differs.</b> Among admin filers, max tickets per requester in a 30-day window is 59 (Couranto). Among individuals, max is 11. Zero non-admin individuals filed 10+ login tickets in any 30-day window over 24 months.</li>
+    </ul>
+    <p class="src">Source: 24-month corpus. Detection via firm signature patterns + requester allowlist. Script <span class="mono">b2b_admin_v2.py</span>. Excluded from all user-impact metrics throughout.</p>
+  </section>
+
+  <section class="appx" id="a3">
+    <div class="kicker"><span class="sec-num">A3</span>Welcome cohort</div>
+    <h3>8% of the welcome cohort sits in Sailthru hardbounce engagement.</h3>
+    <ul class="data-bullets">
+      <li><b>601 of 13,053 login tickets (4.6%) carry an agent-applied Welcome@1 / Welcome1 temp password.</b> Call-channel cases by definition &mdash; the agent set the password during a live CS interaction.</li>
+      <li><b>Top brands:</b> Auto News, Crain&rsquo;s Detroit, Modern Healthcare. PN over-indexes (42% of PN login tickets contain the language vs 31% portfolio) per <a href="#a1">A1</a>.</li>
+      <li><b>Welcome-cohort deliverability is degraded:</b> 8% of welcome-cohort tickets are from users in hardbounce engagement at Sailthru vs ~3% baseline at AA, P&amp;I, MH, AN. A post-call magic-link email travels the same channel as the original reset email. For ~1 in 12 of the welcome cohort, the channel itself is broken.</li>
+      <li><b>The deflection target is upstream.</b> Magic-link entry on the paywall converts the pre-call population &mdash; users who hit the paywall, never call CS, and either resolve the access themselves or churn silently.</li>
+    </ul>
+    <p class="src">Source: corpus regex <span class="mono">\bWelcome[@]?1\b</span> over ticket subject + description + comments. Welcome-cohort engagement profile from <span class="mono">cohort_contrast_welcome_with_sailthru.json</span>.</p>
+  </section>
+
+  <div class="appx-bucket-break"><h4>Bucket 2 &middot; Methodology</h4></div>
+
+  <section class="appx" id="a4">
+    <div class="kicker"><span class="sec-num">A4</span>Identity mismatch</div>
+    <h3>Identity-mismatch methodology and what the data does and does not support.</h3>
+    <ul class="data-bullets">
+      <li><b>Cohort:</b> all <span class="mono">reset_link_missing</span> tickets last 180 days, B2B admin filers excluded, end-user language confirmed. N=601 in corpus; 150-ticket random sample drawn with seed 42.</li>
+      <li><b>Email resolution:</b> Zendesk <span class="mono">/api/v2/users/show_many</span> for all 150 requester_ids.</li>
+      <li><b>In-Sailthru lookup:</b> brand-mapped Sailthru <span class="mono">/user</span> GET with <span class="mono">key=email</span>.</li>
+      <li><b>F-bucket identity-mismatch test:</b> for tickets returning user-not-found by email, a second Sailthru <span class="mono">/user</span> GET with <span class="mono">key=extid</span> and the Zendesk <span class="mono">account_number</span>. Canonical Sailthru email then compared to the Zendesk filing email.</li>
+    </ul>
+    <div class="supports">
+      <div class="does-support">
+        <h5>Supports</h5>
+        <ul>
+          <li>A 22% rate of email-mismatch on filed password-reset-failure tickets.</li>
+          <li>76% of those resolve to a confirmed different email at the same Pelcro account.</li>
+          <li>Patterns consistent with same-domain alias differences, job change, and documented typos.</li>
+        </ul>
+      </div>
+      <div class="does-not">
+        <h5>Does not support</h5>
+        <ul>
+          <li>Generalizing 22% to all subscribers &mdash; survey-takers and ticket-filers self-select; this measures the ticket population only.</li>
+          <li>Generalizing the same-domain vs different-domain breakdown across brands &mdash; per-brand n is small at most brands.</li>
+          <li>Distinguishing identity mismatch from duplicate subscription on the same email family &mdash; the two patterns are not mutually exclusive at the account-record level.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: scripts <span class="mono">extract_cohorts.py</span>, <span class="mono">zd_resolve.py</span>, <span class="mono">sailthru_lookup.py</span>, <span class="mono">classify_dispositions.py</span>, <span class="mono">identity_mismatch.py</span> in <span class="mono">sailthru-cross-reference/</span>.</p>
+  </section>
+
+  <section class="appx" id="a5">
+    <div class="kicker"><span class="sec-num">A5</span>ARC pre/post</div>
+    <h3>ARC pre/post methodology and confounds.</h3>
+    <ul class="data-bullets">
+      <li><b>ARC dates source:</b> Aha PROD-S-5 (ARC Migration) initiative and child epics. Used <span class="mono">actual_done_at</span> where available; fell back to <span class="mono">due_date</span>. Auto News + autonewsca date (10/24/2025) provided directly.</li>
+      <li><b>Window:</b> per brand, 90 days before <span class="mono">actual_done_at</span> and 90 days after, capped at corpus start (05/15/2024) and corpus end (05/15/2026).</li>
+      <li><b>Login-subtype counts:</b> <span class="mono">is_login_related</span> per corpus signal layers (tag, sub-category, text). Per-day rate = count / window days.</li>
+      <li><b>Volume control:</b> login share = login tickets / total tickets in the same window (after B2B admin exclusion).</li>
+    </ul>
+    <div class="supports">
+      <div class="does-support">
+        <h5>Supports</h5>
+        <ul>
+          <li>Brand-by-brand pre/post comparison of operational ticket rates at known ARC dates.</li>
+          <li>Decline at AA, P&amp;I, MH, AN consistent across reset-link-missing, password-reset, and re-login subtypes at Ad Age (most complete post-window).</li>
+          <li>City Brands re-login spike concentrated in engaged users, not dormant &mdash; rules out the simplest &ldquo;already-churned users&rdquo; alternative.</li>
+        </ul>
+      </div>
+      <div class="does-not">
+        <h5>Does not support</h5>
+        <ul>
+          <li>Causal attribution to ARC specifically. ARC migrations are correlated with concurrent changes (Sophi rollout per brand, Piano integration, template revisions, sender reputation, signup-flow updates).</li>
+          <li>Distinguishing the three plausible technical root causes for the City Brands spike &mdash; cookie-domain mismatch, TTL regression, identity-sync race &mdash; without Pelcro telemetry.</li>
+          <li>Calendar-pure comparison. The 90-day window crosses calendar boundaries; seasonal effects sit underneath the comparison.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: scripts <span class="mono">fetch_arc_dates.py</span>, <span class="mono">arc_prepost.py</span>, <span class="mono">arc_robustness.py</span>, <span class="mono">re-login_cohorts.py</span>, <span class="mono">re-login_classify.py</span> in <span class="mono">sailthru-cross-reference/</span>.</p>
+  </section>
+
+  <section class="appx" id="a6">
+    <div class="kicker"><span class="sec-num">A6</span>&sect;03 methodology</div>
+    <h3>Password-reset-failure cohort engagement classification and repeat-chain decomposition.</h3>
+    <ul class="data-bullets">
+      <li><b>Engagement classification (Panel A):</b> per ticket, looked up requester email in brand-mapped Sailthru. D = real-open within &plusmn;14 days of ticket, no real-click. E = real-click within &plusmn;14 days. Universe = 150-ticket primary cohort (same as &sect;02).</li>
+      <li><b>Classification limit:</b> Sailthru&rsquo;s public API does not expose per-send event history. D and E use the user&rsquo;s most recent real-open and real-click timestamps across all sends, not specifically the reset send.</li>
+      <li><b>Repeat-chain decomposition (Panel B):</b> 24-month corpus iteration over <span class="mono">requester_id</span> chains. Window = 30 days. Pair-type classification on consecutive login-ticket pairs (sticky = same subtype, evolving = different subtype, multi-brand = different brand). B2B admin filers excluded.</li>
+      <li><b>1,342 repeater chains across 10,157 unique non-admin login-ticket-filers</b> (13.2% repeat rate, matches the deck&rsquo;s 14% unresolvable within a percentage point).</li>
+    </ul>
+    <div class="supports">
+      <div class="does-support">
+        <h5>Supports</h5>
+        <ul>
+          <li>Panel A: a population estimate that ~50% of password-reset-failure tickets are filed by users demonstrably engaged with the brand&rsquo;s email stream near the ticket date.</li>
+          <li>Panel A: the agent-rescue pattern (median time from ticket creation to user real-click event = 0.8 hours).</li>
+          <li>Panel B: a 54% evolving share that is structurally different from the 42% sticky share &mdash; different transitions on the second ticket.</li>
+          <li>Panel B: convergence between corpus repeat-within-30d (13.2%) and survey unresolvable rate (14%) at the headline level.</li>
+        </ul>
+      </div>
+      <div class="does-not">
+        <h5>Does not support</h5>
+        <ul>
+          <li>Panel A: distinguishing among the three plausible downstream patterns (link expiry, post-click auth failure, impatience). Sailthru data tops out at email engagement.</li>
+          <li>Panel A: the D-class population is an upper bound on inbox-reachability and a lower bound on email-channel friction (users could be opening newsletters fine while the reset email specifically failed).</li>
+          <li>Panel B: counting users who give up silently &mdash; bounded to ticket-side data.</li>
+          <li>Panel B: the 34% &lt;1h sub-bucket is mostly CSR ticket-splitting (one inbound call generates two ticket records), not real user re-contact. The true &ldquo;fix didn&rsquo;t stick within a day&rdquo; rate is closer to ~10%.</li>
+          <li>Panel B: sticky vs evolving depends on the corpus&rsquo;s login-subtype regex. Tickets where the regex forces one subtype despite the body containing multiple problems may be misclassified.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: 150-ticket primary cohort + 24-month corpus repeat-chain iteration. Scripts <span class="mono">classify_dispositions.py</span>, <span class="mono">unresolvable_decompose.py</span> in <span class="mono">sailthru-cross-reference/</span>. Output <span class="mono">disposition-detail.csv</span>, <span class="mono">unresolvable-decomp.json</span>.</p>
+  </section>
+
+  <section class="appx" id="a7">
+    <div class="kicker"><span class="sec-num">A7</span>Convergence</div>
+    <h3>Convergence and tension points with the research deck.</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Research-deck claim</th>
+          <th>Corpus read</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>14% of subscribers describe their login issue as unresolvable (survey, ongoing).</td><td>13.2% repeat-within-30d among non-admin login-ticket-filers.</td><td>Converges. Two independent methodologies, same population at headline level.</td></tr>
+        <tr><td>ARC drove cancellation-access reason 57% &rarr; 38%.</td><td>Brand-by-brand: AA, P&amp;I, MH, AN 23&ndash;59% reductions in password-reset-failure tickets post-ARC.</td><td>Corroborates directionally. Cannot be reproduced from Zendesk alone; the 57/38 derives from a source outside this corpus.</td></tr>
+        <tr><td>Login issues decreased 30% Jan 2025 &rarr; Jan 2026 (post-CS).</td><td>AA, P&amp;I, MH, AN post-ARC declines aggregate up. Annualized portfolio login share essentially flat (12.6% &rarr; 12.7%).</td><td>Both true. Jan-Jan view is sensitive to comparison window; rolling-12 view shows decline tracking total volume decline.</td></tr>
+        <tr><td>3% of digital-access CS calls relate to duplicate subscriptions.</td><td>2.1% of login tickets contain explicit duplicate-subscription language in body.</td><td>Converges. Ticket-text regex is a lower bound on call-channel volume.</td></tr>
+        <tr><td>All-access paywall complaints recently increased at Crain&rsquo;s Chicago and Ad Age.</td><td>Login-share decline post-ARC at both brands. <span class="mono">ads_despite_subscriber</span> subtype 96% concentrated at Ad Age.</td><td>Possibly different sub-patterns. Worth a brief sub-bucket cut if load-bearing.</td></tr>
+        <tr><td>Adobe Analytics: 25% of session starts logged in (issue cohort) vs 98% (non-issue).</td><td>50% of password-reset-failure ticket-filers show real-email engagement near ticket date (&sect;03 Panel A).</td><td>Indirectly consistent. Engaged users behaving as if they are logged out is incompatible with a misunderstanding framing.</td></tr>
+      </tbody>
+    </table>
+    <p class="src">Source: cross-reference of memo &sect;A.5 and research deck slides 3&ndash;13.</p>
+  </section>
+
+  <div class="appx-bucket-break"><h4>Bucket 3 &middot; Scope</h4></div>
+
+  <section class="appx" id="a8">
+    <div class="kicker"><span class="sec-num">A8</span>Out of scope</div>
+    <h3>What this work does not and cannot address.</h3>
+    <ul class="data-bullets">
+      <li><b>Per-user per-send Sailthru events.</b> Sailthru&rsquo;s public API does not expose them. Closing this gap would require warehouse-side ingest of Sailthru&rsquo;s data feed. Material for distinguishing the three downstream patterns in &sect;03 Panel A (link expiry vs post-click auth vs impatience).</li>
+      <li><b>Hart Energy.</b> Has its own ARC date (09/19/2025) and login-friction profile but no Sailthru-brand mapping in this account. Pre/post ticket-side analysis was run; Sailthru cross-reference is not possible without identifying the actual sender.</li>
+      <li><b>Newsletter delivery failures.</b> Different email class, different rate-limit pool, different reputation. Out of scope.</li>
+      <li><b>B2B admin clearinghouse workflow.</b> Williams Lea, Couranto, Prenax, WT Cox, EBSCO, internal Crain Sales Ops batch-filers excluded from all user-impact metrics. Separate operational investigation.</li>
+      <li><b>Per-1K active-subscriber normalization via Pelcro/Redshift.</b> Not pulled. Would settle PN&rsquo;s per-capita question (<a href="#a1">A1</a>) and tighten per-brand comparisons in &sect;01.</li>
+      <li><b>Adobe Analytics paywall events.</b> Would resolve the post-click auth-flow question in &sect;03 Panel A. Sailthru data tops out at email engagement.</li>
+      <li><b>Sender-domain reputation</b> (<span class="mono">link.adage.com</span> and equivalents). Could explain residual brand variance in bounce rate. External tools required.</li>
+    </ul>
+    <p class="src">Source: findings memo &sect;A.6. All scripts in <span class="mono">.sessions/login-friction-analysis/scripts/</span> (corpus pass) and <span class="mono">.sessions/login-friction-analysis/sailthru-cross-reference/scripts/</span> (cross-reference pass). Cached Sailthru and Zendesk lookups in <span class="mono">cache/</span>; re-runnable without re-hitting APIs.</p>
+  </section>
+
+  <footer class="endnote">
+    Prepared by Sean Bales &middot; Crain Communications &middot; Companion to &ldquo;Audience Login Friction &mdash; Findings v1&rdquo; (Crain Research &amp; Insights) &middot; Internal use only.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
