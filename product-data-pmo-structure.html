@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team structure: Product, Data, PMO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo { height: 36px; width: auto; display: block; }
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b { color: var(--ink); font-weight: 600; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em { font-style: italic; color: var(--ink-soft); font-weight: 400; }
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+  background: transparent;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 {
+  margin-bottom: 1.35rem;
+  max-width: none;
+}
+header.hero .subhead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: none;
+}
+
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+
+.ifthen {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 1.1rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ifthen:first-of-type { padding-top: 0.5rem; }
+.ifthen:last-of-type { border-bottom: none; padding-bottom: 0.3rem; }
+.ifthen .nn {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.ifthen .cond {
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+  line-height: 1.38;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+  letter-spacing: -0.003em;
+}
+.ifthen .actual {
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  line-height: 1.58;
+}
+.ifthen .actual b {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+  margin-right: 0.55rem;
+}
+
+.src {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  margin-top: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  line-height: 1.55;
+}
+
+/* Org chart */
+.org-wrap {
+  margin: 1rem -0.25rem 0;
+  padding: 1rem 0.5rem 0.25rem;
+}
+.org-wrap svg { width: 100%; height: auto; display: block; }
+.org-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 1rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+}
+.org-legend .swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+.org-legend .swatch.lead { background: var(--accent); }
+.org-legend .swatch.report { background: var(--card); border: 1px solid var(--rule); }
+.org-legend .swatch.open { background: var(--card); border: 1.5px dashed var(--ink-faint); }
+.org-legend .swatch.contractor { background: var(--card); border: 1.5px dotted var(--accent2); }
+.org-legend .swatch.temp { background: var(--card); border: 1.5px dashed var(--sage); }
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 860px) {
+  .ifthen { grid-template-columns: 1fr; gap: 0.4rem; }
+  section.primary { padding: clamp(1.25rem, 4vw, 1.75rem); }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .kicker .sec-num::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>05/17/2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Product expands to include Data. <em>PMO splits into its own function.</em></h1>
+    <p class="subhead">Effective 06/01/2026. Broader announcement 05/22/2026.</p>
+  </header>
+
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Structural shift</div>
+    <h2>Data becomes a product. Product leads initiatives. PMO frees product to focus.</h2>
+
+    <div class="ifthen">
+      <div class="nn">01</div>
+      <div>
+        <div class="cond">Data becomes a product, not an analytics service.</div>
+        <div class="actual">The team enriches core data so it is accurate, real-time, and useful enough to drive strategy and revenue. Editorial, product, sales, and finance get governed access in the formats they actually use, not dashboards to interpret.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">02</div>
+      <div>
+        <div class="cond">Product officially leads initiatives.</div>
+        <div class="actual">Subscriptions get the primary emphasis. Senior leadership team decides weekly. Ends the stakeholder and product loops that stalled at consensus and replaces them with a single forum where decisions get made.</div>
+      </div>
+    </div>
+
+    <div class="ifthen">
+      <div class="nn">03</div>
+      <div>
+        <div class="cond">PMO stands up as its own dedicated function.</div>
+        <div class="actual">Dedicated project management keeps work organized, communication tight, and alignment current. Frees the product team to focus on product work.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>New structure</div>
+    <h2>Sr. Director leads Data and Product. PMO operates as a peer function.</h2>
+
+    <div class="org-wrap">
+      <svg viewBox="0 0 1180 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Org chart with two peer functions. Left: Sr. Director, Product and Data (Sean Bales) leads two tracks. Data and Analytics led by Bernice Abrahams as Associate Director, with David Bardasz as Analyst and Alek Hagopian as Data Contractor reporting directly to Sr. Director. Product led by Liz Raisig as Group Product Manager, with Avery Speel, Shana Thomas, Nicole Rakozy, an open headcount, and Samika Goel as AI Enablement Specialist on temporary assignment with reporting line TBD. Right: Director, PMO (Jacob Baxter), a peer function decoupled from Product and Data, with Elena Romashko as Sr. Project Manager, Jessica Laskowski as Project Manager, and an open headcount.">
+
+        <defs>
+          <style>
+            .lead-box { fill: #0d1b2a; }
+            .lead-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 18px; font-weight: 500; fill: #fcf8ec; }
+            .lead-title { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; fill: #fcf8ec; text-transform: uppercase; opacity: 0.85; }
+
+            .track-label { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; fill: #6b6248; text-transform: uppercase; }
+
+            .peer-label { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.22em; fill: #9a9178; text-transform: uppercase; }
+
+            .mgr-box { fill: #fcf8ec; stroke: #d9cfb5; stroke-width: 1; }
+            .mgr-accent { fill: #0d1b2a; }
+            .mgr-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 17px; font-weight: 500; fill: #0f0e0a; }
+            .mgr-title { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; fill: #6b6248; text-transform: uppercase; }
+
+            .rpt-box { fill: #fcf8ec; stroke: #d9cfb5; stroke-width: 1; }
+            .rpt-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 16px; font-weight: 400; fill: #0f0e0a; }
+            .rpt-title { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; fill: #6b6248; text-transform: uppercase; }
+
+            .open-box { fill: #fcf8ec; stroke: #9a9178; stroke-width: 1.5; stroke-dasharray: 5 4; }
+            .open-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 16px; font-weight: 400; fill: #6b6248; font-style: italic; }
+            .open-title { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; fill: #6b6248; text-transform: uppercase; }
+
+            .contractor-box { fill: #fcf8ec; stroke: #b8821a; stroke-width: 1.5; stroke-dasharray: 2 3; }
+            .contractor-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 16px; font-weight: 400; fill: #0f0e0a; }
+            .contractor-title { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; fill: #8a5f12; text-transform: uppercase; }
+
+            .temp-box { fill: #fcf8ec; stroke: #8e9285; stroke-width: 1.5; stroke-dasharray: 4 4; }
+            .temp-name { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 16px; font-weight: 400; fill: #0f0e0a; }
+            .temp-title { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; fill: #6b7065; text-transform: uppercase; }
+
+            .divider { stroke: #d9cfb5; stroke-width: 1; stroke-dasharray: 3 5; fill: none; }
+            .line { stroke: #6b6248; stroke-width: 1.2; fill: none; }
+            .footnote { font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; fill: #6b6248; font-style: italic; }
+          </style>
+        </defs>
+
+        <!-- Peer-function labels above each top box -->
+        <text class="peer-label" x="290" y="12" text-anchor="middle">Product &amp; Data Function</text>
+        <text class="peer-label" x="950" y="12" text-anchor="middle">PMO Function</text>
+
+        <!-- Sean / Sr. Director (left peer) -->
+        <rect class="lead-box" x="80" y="22" width="420" height="78" rx="2"/>
+        <text class="lead-title" x="290" y="48" text-anchor="middle">Sr. Director, Product and Data</text>
+        <text class="lead-name" x="290" y="80" text-anchor="middle">Sean Bales</text>
+
+        <!-- Jacob / Director, PMO (right peer — decoupled, no connection to Sean) -->
+        <rect class="lead-box" x="830" y="22" width="240" height="78" rx="2"/>
+        <text class="lead-title" x="950" y="48" text-anchor="middle">Director, PMO</text>
+        <text class="lead-name" x="950" y="80" text-anchor="middle">Jacob Baxter</text>
+
+        <!-- Soft visual divider between peer functions -->
+        <path class="divider" d="M 680 24 L 680 642"/>
+
+        <!-- Sean's trunk down to two tracks -->
+        <path class="line" d="M 290 100 L 290 132 L 160 132 L 160 158"/>
+        <path class="line" d="M 290 132 L 420 132 L 420 158"/>
+
+        <!-- Sean's track labels -->
+        <text class="track-label" x="160" y="178" text-anchor="middle">Data &amp; Analytics</text>
+        <text class="track-label" x="420" y="178" text-anchor="middle">Product</text>
+
+        <!-- Stubs from labels to manager boxes -->
+        <path class="line" d="M 160 188 L 160 212"/>
+        <path class="line" d="M 420 188 L 420 212"/>
+
+        <!-- Bernice -->
+        <rect class="mgr-accent" x="40" y="212" width="240" height="3"/>
+        <rect class="mgr-box" x="40" y="215" width="240" height="74"/>
+        <text class="mgr-name" x="160" y="248" text-anchor="middle">Bernice Abrahams</text>
+        <text class="mgr-title" x="160" y="272" text-anchor="middle">Assoc. Dir, Data &amp; Analytics</text>
+
+        <!-- Liz -->
+        <rect class="mgr-accent" x="300" y="212" width="240" height="3"/>
+        <rect class="mgr-box" x="300" y="215" width="240" height="74"/>
+        <text class="mgr-name" x="420" y="248" text-anchor="middle">Liz Raisig</text>
+        <text class="mgr-title" x="420" y="272" text-anchor="middle">Group Product Manager</text>
+
+        <!-- Stubs from managers down to first report -->
+        <path class="line" d="M 160 289 L 160 320"/>
+        <path class="line" d="M 420 289 L 420 320"/>
+
+        <!-- David -->
+        <rect class="rpt-box" x="40" y="320" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="160" y="347" text-anchor="middle">David Bardasz</text>
+        <text class="rpt-title" x="160" y="367" text-anchor="middle">Analyst</text>
+
+        <!-- Alek (contractor, direct to Sr. Director) -->
+        <rect class="contractor-box" x="40" y="395" width="240" height="58" rx="2"/>
+        <text class="contractor-name" x="160" y="422" text-anchor="middle">Alek Hagopian</text>
+        <text class="contractor-title" x="160" y="442" text-anchor="middle">Data Contractor*</text>
+
+        <!-- Avery -->
+        <rect class="rpt-box" x="300" y="320" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="420" y="347" text-anchor="middle">Avery Speel</text>
+        <text class="rpt-title" x="420" y="367" text-anchor="middle">Product Manager</text>
+
+        <!-- Shana -->
+        <rect class="rpt-box" x="300" y="386" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="420" y="413" text-anchor="middle">Shana Thomas</text>
+        <text class="rpt-title" x="420" y="433" text-anchor="middle">Assoc. Product Manager</text>
+
+        <!-- Nicole -->
+        <rect class="rpt-box" x="300" y="452" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="420" y="479" text-anchor="middle">Nicole Rakozy</text>
+        <text class="rpt-title" x="420" y="499" text-anchor="middle">Product Manager</text>
+
+        <!-- Open Product role -->
+        <rect class="open-box" x="300" y="518" width="240" height="58" rx="2"/>
+        <text class="open-name" x="420" y="545" text-anchor="middle">Open</text>
+        <text class="open-title" x="420" y="565" text-anchor="middle">Product Manager &middot; TBD</text>
+
+        <!-- Samika (temporary assignment, reporting line TBD) -->
+        <rect class="temp-box" x="300" y="584" width="240" height="58" rx="2"/>
+        <text class="temp-name" x="420" y="611" text-anchor="middle">Samika Goel</text>
+        <text class="temp-title" x="420" y="631" text-anchor="middle">AI Enablement Specialist&#8224;</text>
+
+        <!-- Jacob's trunk: single vertical drop from Jacob to PMO team -->
+        <path class="line" d="M 950 100 L 950 320"/>
+
+        <!-- Elena -->
+        <rect class="rpt-box" x="830" y="320" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="950" y="347" text-anchor="middle">Elena Romashko</text>
+        <text class="rpt-title" x="950" y="367" text-anchor="middle">Sr. Project Manager</text>
+
+        <!-- Jessica -->
+        <rect class="rpt-box" x="830" y="386" width="240" height="58" rx="2"/>
+        <text class="rpt-name" x="950" y="413" text-anchor="middle">Jessica Laskowski</text>
+        <text class="rpt-title" x="950" y="433" text-anchor="middle">Project Manager</text>
+
+        <!-- Open PMO role -->
+        <rect class="open-box" x="830" y="452" width="240" height="58" rx="2"/>
+        <text class="open-name" x="950" y="479" text-anchor="middle">Open</text>
+        <text class="open-title" x="950" y="499" text-anchor="middle">Project Manager &middot; TBD</text>
+
+        <!-- Footnotes -->
+        <text class="footnote" x="40" y="696">* Alek reports directly to the Sr. Director.</text>
+        <text class="footnote" x="40" y="712">&#8224; Samika joins Product temporarily until a dedicated AI Enablement function stands up. Reporting line TBD.</text>
+
+      </svg>
+
+      <div class="org-legend">
+        <span><span class="swatch lead"></span>Leadership</span>
+        <span><span class="swatch report"></span>Team member</span>
+        <span><span class="swatch contractor"></span>Contractor</span>
+        <span><span class="swatch temp"></span>Temporary assignment</span>
+        <span><span class="swatch open"></span>Open headcount</span>
+      </div>
+    </div>
+
+    <p class="src">Effective 06/01/2026. Broader org announcement 05/22/2026.</p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
