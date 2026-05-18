@@ -1172,15 +1172,15 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
 
     <ul class="data-bullets">
       <li><b>Phase 1 &mdash; MVP <em>(TBD)</em>.</b> Ship on current Smartsheet and SharePoint. Claude reads native PDFs and pricing rows. Free-text reconciliation hint on every line.</li>
-      <li><b>Phase 2 &mdash; bridge on Naviga read access <em>(TBD)</em>.</b> Add structured Naviga foreign keys to every line &mdash; Rate Line ID, Rate Card ID, GL Type, Cost Center, Company, plus snapshot date. Reconciliation becomes a lookup. Unlocks when Naviga API read lands or AdOps cross-brand exports are adopted as the read path.</li>
+      <li><b>Phase 2 &mdash; bridge on Naviga read access.</b> <em>Sandbox API validated 04/25/2026; production credentials are the next gate.</em> Add structured Naviga foreign keys to every line &mdash; Rate Line ID, Rate Card ID, GL Type, Cost Center (parsed from <span class="mono">Product.ARGLID</span>), Company, plus snapshot date. Reconciliation becomes a lookup. Read path: <span class="mono">POST /api/ad/rates/all</span> with body filters by ProductGroup / Product / date.</li>
       <li><b>Phase 3 &mdash; consolidate on a mart <em>(TBD)</em>.</b> Analytical layer for cross-proposal reporting, cross-brand rollups, and historical win-loss analysis. Same foundation cuts day-to-day operational overhead on the teams maintaining product and pricing data today &mdash; the proposal app is the first beneficiary, not the only one.</li>
     </ul>
 
     <div class="callout decision">
-      <strong>Open &mdash; details</strong> Phase scope, triggers, and sequencing are directional. Full detail &mdash; standardization layers, stakeholder view, and technical schema &mdash; lives in the appendix.
+      <strong>Open &mdash; details</strong> Phase scope and sequencing are directional. Phase 2 trigger is now narrowed to "Naviga prod credentials granted" &mdash; the schema-validation pass completed against sandbox. Full detail &mdash; standardization layers, stakeholder view, technical schema, and the API validation report &mdash; lives in the appendix.
     </div>
 
-    <p class="src">Sources: shipping plan (<span class="mono">02-shipping-plan.md</span>, 04/22/2026); grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); discovery synthesis. Pulled 04/2026.</p>
+    <p class="src">Sources: shipping plan (<span class="mono">02-shipping-plan.md</span>, 04/22/2026, last updated 04/25/2026); grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); Naviga API validation (<span class="mono">05-naviga-api-validation.md</span>, 04/25/2026); discovery synthesis. Pulled 04/2026.</p>
   </section>
 
   <!-- APPENDIX BREAK -->
@@ -1415,12 +1415,12 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
       <li><b>Layer one &mdash; Sales Family.</b> ~12 candidates per canonical data analysis. Sales-defined, not a Naviga concept. Stage-2 ratifies the final list with sales leadership at the table.</li>
       <li><b>Layer two &mdash; GL Type.</b> 71 codes enterprise-wide. Finance-owned. Registry-settled. Examples: <span class="mono">DNEW</span> (Newsletters), <span class="mono">CSPC</span> (Custom Sponsored Content), <span class="mono">PDIS</span> (Print Display).</li>
       <li><b>Layer three &mdash; publications.</b> 21 active across 2 Companies (<span class="mono">01</span> CCI, <span class="mono">02</span> LTD). In Naviga this is Cost Center. Five publications book to LTD (Europe).</li>
-      <li><b>Layer four &mdash; per-product identity.</b> ~4,000&ndash;5,000 Rate Lines enterprise-wide. Naviga IS the register &mdash; no Crain-side minting. 65% of Rate Line IDs persist year-over-year; 35% reissue. Snapshot date at resolve-time handles reissue.</li>
-      <li><b>Directional hypothesis.</b> Semantic match at read time for MVP. Phase 2 anchors on Rate Line ID (<span class="mono">naviga_rate_line_id</span> + snapshot date) once the read path lands. Phase 3 consolidates on a mart.</li>
+      <li><b>Layer four &mdash; per-product identity.</b> Naviga IS the register &mdash; no Crain-side minting. Sandbox API confirmed cardinality at scale: 23 ProductGroups, 722 Products, 3,606 Ratecards, ~36,229 Rate Lines (including inactive) &mdash; ~7&times; the earlier AdOps-derived "4&ndash;5K" estimate. 65% of Rate Line IDs persist year-over-year; 35% reissue. Snapshot date at resolve-time handles reissue (no API-side history endpoint).</li>
+      <li><b>Directional hypothesis (validated).</b> Semantic match at read time for MVP. Phase 2 anchors on Rate Line ID (<span class="mono">naviga_rate_line_id</span> + snapshot date) via <span class="mono">POST /api/ad/rates/all</span> &mdash; sandbox-validated 04/25/2026. Phase 3 consolidates on a mart.</li>
     </ul>
 
     <div class="callout decision">
-      <strong>Open &mdash; discussion</strong> Resolution here shapes how much weight the semantic-match hypothesis has to carry versus the structured-FK Phase-2 path.
+      <strong>Open &mdash; discussion</strong> Phase-2 read path is now confirmed as Naviga API direct; semantic match for MVP stays the right hypothesis. Stage-2 input shapes the Sales Family list.
     </div>
 
     <p class="src">Sources: grounded recommendation (<span class="mono">00-grounded-recommendation.md</span>); shipping plan (<span class="mono">02-shipping-plan.md</span>); stakeholder one-pager (04/22/2026); discovery synthesis. Pulled 04/2026.</p>
@@ -1432,7 +1432,7 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
     <h3>The three-view framing maps onto five entities, plus a sixth for phase-2. Family splits two ways.</h3>
 
     <div class="callout tentative">
-      <strong>Tentative</strong> Two things can reshape this: (1) Naviga API access and any schema change that surfaces when it lands; (2) blockers or preferences the stakeholder group raises after review.
+      <strong>Tentative</strong> Naviga sandbox API validated 04/25/2026 &mdash; the canonical FK list returns from <span class="mono">POST /api/ad/rates/all</span> with two field renames (<span class="mono">naviga_line_type</span> splits into <span class="mono">naviga_pricing_line_type</span> + <span class="mono">naviga_gam_line_item_type</span>; <span class="mono">naviga_rev_cat_id</span> may collapse into the new <span class="mono">MREC</span> GL Type). Stakeholder feedback on the model is still input.
     </div>
 
     <ul class="data-bullets">
@@ -1502,25 +1502,26 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
             <li><b>Prior single-publication template</b> already anchored on Naviga's GL Type. The full Naviga master confirms the instinct.</li>
             <li><b>Cross-brand overlap</b> lands at Sales Family + GL Type, not at a shared product ID.</li>
             <li><b>Awards and recognition content</b> (40 Under 40, Notable Women, The Book, Best Places to Work) routes through existing GL Types by format plus optional <span class="mono">RC2425</span> Revenue Category. Surfacing what's already in Naviga, not inventing a bucket.</li>
-            <li><b>Earlier Naviga mapping work</b> preserves as a structured set of FKs on every Offering, populated from AdOps's quarterly cross-brand exports (23 files already on SharePoint).</li>
+            <li><b>Earlier Naviga mapping work</b> preserves as a structured set of FKs on every Offering. Naviga sandbox API validated 04/25/2026; <span class="mono">POST /api/ad/rates/all</span> returns the full enterprise tree (23 publications, 722 Products, 3,606 Ratecards, ~36K Rate Lines).</li>
           </ul>
         </div>
         <div class="cmp-card current">
           <div class="cmp-label">What changes</div>
           <ul>
             <li><b>Product ID stops doing three jobs.</b> Offering identity = Naviga's Rate Line ID. Sales Family and GL Type are separate tags. Cost Center + Company carry publication/billing scope.</li>
-            <li><b>Family splits two ways.</b> Sales Family (sales-defined, ~12 candidates, Stage-2 ratifies) and GL Type (Finance-owned, 71 codes, settled). Two views, two cadences.</li>
+            <li><b>Family splits two ways.</b> Sales Family (sales-defined, ~12 candidates, Stage-2 ratifies) and GL Type (Finance-owned, 71 codes in master, 93 in API). Two views, two cadences.</li>
             <li><b>Naviga mapping is not one column.</b> It's a nine-key FK bundle on every Offering plus a snapshot date to handle the 35% YoY Rate Line reissue rate.</li>
+            <li><b>Line type splits into two fields after API validation.</b> <span class="mono">naviga_pricing_line_type</span> (unit-of-pricing: <span class="mono">FF</span>/<span class="mono">CPM</span>/<span class="mono">CPCI</span>) and <span class="mono">naviga_gam_line_item_type</span> (GAM enum: <span class="mono">SPONSORSHIP</span>/<span class="mono">STANDARD</span>/<span class="mono">CLICK_TRACKING</span>/<span class="mono">HOUSE</span>) are different concepts.</li>
             <li><b>2027 rollover handled by Naviga.</b> Ratecard IDs carry year context; Rate Line IDs persist 65% year-over-year; snapshot at resolve-time keeps every past proposal correct. No Smartsheet "never overwrite" rule required.</li>
           </ul>
         </div>
         <div class="cmp-card pending">
           <div class="cmp-label">What's pending <em>(TBD)</em></div>
           <ul>
-            <li><b>Naviga API read access.</b> Accelerates Phase 2. AdOps cross-brand exports already cover the schema and work as the interim read path.</li>
+            <li><b>Naviga production API credentials.</b> Sandbox validated 04/25/2026; production-credentials ask is the next gate, not schema discovery. See <span class="mono">05-naviga-api-validation.md</span>.</li>
             <li><b>Stakeholder review</b> of this model before team-wide ratification.</li>
             <li><b>Stage-2 ratification output</b> &mdash; final Sales Family list and alias map for 19 sub-brand Cost Centers. GL Type list already settled.</li>
-            <li><b>Four open validation items</b> &mdash; <span class="mono">CRE2</span> GL Type origin; 46 Editorial rows dropped during Scopic normalization; <span class="mono">RC2425</span> usage pattern; Smartsheet vs. AdOps operational read path.</li>
+            <li><b>Three open validation items</b> (narrowed from four) &mdash; <b>Recognition classifier</b> (Naviga's new <span class="mono">MREC</span> GL Type vs. <span class="mono">RC2425</span> Level-4 RC); <span class="mono">naviga_line_type</span> rename / split (mechanical, before code); <b>46 dropped Editorial rows</b>. <em>Closed by API probe:</em> <span class="mono">CRE2</span> IS in the registry; Smartsheet vs. AdOps read-path debate (Naviga API direct supersedes both).</li>
           </ul>
         </div>
       </div>
@@ -1535,7 +1536,7 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
     <h3>Six entities model the data. Five ship MVP. Execution Record waits phase-2.</h3>
 
     <div class="callout tentative">
-      <strong>Tentative</strong> Two things can reshape this: (1) Naviga API read access and any schema change that surfaces when it lands; (2) blockers or preferences the stakeholder group raises after review.
+      <strong>Tentative</strong> Naviga sandbox API validated 04/25/2026 (<span class="mono">05-naviga-api-validation.md</span>): the canonical FK list returns from <span class="mono">POST /api/ad/rates/all</span> with two field renames (<span class="mono">naviga_line_type</span> splits into <span class="mono">naviga_pricing_line_type</span> + <span class="mono">naviga_gam_line_item_type</span>; <span class="mono">naviga_rev_cat_id</span> may collapse into the new <span class="mono">MREC</span> GL Type). Production credentials are the next gate. Stakeholder feedback on the model is still input.
     </div>
 
     <p class="lead">Offering identity = Naviga's Rate Line ID + snapshot date. Family splits into Sales Family (sales-defined, ~12 candidates) and GL Type (Finance-owned, 71 codes, settled). Every Offering carries a nine-key Naviga FK bundle. <span class="mono">naviga_reconciliation_hint</span> demotes to a nullable fallback for custom one-offs; structured FKs are the primary path.</p>
@@ -1617,13 +1618,13 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
             <text x="20" y="184" class="entity-field">naviga_gl_type_id</text>
             <text x="350" y="184" class="entity-field-tag" text-anchor="end">FK &rarr; GL_TYPE</text>
             <text x="20" y="206" class="entity-field">naviga_cost_center</text>
-            <text x="350" y="206" class="entity-field-tag" text-anchor="end">FK &rarr; BRAND</text>
+            <text x="350" y="206" class="entity-field-tag" text-anchor="end">parsed from ARGLID</text>
             <text x="20" y="228" class="entity-field">naviga_company_id</text>
             <text x="350" y="228" class="entity-field-tag" text-anchor="end">FK &rarr; BRAND</text>
-            <text x="20" y="250" class="entity-field">naviga_line_type</text>
-            <text x="350" y="250" class="entity-field-tag" text-anchor="end">enum 4</text>
-            <text x="20" y="272" class="entity-field">naviga_rev_cat_id</text>
-            <text x="350" y="272" class="entity-field-tag" text-anchor="end">nullable</text>
+            <text x="20" y="250" class="entity-field">naviga_pricing_line_type</text>
+            <text x="350" y="250" class="entity-field-tag" text-anchor="end">enum 16</text>
+            <text x="20" y="272" class="entity-field">naviga_gam_line_item_type</text>
+            <text x="350" y="272" class="entity-field-tag" text-anchor="end">enum 9</text>
             <!-- Right column -->
             <text x="390" y="74" class="entity-field">sales_family_fk</text>
             <text x="720" y="74" class="entity-field-tag" text-anchor="end">FK &rarr; SALES_FAMILY</text>
@@ -1795,13 +1796,13 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
             <td><span class="mono">offering_ref.naviga_gl_type_id</span></td>
             <td>string</td>
             <td>Direct from Offering</td>
-            <td>Finance accounting classifier. 71 codes, settled.</td>
+            <td>Finance accounting classifier. 71 codes in Excel master, 93 in API (with <span class="mono">2</span>-suffix variants and new codes like <span class="mono">MREC</span>).</td>
           </tr>
           <tr>
             <td><span class="mono">offering_ref.naviga_cost_center</span></td>
             <td>string</td>
-            <td>Direct from Offering</td>
-            <td>Publication FK. 21 active publications.</td>
+            <td>Parsed from <span class="mono">Product.ARGLID</span> position 2</td>
+            <td>Publication FK. 21 active publications. Encoded inside the GL-Code string, not a top-level API field.</td>
           </tr>
           <tr>
             <td><span class="mono">offering_ref.naviga_company_id</span></td>
@@ -1850,9 +1851,9 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
         <div class="cmp-card current">
           <div class="cmp-label">Governance &mdash; Stage-2 deliverables <em>(TBD)</em></div>
           <ul>
-            <li><b>Sales Family ratification.</b> 12 data-derived candidates per canonical 00 &sect;6.3. Cross-brand + events rollup may extend to ~12&ndash;20 with sales-leadership input. GL Type list (71 codes) is already settled.</li>
-            <li><b>Sub-brand Cost Center labels.</b> Finance deliverable. 19 <span class="mono">_00</span>-suffixed Cost Centers (PIC, PIX, AABP, etc.) need usage-weighted labels.</li>
-            <li><b>Four open validation items.</b> <span class="mono">CRE2</span> origin (typo vs. new code), 46 dropped Editorial rows (10 of 56 survived Scopic normalization), <span class="mono">RC2425</span> usage pattern, Smartsheet vs. AdOps operational read-path choice.</li>
+            <li><b>Sales Family ratification.</b> 12 data-derived candidates per canonical 00 &sect;6.3. Cross-brand + events rollup may extend to ~12&ndash;20 with sales-leadership input. GL Type list (71 master codes; 93 in API) is settled.</li>
+            <li><b>Sub-brand Cost Center labels.</b> Finance deliverable. 19 <span class="mono">_00</span>-suffixed Cost Centers (PIC, PIX, AABP, etc.) need usage-weighted labels &mdash; many self-resolve from API <span class="mono">Product.GroupID</span> &rarr; <span class="mono">WebGroupName</span> joins.</li>
+            <li><b>Three open validation items</b> (revised after API probe). <b>Recognition classifier</b> &mdash; Naviga's new <span class="mono">MREC Recognition Program</span> GL Type may supersede <span class="mono">RC2425</span> Level-4 RC; if so, drop <span class="mono">naviga_rev_cat_id</span>. <b><span class="mono">2</span>-suffix GL Type variant pattern</b> &mdash; what does <span class="mono">CSP2</span>/<span class="mono">CSPC</span>, <span class="mono">CCO2</span>/<span class="mono">CCOD</span>, etc. mean (14 pairs)? <b>46 dropped Editorial rows</b> &mdash; where they live now (Grace or Kristin Bull). <em>Closed by API probe:</em> <span class="mono">CRE2</span> IS in the registry; Smartsheet vs. AdOps read-path debate (Naviga API direct supersedes both).</li>
           </ul>
         </div>
         <div class="cmp-card future">
@@ -1860,7 +1861,7 @@ section.appx .kicker .sec-num { font-size: 1.25rem; }
           <ul>
             <li><b>Smartsheet MCP returns attachment contents</b>, not just filenames. Load-bearing for industry-brand coverage.</li>
             <li><b>Hosted M365 connector reads native PPTX layout</b>, not just text extraction. Load-bearing for media-kit comprehension.</li>
-            <li><b>AdOps SharePoint exports parseable</b> with the 18&ndash;20-column schema across all 23 brand files. Load-bearing if Phase 2 selects AdOps as the read path.</li>
+            <li><b>Naviga production API parity with sandbox.</b> Sandbox <span class="mono">POST /api/ad/rates/all</span> validated 04/25/2026; production handoff needs a re-run on the same surface plus a Customer/Advertiser/Campaign smoke test (sandbox returns empty/500 on those endpoints).</li>
           </ul>
         </div>
       </div>
