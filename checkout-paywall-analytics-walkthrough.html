@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adobe instrumentation: Checkout v3 + Server-Side Paywall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #f7f1e3;
+  --card:         #fcf8ec;
+  --ink:          #0f0e0a;
+  --ink-soft:     #3a3828;
+  --ink-mute:     #6b6248;
+  --ink-faint:    #9a9178;
+  --rule:         #d9cfb5;
+  --accent:       #0d1b2a;
+  --accent-deep:  #050f1a;
+  --accent-wash:  rgba(13,27,42,0.07);
+  --accent-line:  rgba(13,27,42,0.3);
+  --accent2:      #b8821a;
+  --accent2-deep: #8a5f12;
+  --accent2-wash: rgba(184,130,26,0.1);
+  --sage:         #8e9285;
+  --sage-wash:    rgba(142,146,133,0.07);
+  --pos:          #3a6b47;
+  --neg:          #7c3434;
+  --shadow-card:
+    0 1px 0 rgba(70,50,20,0.05),
+    0 4px 14px rgba(70,50,20,0.07),
+    0 18px 36px rgba(70,50,20,0.05);
+  --font-body:    'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --col-max: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3.25rem);
+  --card-pad-y: clamp(2rem, 3.5vw, 3rem);
+  --card-pad-x: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1400px 900px at 15% -5%, rgba(255,248,225,0.55), transparent 60%),
+    radial-gradient(1100px 800px at 100% 105%, rgba(184,130,26,0.08), transparent 55%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--col-max);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--gutter) 6rem;
+}
+
+.progress-rail {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 10;
+  pointer-events: none;
+}
+.progress-rail::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform 0.12s linear;
+}
+
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.25rem 0 1.5rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-strip .brand-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+.brand-strip .byline {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+.brand-strip .byline b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.85rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+h1 em {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+h2 {
+  font-size: clamp(1.55rem, 2.7vw, 2.05rem);
+  line-height: 1.15;
+  letter-spacing: -0.008em;
+  font-weight: 400;
+}
+h2 em { font-style: italic; color: var(--ink-soft); }
+
+h3 {
+  font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  font-weight: 500;
+}
+
+h4 {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+p { margin: 0 0 1em 0; }
+p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; color: var(--ink-soft); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-line);
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+a:hover {
+  text-decoration-color: var(--accent);
+  color: var(--accent-deep);
+}
+a:focus-visible {
+  outline: 2px solid var(--accent2);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.005em;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 1.25rem;
+}
+.kicker .sec-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: none;
+  font-style: italic;
+}
+.kicker .sec-num::after {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 0 5px 0.75rem;
+}
+
+header.hero {
+  padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+  position: relative;
+  background: transparent;
+}
+header.hero::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.75rem;
+}
+header.hero h1 {
+  margin-bottom: 1.35rem;
+  max-width: none;
+}
+header.hero .standfirst {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  letter-spacing: -0.003em;
+  max-width: none;
+}
+header.hero .standfirst + .standfirst { margin-top: 0.6rem; }
+
+section.primary {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: var(--card-pad-y) var(--card-pad-x);
+  margin: 0 0 clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: var(--shadow-card);
+}
+section.primary > .kicker { margin-bottom: 1.5rem; }
+section.primary h2 { margin-bottom: 1.25rem; max-width: none; }
+
+section.primary .lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.35;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  max-width: none;
+  letter-spacing: -0.005em;
+}
+section.primary .body p {
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.panel + .panel { margin-top: 2.25rem; padding-top: 2rem; border-top: 1px solid var(--rule); }
+.panel h3 { margin: 0 0 0.85rem; }
+.panel h3 + p, .panel h3 + .body p { color: var(--ink-soft); }
+
+/* Data bullets */
+ul.data-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.25rem;
+}
+ul.data-bullets > li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+ul.data-bullets > li:last-child { border-bottom: none; }
+ul.data-bullets > li > b,
+ul.data-bullets > li > strong { color: var(--ink); font-weight: 600; }
+
+/* Callouts */
+.callout {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--accent-wash);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.callout strong {
+  color: var(--accent-deep);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 0.45rem;
+}
+.callout.decision {
+  background: var(--accent2-wash);
+  border-left-color: var(--accent2);
+}
+.callout.decision strong { color: var(--accent2-deep); }
+
+.callout-muted {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--sage-wash);
+  border-left: 2px solid var(--ink-faint);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* Source note */
+.src {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+  margin-top: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  line-height: 1.55;
+}
+
+/* ---------- Flow diagram (custom — two-column old vs new) ---------- */
+
+.flow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0.5rem;
+}
+@media (max-width: 860px) { .flow { grid-template-columns: 1fr; } }
+
+.flow-col {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--card);
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+.flow-col.today { border-top: 2px solid var(--accent); }
+.flow-col.next {
+  border-top: 2px solid var(--accent2);
+  background:
+    linear-gradient(180deg, var(--accent2-wash) 0%, transparent 28%),
+    var(--card);
+}
+.flow-col h3.flow-head {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.65rem;
+}
+.flow-col.next h3.flow-head { color: var(--accent2-deep); }
+.flow-col .flow-sub {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0 0 1.1rem;
+  line-height: 1.35;
+}
+
+.flow-row {
+  position: relative;
+  padding: 0.85rem 0 0.95rem 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.flow-row:last-child { border-bottom: none; padding-bottom: 0.4rem; }
+.flow-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.95rem;
+  bottom: 1rem;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.flow-row.new::before     { background: var(--accent2); }
+.flow-row.sunset::before  { background: var(--sage); }
+.flow-row.preserved::before { background: var(--accent); }
+.flow-row.warn::before    { background: var(--neg); }
+
+.flow-step {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+.flow-tag {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.14rem 0.45rem 0.12rem;
+  border-radius: 2px;
+  line-height: 1;
+}
+.flow-tag.new       { background: var(--accent2); color: var(--card); }
+.flow-tag.preserved { background: var(--accent);  color: var(--card); }
+.flow-tag.sunset    { background: var(--sage);    color: var(--card); }
+.flow-tag.warn      { background: var(--neg);     color: var(--card); }
+
+.flow-trigger {
+  font-size: 0.96rem;
+  color: var(--ink);
+  line-height: 1.42;
+  margin: 0 0 0.4rem;
+}
+.flow-rule {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.005em;
+}
+.flow-slots {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.flow-slots .mono {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.flow-note {
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px dotted var(--rule);
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+
+.flow-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 1.25rem 0 0;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+.flow-legend .swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+/* ---------- Comparison table (signal-by-signal old vs new) ---------- */
+
+.cmp {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.95rem;
+  font-variant-numeric: lining-nums;
+}
+.cmp col.c-action { width: 22%; }
+.cmp col.c-today  { width: 39%; }
+.cmp col.c-new    { width: 39%; }
+.cmp thead th {
+  text-align: left;
+  padding: 0.85rem 1rem 0.65rem;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  vertical-align: bottom;
+}
+.cmp thead th:first-child { padding-left: 0; }
+.cmp thead th.c-today { color: var(--ink); border-bottom-color: var(--accent); }
+.cmp thead th.c-new   { color: var(--accent2-deep); border-bottom-color: var(--accent2); }
+.cmp tbody td {
+  padding: 1.1rem 1rem 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  background: transparent;
+}
+.cmp tbody tr:nth-child(even):not(.emph) td { background: transparent; }
+.cmp tbody td:first-child { padding-left: 0; }
+.cmp tbody tr:last-child td { border-bottom: none; }
+.cmp td.action {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: -0.003em;
+  padding-right: 1.25rem;
+  line-height: 1.32;
+}
+.cmp td.action small {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-style: normal;
+  color: var(--ink-mute);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+.cmp tbody td small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-style: normal;
+  color: var(--ink-mute);
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+.cmp tbody td.action small {
+  /* preserve the action-cell label styling defined above */
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+.cmp tbody tr td.c-new {
+  background: linear-gradient(180deg, var(--accent2-wash) 0%, rgba(184,130,26,0.04) 100%);
+}
+.cmp .mono {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+
+/* Inline status tag (reused across cmp + slot-net mini-table) */
+.tag {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.14rem 0.45rem 0.12rem;
+  border-radius: 2px;
+  line-height: 1;
+  margin-right: 0.55rem;
+  vertical-align: 0.1em;
+}
+.tag.new       { background: var(--accent2); color: var(--card); }
+.tag.preserved { background: var(--accent);  color: var(--card); }
+.tag.sunset    { background: var(--sage);    color: var(--card); }
+.tag.warn      { background: var(--neg);     color: var(--card); }
+.tag.none      { background: var(--ink-faint); color: var(--card); }
+
+.cmp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 1rem 0 0;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+.cmp-legend .swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+@media (max-width: 860px) {
+  .cmp { table-layout: auto; font-size: 0.9rem; }
+  .cmp col.c-action, .cmp col.c-today, .cmp col.c-new { width: auto; }
+  .cmp td.action { padding-right: 0.75rem; }
+  .cmp tbody td { padding: 0.85rem 0.5rem 0.85rem 0; }
+}
+
+/* Slot-net summary mini-table */
+.slot-net {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.slot-net th {
+  text-align: left;
+  padding: 0.7rem 1rem 0.55rem 0;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.slot-net th.num { text-align: right; padding-right: 0.5rem; }
+.slot-net td {
+  padding: 0.7rem 1rem 0.7rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.slot-net td.label {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+.slot-net td.num {
+  text-align: right;
+  padding-right: 0.5rem;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.slot-net tr.total td {
+  border-bottom: none;
+  background: var(--accent-wash);
+  color: var(--ink);
+  font-weight: 600;
+}
+.slot-net tr.total td.label { font-style: italic; }
+.slot-net tr.total td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+  padding-left: 0.75rem;
+}
+
+/* ---------- Workspace recipe block ---------- */
+
+.recipe {
+  margin: 1.25rem 0 0.5rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--ink);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.recipe .rcomment {
+  color: var(--ink-mute);
+  font-style: italic;
+}
+.recipe .rkey { color: var(--accent2-deep); font-weight: 500; }
+.recipe .rstr { color: var(--pos); }
+.recipe .rnum { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* ---------- Reference / appendix sections ---------- */
+
+section.primary.reference,
+section.primary.appendix {
+  border-top: 1px solid var(--rule);
+}
+section.primary.reference .kicker .sec-num,
+section.primary.appendix .kicker .sec-num {
+  font-size: 1.2rem;
+  color: var(--ink-mute);
+}
+section.primary.reference h2,
+section.primary.appendix h2 {
+  font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+}
+
+/* ---------- Data layer side-by-side compare ---------- */
+
+.recipe-hint {
+  margin: 0.35rem 0 0.6rem;
+  color: var(--ink-mute);
+  line-height: 1.45;
+}
+.recipe-hint small { font-size: 0.82rem; }
+
+.dl-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.25rem 0 0.5rem;
+  align-items: stretch;
+}
+.dl-compare .col { display: flex; flex-direction: column; min-width: 0; }
+.dl-compare .col-label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 0.4rem;
+}
+.dl-compare .col-new .col-label { color: var(--accent2-deep); }
+.dl-compare .recipe {
+  margin: 0;
+  flex: 1;
+}
+.dl-compare .col-today .recipe { border-left-color: var(--ink-mute); }
+.dl-compare .col-new .recipe { border-left-color: var(--accent2); }
+@media (max-width: 860px) {
+  .dl-compare { grid-template-columns: 1fr; gap: 0.85rem; }
+}
+
+/* ---------- Data layer translation table ---------- */
+
+table.dl-map {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 1rem 0 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+table.dl-map col.col-key  { width: 18%; }
+table.dl-map col.col-today { width: 20%; }
+table.dl-map col.col-after { width: 24%; }
+table.dl-map col.col-notes { width: 38%; }
+table.dl-map thead th {
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  border-bottom: 1.5px solid var(--ink);
+  padding: 0.5rem 0.85rem 0.5rem 0;
+}
+table.dl-map tbody td {
+  padding: 0.55rem 0.85rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: top;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+table.dl-map tbody td:first-child { color: var(--ink); }
+table.dl-map .mono { color: var(--ink); word-break: break-word; overflow-wrap: anywhere; }
+
+/* ---------- Fix list (three tiers) ---------- */
+
+.fix-list { margin: 1rem 0 0; padding: 0; list-style: none; }
+.fix-list li {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.fix-list li:last-child { border-bottom: none; }
+.fix-list .fix-tag {
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+  text-align: center;
+  display: inline-block;
+  justify-self: start;
+  white-space: nowrap;
+}
+.fix-list .fix-tag.blocker { background: rgba(124,52,52,0.12); color: var(--neg); }
+.fix-list .fix-tag.should  { background: var(--accent2-wash); color: var(--accent2-deep); }
+.fix-list .fix-tag.could   { background: var(--sage-wash); color: var(--ink-soft); }
+.fix-list .fix-body { color: var(--ink-soft); line-height: 1.5; font-size: 0.95rem; }
+.fix-list .fix-body b { color: var(--ink); font-weight: 600; }
+.fix-list h4 {
+  grid-column: 1 / -1;
+  margin: 1.25rem 0 0.25rem;
+  border-top: none;
+  padding-top: 0;
+}
+.fix-list h4:first-child { margin-top: 0; }
+
+/* ---------- Three-audience grid ---------- */
+
+.aud-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin: 1.25rem 0 0.5rem;
+}
+@media (max-width: 860px) { .aud-grid { grid-template-columns: 1fr; } }
+.aud {
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--accent);
+  border-radius: 2px;
+  padding: 1.1rem 1.2rem;
+  background: var(--card);
+}
+.aud h4 {
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 0 0 0.7rem;
+}
+.aud .who {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--ink);
+  font-style: italic;
+  margin: 0 0 0.65rem;
+  line-height: 1.3;
+}
+.aud p {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ---------- Endnote ---------- */
+
+footer.endnote {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+@media print {
+  body { background: #fff; }
+  body::before { display: none; }
+  main { max-width: none; padding: 1.25cm; }
+  section.primary { page-break-inside: avoid; }
+  .flow { page-break-inside: avoid; }
+  .progress-rail { display: none; }
+  .brand-strip { page-break-after: avoid; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .brand-strip { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .kicker .sec-num::after { display: none; }
+  section.primary { padding: clamp(1.25rem, 4vw, 1.75rem); }
+  .recipe { font-size: 0.78rem; padding: 1rem 1.1rem; }
+}
+
+/* ---------- Appendix break ---------- */
+
+.appx-break {
+  margin: 4rem auto 2rem;
+  padding: 2.5rem 0 0;
+  text-align: center;
+  position: relative;
+}
+.appx-break::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--ink);
+  margin: 0 auto 2rem;
+}
+.appx-break::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  margin: 0.85rem auto 0;
+}
+.appx-break h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  margin: 0;
+}
+.appx-break .sub {
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-top: 0.65rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .progress-rail { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="progress-rail" aria-hidden="true"></div>
+<main>
+
+  <div class="brand-strip">
+    <img class="brand-logo" src="https://sean-bales.github.io/docs/assets/crain-logo.png" alt="Crain Communications">
+    <div class="byline">
+      <b>Sean Bales</b>
+      <span>05/17/2026</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Adobe instrumentation: <em>Checkout v3 and Server-Side Paywall.</em></h1>
+    <p class="standfirst">Spec walkthrough for analytics and engineering build. What changes in Adobe Launch and slot mapping. What stays countable in Workspace and Redshift.</p>
+  </header>
+
+  <section class="primary" id="s0">
+    <div class="kicker"><span class="sec-num">00</span>Summary</div>
+    <h2>Proposed checkout and paywall analytics changes &mdash; and why.</h2>
+
+    <ul class="data-bullets">
+      <li><b>Checkout and paywall rebuild.</b> Checkout (the subscription flow) and the paywall both being rebuilt. This deck proposes how each will report into Adobe Analytics.</li>
+      <li><b>Current state - every analytics change today is multi-team coordination.</b> Adobe Launch work, slot allocation, Workspace updates &mdash; each change needs all three teams to act in lockstep.</li>
+      <li><b>Proposted state - Named events describe themselves and ship with the code.</b> <span class="mono">checkout_started</span>, <span class="mono">checkout_step_viewed</span>, <span class="mono">checkout_completed</span> &mdash; each names what it measures. Steps and payment methods sit in the payload. New fields ship with the build, queryable the day they go live. (Paywall stays on existing <span class="mono">page-article</span> + <span class="mono">click-hardwall</span> rules with one new eVar mint &mdash; <span class="mono">paywall.version</span> &mdash; to track what paywall was rendered; no new events needed; see §02.)</li>
+    </ul>
+
+    <p class="src">Spec: derivatives/2026-05-17-checkout-paywall-analytics-contract.md. Cutover: CCB July 30, all brands September 30.</p>
+  </section>
+
+  <section class="primary" id="s1">
+    <div class="kicker"><span class="sec-num">01</span>Recommendation</div>
+    <h2>Named events per checkout phase. Lift-and-shift the paywall.</h2>
+    <p class="lead">Checkout v3 instruments to the 2026 industry-standard shape. Server-side paywall replaces Piano at functional parity.</p>
+
+    <ul class="data-bullets">
+      <li><b>Checkout today:</b> 4 Launch rules, one per step. <span class="mono">page-sub3</span> fires on account (<span class="mono">event13</span>), <span class="mono">page-sub4</span> on address (<span class="mono">event14</span>, V1 only), <span class="mono">page-sub5</span> on payment (<span class="mono">event15</span>), <span class="mono">page-sub6</span> on completion (<span class="mono">event8</span>). V1/V2 step-order divergence.</li>
+      <li><b>Checkout v3 shape:</b> 4 named events (<span class="mono">checkout_started</span>, <span class="mono">checkout_step_viewed</span>, <span class="mono">checkout_step_completed</span>, <span class="mono">checkout_completed</span>). One Launch rule each. <span class="mono">step_name</span> in the payload.</li>
+      <li><b><span class="mono">checkout_started</span> fires on page-load.</b> <span class="mono">step_name</span> enum includes <span class="mono">'plan_selection'</span> as step 1 for browse-mode entry, or <span class="mono">'payment'</span> as step 1 for pre-resolved-plan entry. First <span class="mono">step_viewed</span> after <span class="mono">checkout_started</span> indicates entry mode.</li>
+      <li><b>Aligns with modern best practice.</b> Industry-standard shape: named events per funnel phase with step semantics in the payload, one Launch rule per phase. Crain's current checkout is 2015-era Adobe by comparison: per-step rules, numbered event slots.</li>
+      <li><b>Paywall today:</b> Sophi decision block on every article hit (<span class="mono">eVar140&ndash;149</span>, 10 slots), two hardwall click writers feeding <span class="mono">event4</span> (hardwall click counter), <span class="mono">wall.suppressReason</span> field with no consumer.</li>
+      <li><b>Paywall MVP shape:</b> no new client events; existing event slots (<span class="mono">event86 / event87 / event83</span>) preserved via SSP-direct writes. One new eVar mint: <span class="mono">eVar153 ← paywall.version</span> &mdash; string identifier of which deployed paywall artifact was shown (e.g., <span class="mono">'hardwall-premium-2026-q3'</span>). Today there's zero historical record of which paywall design/offer was rendered at any given moment; this fixes that. Click flow stays on existing <span class="mono">click-hardwall</span> rule; <span class="mono">paywall.version</span> inherits via Adobe visit-scoped eVar persistence. Dismiss tracking, variant, experiment, A/B fields land in Phase 2.</li>
+      <li><b>Sophi removal is forced.</b> Piano contract ends Sept 30. Sophi sunset per brand, July 30 through Sept 30, regardless of analytics-contract choice.</li>
+    </ul>
+
+    <div class="callout decision">
+      <strong>Tradeoff</strong> Three per-step counters retire (account, address, payment). Per-step counts move into a step-name breakdown on a single named event. Conversion rate stays comparable to today's measure.
+    </div>
+
+    <p class="src">Source: derivatives/2026-05-17-checkout-paywall-analytics-contract.md.</p>
+  </section>
+
+  <section class="primary" id="s2">
+    <div class="kicker"><span class="sec-num">02</span>Flow</div>
+    <h2>What fires where, before and after.</h2>
+    <p class="lead">Each row pairs a user action with what fires today versus what fires after cutover. Status tags name the change.</p>
+
+    <div class="cmp-legend" style="border-top: none; padding-top: 0; margin-bottom: 0.5rem;">
+      <span><span class="tag new" style="margin-right: 0.4rem;">New</span>net-new event or slot</span>
+      <span><span class="tag preserved" style="margin-right: 0.4rem;">Preserved</span>same slot, same canonical counter</span>
+      <span><span class="tag sunset" style="margin-right: 0.4rem;">Retires</span>per-brand on cutover</span>
+      <span><span class="tag warn" style="margin-right: 0.4rem;">Two writers</span>bug today, resolved at cutover</span>
+      <span><span class="tag none" style="margin-right: 0.4rem;">Not measured</span>no signal today</span>
+    </div>
+
+    <div class="panel">
+      <h3>Checkout: today vs. Checkout v3</h3>
+
+      <table class="cmp" aria-label="Checkout flow comparison: today versus Checkout v3">
+        <colgroup>
+          <col class="c-action">
+          <col class="c-today">
+          <col class="c-new">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>User action</th>
+            <th class="c-today">Today (V1/V2 hybrid)</th>
+            <th class="c-new">Checkout v3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="action">User enters checkout<small>Lands on <span class="mono">/subscribe</span></small></td>
+            <td><span class="tag preserved">Already firing</span> <span class="mono">page-sub1</span> dispatches on <span class="mono">/subscribe</span> load.</td>
+            <td class="c-new"><span class="tag new">Rename + clean</span> <span class="mono">checkout-started</span> fires on <span class="mono">checkout.&lt;brand&gt;.com</span> load, with <span class="mono">source</span> + plan/product/campaign in the payload.</td>
+          </tr>
+          <tr>
+            <td class="action">User views each step<small>Plan select / payment / account / address</small></td>
+            <td><span class="tag sunset">Retires</span> Three Launch rules fire today, one per step (account, address, payment).</td>
+            <td class="c-new"><span class="tag new">New</span> One <span class="mono">checkout-step-viewed</span> rule per step. <span class="mono">step_name</span> in the payload distinguishes which step.</td>
+          </tr>
+          <tr>
+            <td class="action">User completes each step<small>Continues to next or final</small></td>
+            <td><span class="tag none">Not measured</span> No rule fires on step completion today.</td>
+            <td class="c-new"><span class="tag new">New</span> <span class="mono">checkout-step-completed</span> fires per step, with <span class="mono">payment_method</span> on the payment step.</td>
+          </tr>
+          <tr>
+            <td class="action">Payment succeeds<small>Subscription created</small></td>
+            <td><span class="tag preserved">Preserved</span> <span class="mono">page-sub6</span> fires <span class="mono">event8</span> + <span class="mono">purchase</span> plus product / identity eVars.</td>
+            <td class="c-new"><span class="tag preserved">Preserved</span> <span class="mono">checkout-completed</span> fires the same <span class="mono">event8</span> + <span class="mono">purchase</span> + eVars. Only the <span class="mono">prop62</span> literal changes.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout-muted" style="margin-top: 1rem;">
+        V2 onboarding step also dispatches <span class="mono">analytics.page-nlselect</span>. No Launch rule subscribes. Has fired into nothing on most brands since the V2 onboarding split. Resolves at v3 cutover.
+      </div>
+
+      <p class="src">Source: knowledge/adobe-launch/rules.md (page-sub3/4/5/6); knowledge/website-data-layer/events.md (V1/V2 step semantics); Checkout v3 analytics contract.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Paywall: today vs. server-side paywall</h3>
+
+      <table class="cmp" aria-label="Paywall flow comparison: today versus server-side paywall MVP">
+        <colgroup>
+          <col class="c-action">
+          <col class="c-today">
+          <col class="c-new">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>User action</th>
+            <th class="c-today">Today (Piano + Sophi)</th>
+            <th class="c-new">Server-side paywall (MVP)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="action">Wall renders<small>Article hit + decision (hardwall or regwall)</small></td>
+            <td><span class="tag sunset">Retires per brand</span> Sophi populates 10 eVars (<span class="mono">eVar140&ndash;149</span>) on every article hit.</td>
+            <td class="c-new"><span class="tag preserved">Preserved</span> <span class="mono">page-article</span> rule fires (same as today). SSP writes <span class="mono">event.article_walled / sub_hw / reg_hw</span> directly (event86/83 slots preserved &mdash; saved reports keep working). <span class="tag new">New</span> <span class="mono">eVar153 ← paywall.version</span> &mdash; string identifier of which deployed paywall artifact was shown (fills the gap of having zero historical record today).</td>
+          </tr>
+          <tr>
+            <td class="action">User clicks wall CTA<small>Subscribe (hardwall) / Register (regwall)</small></td>
+            <td><span class="tag warn">Two writers</span> <span class="mono">click-hardwall</span> Launch rule + <span class="mono">useEventTracking()</span> bypass both fire on any wall CTA. Sets <span class="mono">event4</span> + <span class="mono">prop62 = 'click-hardwall'</span>.</td>
+            <td class="c-new"><span class="tag preserved">Preserved</span> <span class="mono">click-hardwall</span> rule unchanged. New SSP CTA component dispatches it on every brand (closes FU-068 bypass gap). <span class="mono">paywall.version</span> inherits to click hit via Adobe visit-scoped eVar persistence.</td>
+          </tr>
+          <tr>
+            <td class="action">Wallet-pay completes<small>Apple Pay / Google Pay from paywall</small></td>
+            <td><span class="tag none">Routes through legacy checkout</span> Not integrated at paywall today.</td>
+            <td class="c-new"><span class="tag preserved">Preserved</span> <span class="mono">checkout-completed</span> fires with <span class="mono">prop62 = 'paywall-walletpay'</span>.</td>
+          </tr>
+          <tr>
+            <td class="action">Wall suppressed<small>Logged-in user, etc.</small></td>
+            <td><span class="tag sunset">Was never live</span> <span class="mono">wall.suppressReason</span> is written but no rule reads it.</td>
+            <td class="c-new"><span class="tag none">No client signal</span> Suppressed walls don't render. No event fires.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout-muted" style="margin-top: 1rem;">
+        <span class="mono">wall.suppressReason</span>, <span class="mono">eVar136</span> (piano_ab), and <span class="mono">eVar85</span> seed label all retire. Sophi block goes dark per brand on cutover. Dismiss tracking, variant, experiment, ab_group fields land in Phase 2 when dynamic decisioning ships.
+      </div>
+
+      <p class="src">Source: knowledge/flows/paywall-decision.md, knowledge/adobe-launch/rules.md; consolidated contract at derivatives/2026-05-17-checkout-paywall-analytics-contract.md.</p>
+    </div>
+
+  </section>
+
+  <section class="primary" id="s3">
+    <div class="kicker"><span class="sec-num">03</span>Continuity</div>
+    <h2>What stays countable. What changes in Workspace. What dbt picks up.</h2>
+    <p class="lead">Adobe Workspace counts numeric slots, not Launch rule names. Cutover does not break weekly KPI reads at the slot level.</p>
+
+    <div class="panel">
+      <h3>What Adobe Workspace sees</h3>
+
+      <ul class="data-bullets">
+        <li><b><span class="mono">event8</span> (subscription completion counter) stays <span class="mono">event8</span></b> regardless of which Launch rule writes to it.</li>
+        <li><b>Three writers after cutover:</b> <span class="mono">checkout-completed</span> (new v3 completion rule), <span class="mono">page-sub6</span> (legacy V1/V2 completion rule, alive on unmigrated brands during rollout), <span class="mono">page-upsell3</span> (upsell completion, out of scope, unchanged).</li>
+        <li><b>May 2026 row and December 2026 row are directly comparable.</b> No bridge query. No merge model.</li>
+      </ul>
+
+      <div class="recipe"><span class="rcomment"># Per-brand weekly subscription completions across the cutover</span>
+Freeform table:
+  <span class="rkey">Metric</span>     &rarr; event8
+  <span class="rkey">Dimension</span>  &rarr; report_suite (brand)
+  <span class="rkey">Breakdown</span>  &rarr; week
+  <span class="rkey">Window</span>     &rarr; 2026-05-01 through 2026-12-31
+
+<span class="rcomment"># For per-surface attribution after cutover, add prop62 as a secondary breakdown:</span>
+  <span class="rkey">+ prop62</span>  filter IN ('page-sub6', 'checkout-v3-complete', 'paywall-walletpay')</div>
+
+      <h4 style="margin-top: 1.75rem; margin-bottom: 0.5rem;">Three edits to historic reports</h4>
+      <ul class="data-bullets">
+        <li><b>Saved reports filtering on <span class="mono">prop62 = 'page-sub6'</span>:</b> broaden to <span class="mono">IN ('page-sub6', 'checkout-v3-complete', 'paywall-walletpay')</span>. One Workspace edit per report.</li>
+        <li><b>Per-step counters retire on full v3 rollout:</b> <span class="mono">event13</span> (account), <span class="mono">event14</span> (address), <span class="mono">event15</span> (payment). Per-step analysis becomes a <span class="mono">step_name</span> breakdown on the new step-viewed event.</li>
+        <li><b>New MVP conversion-rate KPI.</b> <span class="mono">checkout_started</span> fires on <span class="mono">/subscribe</span> page-load. The MVP KPI is <span class="mono">checkout_completed / checkout_started</span>. Denominator is everyone who loaded /subscribe, not just users who reached the account form. Not directly comparable to V2's <span class="mono">event8 / event13</span> ratio.</li>
+        <li><b>V2-comparable funnel is derivable.</b> Filter <span class="mono">step_name IN ('payment', 'account', 'address', 'intent_capture')</span> on <span class="mono">checkout_step_viewed</span> to strip out <span class="mono">'plan_selection'</span> entrants. The resulting conversion rate matches V2's <span class="mono">event13</span>-based denominator and is back-comparable across the cutover.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>What Redshift sees</h3>
+
+      <ul class="data-bullets">
+        <li><b>No KPI presentation breaks.</b> <span class="mono">event8</span> keeps materializing in <span class="mono">cdw_02_stg.digital_events</span> exactly as today. <span class="mono">pelcro_daily_subscription_statuses.is_new</span> is server-side, oblivious to the front-end shape. <span class="mono">pelcro_weekly_summary</span> and <span class="mono">article_performance</span> keep counting completions correctly. Zero dbt model change.</li>
+        <li><b>Expose <span class="mono">prop62</span> in the curated view (open follow-up).</b> <span class="mono">prop62</span> is the Launch-rule attribution literal. After cutover its literals distinguish v3 completion (<span class="mono">'checkout-v3-complete'</span>), paywall wallet-pay (<span class="mono">'paywall-walletpay'</span>), and legacy V1/V2 completion (<span class="mono">'page-sub6'</span>). Surfacing the column enables surface-attribution analysis: which surface produced which completion. Becomes a KPI, not a convenience field.</li>
+        <li><b>Add a <span class="mono">checkout_version</span> column to the digital_events staging model.</b> Values <span class="mono">'v1' / 'v2' / 'v3'</span>, derived from <span class="mono">page.name</span> and <span class="mono">prop62</span> literals. Makes dual-publish-window analysis a <span class="mono">GROUP BY</span> instead of heuristic re-derivation. Stays useful after rollout for historical cohort splits.</li>
+        <li><b>Deprecate <span class="mono">cdw_03_prs.sophi.sophi_all_brands_daily</span> after Sept 30.</b> Model goes per-brand stale through cutover window. Keep alive for control-cohort analysis until last brand cuts over. Deprecate after, historicals preserved.</li>
+        <li><b>Phase 2 only:</b> when dynamic paywall decisioning ships, revisit a <span class="mono">paywall_decision_id</span> staging column to join checkout-side hits to a richer server decision log. Not in scope for MVP.</li>
+      </ul>
+
+      <h4 style="margin-top: 1.75rem; margin-bottom: 0.5rem;">Net Adobe slot count after Sept 30</h4>
+      <table class="slot-net" aria-label="Net Adobe slot change after Sept 30 cutover">
+        <thead>
+          <tr>
+            <th>Surface</th>
+            <th class="num">New</th>
+            <th class="num">Retired</th>
+            <th class="num">Net</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label">Checkout</td>
+            <td class="num">+1</td>
+            <td class="num">&minus;3</td>
+            <td class="num"><b>&minus;2</b></td>
+            <td>+1 prop (<span class="mono">step_name</span>). &minus;3 events (<span class="mono">event13 / 14 / 15</span> retire on full rollout).</td>
+          </tr>
+          <tr>
+            <td class="label">Paywall</td>
+            <td class="num">+2</td>
+            <td class="num">&minus;11</td>
+            <td class="num"><b>&minus;9</b></td>
+            <td>+2 eVars (<span class="mono">paywall.version</span> at eVar153, <span class="mono">user.status</span> binding at eVar154). &minus;10 Sophi eVars (<span class="mono">eVar140&ndash;149</span>) + &minus;1 piano_ab (<span class="mono">eVar136</span>). Event slots <span class="mono">event83/86/87</span> PRESERVED via SSP-direct writes (saved reports unchanged).</td>
+          </tr>
+          <tr class="total">
+            <td class="label">Portfolio</td>
+            <td class="num">+3</td>
+            <td class="num">&minus;14</td>
+            <td class="num"><b>&minus;11</b></td>
+            <td>Net active Adobe slots after Sept 30.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="src">Source: knowledge/redshift-presentation/cross-stack-tracebacks.md (Traceback #3 canonical Adobe completion path); derivatives/known-issues-and-actions.md.</p>
+  </section>
+
+  <div class="appx-break">
+    <h2>Appendix</h2>
+    <div class="sub">Data layer reference and Adobe slot mapping.</div>
+  </div>
+
+  <section class="primary appendix" id="a1">
+    <div class="kicker"><span class="sec-num">A1</span>Data layer</div>
+    <h2>Data layer today vs after cutover, side by side.</h2>
+
+      <div class="recipe"><span class="rcomment"># Universal context &mdash; every checkout / paywall hit carries this (unchanged after cutover)</span>
+<span class="rkey">"triggerAnalytics"</span>: true,
+<span class="rkey">"user"</span>: {
+  <span class="rkey">"id"</span>: 4581190, <span class="rcomment"># Pelcro customer id</span>
+  <span class="rkey">"status"</span>: "subscribed",   <span class="rcomment"># or 'registered' or 'anonymous'</span>
+  <span class="rkey">"subtype"</span>: "Corporate Digital All Access",
+  <span class="rkey">"subterm"</span>: "year",
+  <span class="rkey">"sub_id"</span>: 87630,
+  <span class="rkey">"industry"</span>: "S3", <span class="rkey">"title"</span>: "38"
+},
+<span class="rkey">"blueconic"</span>: { <span class="rkey">"profileid"</span>: "8db63ec1-da61-4cbe-baff-adbe4fd513aa" },
+<span class="rkey">"consent"</span>: { <span class="rkey">"hasConsent"</span>: true, <span class="rkey">"source"</span>: "trustarc" },
+<span class="rkey">"site"</span>: {
+  <span class="rkey">"url"</span>: "https://www.autonews.com/checkout/",
+  <span class="rkey">"region_site"</span>: "usa"
+}</div>
+
+      <h4 style="margin-top: 1.75rem;">Paywall renders + clicks</h4>
+      <p class="recipe-hint"><small>No new client events at MVP. Existing event slots (<span class="mono">event86 / event87 / event83</span>) preserved via SSP-direct writes (saved reports keep working). One new eVar mint: <span class="mono">eVar153 paywall.version</span> &mdash; identifies which deployed paywall artifact was rendered.</small></p>
+      <div class="dl-compare">
+        <div class="col col-today">
+          <div class="col-label">Today &mdash; AN BMW article, wall visible (live capture)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "page-article" },
+<span class="rkey">"event"</span>: { <span class="rkey">"article_walled"</span>: 1, <span class="rkey">"sub_hw"</span>: 1 },
+<span class="rkey">"sophi"</span>: {
+  <span class="rkey">"decisionSource"</span>: "override",
+  <span class="rkey">"wallType"</span>: "paywall",
+  <span class="rkey">"wallVisibility"</span>: "always",
+  <span class="rkey">"experimentId"</span>: "pw:article:test8_ab",
+  <span class="rkey">"assignedGroup"</span>: "control",
+  <span class="rkey">"trace"</span>: "&hellip;", <span class="rkey">"context"</span>: "&hellip;", <span class="rkey">"inputs"</span>: "&hellip;"
+},
+<span class="rkey">"wall"</span>: { <span class="rkey">"suppressReason"</span>: "visible" },
+<span class="rkey">"site"</span>: { <span class="rkey">"piano_ab"</span>: "subhw-ui:260323:sub-wall:&hellip;" }
+<span class="rcomment"># On click: analytics.click-hardwall + event.subreg_hw:1</span></div>
+        </div>
+        <div class="col col-new">
+          <div class="col-label">After cutover &mdash; SSP MVP</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "page-article" },   <span class="rcomment"># unchanged</span>
+<span class="rkey">"event"</span>:     { <span class="rkey">"article_walled"</span>: 1, <span class="rkey">"sub_hw"</span>: 1 },  <span class="rcomment"># SSP-direct writes</span>
+<span class="rkey">"paywall"</span>:   { <span class="rkey">"version"</span>: "hardwall-premium-2026-q3" }  <span class="rcomment"># NEW dimension</span>
+<span class="rcomment"># Binds eVar153 ← paywall.version on page-article.</span>
+<span class="rcomment"># On click: analytics.click-hardwall (preserved); paywall.version</span>
+<span class="rcomment"># inherits to click hit via Adobe visit-scoped eVar persistence.</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: 1.75rem;">Checkout entry</h4>
+      <p class="recipe-hint"><small>Universal context unchanged. Note: today on PageBuilder <span class="mono">/subscribe</span>; after on Vercel subdomain <span class="mono">checkout.&lt;brand&gt;.com</span> (subdomain config required per Open Items #12-13).</small></p>
+      <div class="dl-compare">
+        <div class="col col-today">
+          <div class="col-label">Today &mdash; <span class="mono">www.&lt;brand&gt;.com/subscribe</span> (live capture)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "page-sub1" },
+<span class="rkey">"event"</span>:     { <span class="rkey">"sub_1"</span>: 1, <span class="rkey">"sub_2"</span>: 1 },
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "Subscribe:1-2:Name-Term",
+              <span class="rkey">"type"</span>: "subscription" },
+<span class="rkey">"checkout"</span>:  <span class="rcomment">// namespace does not exist</span>
+<span class="rkey">"sophi"</span>:     { <span class="rkey">"decisionSource"</span>: "override", <span class="rkey">"&hellip;"</span>: "&hellip;" },
+<span class="rkey">"wall"</span>:      { <span class="rkey">"suppressReason"</span>: "ip" }</div>
+        </div>
+        <div class="col col-new">
+          <div class="col-label">After cutover &mdash; <span class="mono">checkout.&lt;brand&gt;.com</span> (proposed)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "checkout-started" },
+<span class="rkey">"event"</span>:     {},
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "checkout:plan_selection",      <span class="rcomment"># naming TBD per spec</span>
+              <span class="rkey">"type"</span>: "subscription" },
+<span class="rkey">"checkout"</span>:  {
+  <span class="rkey">"source"</span>: "paywall",       <span class="rcomment">#   9-value enum (paywall / direct / email / &hellip;)</span>
+  <span class="rkey">"plan_id"</span>: "29851",       <span class="rcomment">#   if pre-resolved via URL</span>
+  <span class="rkey">"product_id"</span>: "2194",
+  <span class="rkey">"campaign_key"</span>: "&lt;key&gt;"
+},
+<span class="rkey">"sophi"</span>:     <span class="rcomment">// not a Sophi decision surface; block does not fire</span>
+<span class="rkey">"wall"</span>:      <span class="rcomment">// no content gating on checkout subdomain</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: 1.75rem;">Step viewed &mdash; payment</h4>
+      <p class="recipe-hint"><small>Universal context unchanged. After-cutover shows TWO dispatches: step-viewed on mount, step-completed on submit.</small></p>
+      <div class="dl-compare">
+        <div class="col col-today">
+          <div class="col-label">Today &mdash; Subscribe:5:Payment, V2 (live capture)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "page-sub5" },
+<span class="rkey">"event"</span>:     { <span class="rkey">"sub_5"</span>: 1 },
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "Subscribe:5:Payment",
+              <span class="rkey">"type"</span>: "subscription" },
+<span class="rkey">"checkout"</span>:  <span class="rcomment">// namespace does not exist</span>
+<span class="rcomment"># Plus useViewTracking direct-bypass fires event15 from</span>
+<span class="rcomment"># CheckoutPayment/V2 OUTSIDE Launch (validation memo CODE-01).</span></div>
+        </div>
+        <div class="col col-new">
+          <div class="col-label">After cutover &mdash; v3 checkout_step_viewed + _completed</div>
+          <div class="recipe"><span class="rcomment"># On mount:</span>
+<span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "checkout-step-viewed" },
+<span class="rkey">"event"</span>:     {},
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "checkout:step:payment",          <span class="rcomment"># naming TBD per spec</span>
+              <span class="rkey">"type"</span>: "subscription" },
+<span class="rkey">"checkout"</span>:  {
+  <span class="rkey">"step"</span>: 1, <span class="rkey">"step_name"</span>: "payment"      <span class="rcomment">#   5-value enum; auth via user.status</span>
+}
+
+<span class="rcomment"># On submit (one rule routes all step-completions):</span>
+<span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "checkout-step-completed" },
+<span class="rkey">"checkout"</span>:  {
+  <span class="rkey">"step"</span>: 1, <span class="rkey">"step_name"</span>: "payment",
+  <span class="rkey">"status"</span>: "success",                  <span class="rcomment">#   or 'failure' + failure_reason</span>
+  <span class="rkey">"payment_method"</span>: "apple_pay"
+}</div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: 1.75rem;">Checkout completion</h4>
+      <p class="recipe-hint"><small>Universal context unchanged. <span class="mono">product.*</span> namespace preserved unchanged on completion (drives Adobe e-commerce); fields elided in both columns for clarity &mdash; full enumeration in <span class="mono">derivatives/2026-05-17-data-layer-contract.md</span> &sect;3.8.</small></p>
+      <div class="dl-compare">
+        <div class="col col-today">
+          <div class="col-label">Today &mdash; Subscribe:6:Complete (live capture)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "page-sub6" },
+<span class="rkey">"event"</span>:     { <span class="rkey">"sub_4"</span>: 1, <span class="rkey">"sub_6"</span>: 1, <span class="rkey">"tool_desc"</span>: 1 },
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "Subscribe:6:Complete" },
+<span class="rkey">"checkout"</span>:  <span class="rcomment">// namespace does not exist</span>
+<span class="rkey">"site"</span>:      {
+  <span class="rkey">"tool"</span>: "event:subscribed",
+  <span class="rkey">"tool_desc"</span>: "event:subscribed:Premium-Annual"
+},
+<span class="rkey">"product"</span>:   { <span class="rkey">"sproducts"</span>: "subscription;basic-year;1;199.00",
+              <span class="rkey">"&hellip;"</span>: "&hellip;" },     <span class="rcomment"># 10 product fields preserved</span>
+<span class="rcomment"># Plus Onboarding direct-bypass fires event8 + event50 +</span>
+<span class="rcomment"># purchase OUTSIDE Launch (validation memo CODE-02).</span></div>
+        </div>
+        <div class="col col-new">
+          <div class="col-label">After cutover &mdash; v3 checkout_completed (proposed)</div>
+          <div class="recipe"><span class="rkey">"analytics"</span>: { <span class="rkey">"trigger"</span>: "checkout-completed" },
+<span class="rkey">"event"</span>:     {},
+<span class="rkey">"page"</span>:      { <span class="rkey">"name"</span>: "checkout:complete" },        <span class="rcomment"># naming TBD per spec</span>
+<span class="rkey">"checkout"</span>:  {
+  <span class="rkey">"plan_id"</span>: "29851", <span class="rkey">"product_id"</span>: "2194",
+  <span class="rkey">"subscription_id"</span>: "87630",
+  <span class="rkey">"payment_method"</span>: "apple_pay",
+  <span class="rkey">"discount_per"</span>: 10,
+  <span class="rkey">"entitlement_status"</span>: "success"
+},
+<span class="rkey">"site"</span>:      { <span class="rkey">"tool"</span>: "event:checkout-complete" },
+<span class="rkey">"product"</span>:   { <span class="rcomment">// price, currency, coupon, promo all here; drives s.products + eVar70 + eVar82</span> }</div>
+        </div>
+      </div>
+
+      <div class="callout-muted" style="margin-top: 1.5rem;">
+        Three flags on completion today are written but no Launch rule reads them: <span class="mono">event.sub_4</span>, <span class="mono">event.tool_desc</span>, and (separately) <span class="mono">wall.suppressReason</span> from the paywall surface. Dead on wire today. Cleanup happens with the V1/V2 retirement.
+      </div>
+
+    <p class="src">Source: live data layer captures from AN staging 2026-05-18 (9 surface JSONs at <span class="mono">derivatives/captures/2026-05-18-*.json</span>) calibrated against production captures Sean provided; live `crain-web-mono-main` code; ARC-3684 PoC. Full per-field citations: <span class="mono">derivatives/2026-05-17-data-layer-contract.md</span>.</p>
+  </section>
+
+  <section class="primary appendix" id="a2">
+    <div class="kicker"><span class="sec-num">A2</span>Slot mapping</div>
+    <h2>How each data layer key lands in Adobe Analytics.</h2>
+
+      <table class="dl-map" aria-label="Data layer to Adobe slot translation">
+        <colgroup>
+          <col class="col-key">
+          <col class="col-today">
+          <col class="col-after">
+          <col class="col-notes">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Data layer key</th>
+            <th>Adobe slot today</th>
+            <th>Adobe slot after cutover</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">triggerAnalytics === false</span></td>
+            <td>(master gate)</td>
+            <td>(unchanged)</td>
+            <td>Suppresses all Adobe dispatch on admin and <span class="mono">/pf/*</span> preview routes.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">user.id</span></td>
+            <td><span class="mono">eVar60</span> / <span class="mono">prop60</span></td>
+            <td>(unchanged) &mdash; cross-subdomain risk</td>
+            <td>Pelcro identity bridge. Cross-stack join key &mdash; required for warehouse joins to <span class="mono">pelcro_customeraccountid</span>. Cookie domain on <span class="mono">checkout.&lt;brand&gt;.com</span> must be configured (Open Item #13).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">user.status</span></td>
+            <td>(no Adobe binding; Hotjar-only)</td>
+            <td><span class="mono">eVar154</span> &mdash; <strong>NEW BINDING</strong></td>
+            <td>Universal user-state. <span class="mono">'anonymous'</span> / <span class="mono">'registered'</span> / <span class="mono">'subscribed'</span>. No separate <span class="mono">segment</span> field minted (INT-04 resolution 2026-05-18).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">user.industry</span></td>
+            <td><span class="mono">eVar62</span></td>
+            <td>(unchanged) &mdash; <strong>stays at account step</strong></td>
+            <td>Stamped at <span class="mono">page-sub3</span> (account entry) today; bind on <span class="mono">checkout_step_viewed(step_name='account')</span> post-cutover. NOT at completion (per validation memo ADO-02).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">user.title</span></td>
+            <td><span class="mono">eVar63</span></td>
+            <td>(unchanged) &mdash; stays at account step</td>
+            <td>Same step as industry.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">user.sub_id</span></td>
+            <td><span class="mono">eVar67</span></td>
+            <td>(unchanged) &mdash; binds on <span class="mono">checkout_completed</span></td>
+            <td>New Pelcro subscription id at completion.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">blueconic.profileid</span></td>
+            <td><span class="mono">eVar151</span></td>
+            <td>(unchanged) &mdash; subdomain listener config required</td>
+            <td>BlueConic identity. Bound on page-view rules; newly wired into CCB page-view rules 2026-05-11.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">consent.hasConsent</span></td>
+            <td><span class="mono">eVar150</span></td>
+            <td>(unchanged)</td>
+            <td>TrustArc consent state.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">analytics.trigger</span></td>
+            <td><span class="mono">prop62</span> &mdash; literals like <span class="mono">'page-sub3'</span>, <span class="mono">'page-sub6'</span></td>
+            <td><span class="mono">prop62</span> &mdash; new literals <span class="mono">'checkout-started'</span>, <span class="mono">'checkout-step-viewed'</span>, <span class="mono">'checkout-step-completed'</span>, <span class="mono">'checkout-v3-complete'</span>, <span class="mono">'paywall-walletpay'</span>. Paywall renders + clicks ride on existing <span class="mono">'page-article'</span> + <span class="mono">'click-hardwall'</span> literals (no new paywall events at MVP per §2.2).</td>
+            <td>Surface attribution mechanism preserved. <strong>HARD PRECONDITION: enable <span class="mono">prop62</span> on CCB rsid + brand fleet sweep</strong> (currently disabled; every <span class="mono">prop62</span> query returns zero rows on MVP brand).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_1 = 1</span> + <span class="mono">event.sub_2 = 1</span></td>
+            <td>(no direct binding; <span class="mono">page-sub1</span> rule fires <span class="mono">event6, event12</span>)</td>
+            <td><strong>RETIRES</strong> with V1/V2 sunset</td>
+            <td>Entry signal today. Replaced by <span class="mono">checkout_started</span> event (<span class="mono">event44</span> mint) + first <span class="mono">checkout_step_viewed(step_name='plan_selection')</span> post-cutover.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_3 = 1</span></td>
+            <td><span class="mono">event13</span> (via <span class="mono">page-sub3</span>)</td>
+            <td><strong>RETIRES</strong> &rarr; <span class="mono">step_name='account'</span> slice on <span class="mono">checkout_step_viewed</span></td>
+            <td>Account-step counter. Direct-bypass writer in <span class="mono">Form/Register/index.tsx</span> + <span class="mono">RegisterV2</span> also retires (per validation memo CODE-01).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_5 = 1</span></td>
+            <td><span class="mono">event15</span> (via <span class="mono">page-sub5</span>)</td>
+            <td><strong>RETIRES</strong> &rarr; <span class="mono">step_name='payment'</span> slice</td>
+            <td>Payment-step counter. Direct-bypass writer in <span class="mono">CheckoutPayment/V2</span> retires too.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_6 = 1</span></td>
+            <td><span class="mono">event8</span> + <span class="mono">purchase</span> + <span class="mono">event50</span> (via <span class="mono">page-sub6</span>)</td>
+            <td><strong>PRESERVED</strong> canonical combo at <span class="mono">checkout-completed</span> rule + at <span class="mono">paywall-walletpay</span> (wallet-pay surface) + legacy <span class="mono">page-sub6</span> during rollout</td>
+            <td>Subscription completion counter. Production-anchor. Plus conditional <span class="mono">event9</span> (coupon present) and <span class="mono">event19</span> (error) reimplemented on new rule customCode per ADO-07.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_4 = 1</span></td>
+            <td>(dead &mdash; no rule reads it)</td>
+            <td><strong>RETIRES</strong></td>
+            <td>Written by V2 at completion. No Launch DE binds. Sunset with V1/V2 retirement.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.tool_desc = 1</span></td>
+            <td>(dead)</td>
+            <td><strong>RETIRES</strong></td>
+            <td>Same. <span class="mono">Onboarding/index.tsx:176</span>'s coupon-string anomaly resolves with V1 sunset.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.list = 'event1'</span> + <span class="mono">event.reg_done = 1</span></td>
+            <td>(via <span class="mono">page-regdone</span>; list-var binding TBD)</td>
+            <td><strong>TBD</strong> &mdash; fold into <span class="mono">checkout_step_completed(step_name='account', status='success')</span> or preserve as discrete trigger</td>
+            <td>Registration completion counter (newly observed via live capture 2026-05-18; absent from v1 contract).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">product.coupon</span></td>
+            <td><span class="mono">eVar70</span> composite <span class="mono">${coupon}:${discount_per}</span></td>
+            <td><span class="mono">eVar70</span> (unchanged composite format) at <span class="mono">checkout-completed</span></td>
+            <td>Coupon code at completion. Overloaded slot &mdash; also carries <span class="mono">article_type</span> on <span class="mono">page-article</span>. Disambiguate via <span class="mono">prop62</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">product.sproducts</span> / <span class="mono">subtype</span> / <span class="mono">subterm</span></td>
+            <td><span class="mono">eVar82</span> + <span class="mono">s.products</span> at <span class="mono">page-sub6</span></td>
+            <td><span class="mono">eVar82</span> + <span class="mono">s.products</span> at <span class="mono">checkout-completed</span></td>
+            <td>Standard Adobe product-syntax string at completion. Drives e-commerce reports.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">site.tool</span></td>
+            <td><span class="mono">eVar50</span> &mdash; <span class="mono">'event:subscribed'</span> on completion</td>
+            <td><span class="mono">eVar50</span> &mdash; new literal <span class="mono">'event:checkout-complete'</span></td>
+            <td>Action label literal. <strong>NOT product.name &mdash; that data element doesn't exist (ADO-01).</strong></td>
+          </tr>
+          <tr>
+            <td><span class="mono">site.tool_desc</span></td>
+            <td><span class="mono">eVar51</span> &mdash; <span class="mono">'event:subscribed:Premium-Annual'</span></td>
+            <td><span class="mono">eVar51</span> &mdash; composed plan-classification literal</td>
+            <td>Plan classification per-row. Useful for completion-row breakdown.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">sophi.trace</span> / <span class="mono">context</span> / <span class="mono">inputs</span> / <span class="mono">experimentsCode</span> / <span class="mono">experimentId</span> / <span class="mono">assignedGroup</span> / <span class="mono">decisionSource</span> / <span class="mono">wallVisibility</span> / <span class="mono">wallType</span></td>
+            <td><span class="mono">eVar140</span> / <span class="mono">141</span> / <span class="mono">142</span> / <span class="mono">143</span> / <span class="mono">144</span> / <span class="mono">145</span> / <span class="mono">146</span> / <span class="mono">148</span> / <span class="mono">149</span></td>
+            <td><strong>SUNSET at MVP cutover</strong> per-brand (July 30 CCB &rarr; Sept 30 all brands); data-layer keys also retire at MVP (no lift-and-shift)</td>
+            <td>Sophi block. <span class="mono">eVar149 sophi.wallType</span> carries <span class="mono">'paywall'</span> or <span class="mono">'regwall'</span> &mdash; NOT <span class="mono">'hardwall'</span>. After MVP cutover: Sophi block sunsets entirely; wall-type info stays in preserved counter slots (event83 sub_hw / reg_hw slot); eVar153 mints for <span class="mono">paywall.version</span> (different dimension).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">site.piano_ab</span></td>
+            <td><span class="mono">eVar136</span></td>
+            <td><strong>SUNSETS at MVP cutover</strong></td>
+            <td>Piano experience variant string. Varies by user state (different value space for anonymous wall vs subscribed article).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.article_walled = 1</span></td>
+            <td><span class="mono">event86</span> (via <span class="mono">page-article</span>)</td>
+            <td><strong>PRESERVED at MVP</strong> via SSP-direct writes (writer changes Piano-mimicry → SSP-native; data-layer key + Adobe slot continue)</td>
+            <td>Fires on paywall-visible article hits. Today: Piano <span class="mono">viewEvents</span> unpacking in <span class="mono">ArticleBodyChain/default.tsx:853-855</span>. After MVP: SSP writes directly when it renders a wall.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.article_nowall = 1</span></td>
+            <td><span class="mono">event87</span> (paired with <span class="mono">article_walled</span>)</td>
+            <td><strong>PRESERVED at MVP</strong> via SSP-direct writes alongside <span class="mono">article_walled</span></td>
+            <td>Fires on accessible-article hits (subscribed user, no wall). <strong>Absent from v1 contract; added 2026-05-18 v2.</strong> Phase 2 candidate replacement: <span class="mono">content_access_granted</span> event with <span class="mono">wall_type</span> + <span class="mono">decision_path</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.sub_hw = 1</span></td>
+            <td><span class="mono">event83</span></td>
+            <td><strong>PRESERVED at MVP</strong> via SSP-direct writes (writer changes Piano-mimicry → SSP-native; data-layer key + Adobe slot continue)</td>
+            <td>Sub-hardwall flag. Today: Piano <span class="mono">viewEvents</span>-unpacked. After MVP: SSP writes directly when it renders a hardwall. Distinct from <span class="mono">event.subreg_hw</span> (Piano hardwall CTA click — retires at MVP).</td>
+          </tr>
+          <tr>
+            <td><span class="mono">event.reg_hw = 1</span></td>
+            <td>(slot TBD &mdash; Reactor walkthrough needed)</td>
+            <td><strong>PRESERVED at MVP</strong> via SSP-direct writes (writer changes Piano-mimicry → SSP-native; data-layer key + Adobe slot continue)</td>
+            <td>Regwall hardwall flag (fires when <span class="mono">article.access='registration-required'</span>). <strong>Absent from v1 contract; added 2026-05-18 v2.</strong></td>
+          </tr>
+          <tr>
+            <td><span class="mono">event4</span> (hardwall click)</td>
+            <td><span class="mono">event4</span> via <span class="mono">analytics.click-hardwall</span> Launch rule + per-brand direct-bypass writers (~13 brands)</td>
+            <td><strong>PRESERVED</strong> &mdash; new paywall MUST dispatch <span class="mono">analytics.click-hardwall</span> on ALL brands</td>
+            <td>Bridge from paywall to checkout. <strong>Pre-cutover audit (FU-068) required</strong> &mdash; ~13 brands fire <span class="mono">event4</span> via direct-AppMeasurement bypass only; they lose <span class="mono">event4</span> entirely at cutover if Launch trigger isn't dispatched.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">wall.suppressReason</span></td>
+            <td>(no rule reads it)</td>
+            <td>(dead; retires)</td>
+            <td>Never queryable in Adobe today or after. Candidate slot <span class="mono">eVar85</span> actually carries <span class="mono">"GAM Ad ID"</span>.</td>
+          </tr>
+          <tr class="row-new">
+            <td><span class="mono">paywall.version</span></td>
+            <td>(does not exist)</td>
+            <td><span class="mono">eVar153</span> &mdash; <strong>NEW MINT, binds on existing page-article rule</strong></td>
+            <td>String identifier of the deployed paywall artifact (e.g., <span class="mono">'hardwall-premium-2026-q3'</span>, <span class="mono">'summer-promo-2026-08'</span>). Set by SSP at render time from its config. Conditionally set when paywall renders. Click hits inherit via Adobe visit-scoped eVar persistence. <strong>Fills the gap of having zero historical record today of which paywall design/offer was rendered at any given moment.</strong> Distinct from Phase 2 <span class="mono">decision_source</span> / <span class="mono">variant_id</span> (those are dynamic-decisioning fields). Seed label: <span class="mono">'paywall_version'</span>.</td>
+          </tr>
+          <tr class="row-new">
+            <td><span class="mono">paywall.decision_source</span></td>
+            <td>(does not exist)</td>
+            <td><span class="mono">eVar155</span> &mdash; <strong>RESERVED (Phase 2)</strong></td>
+            <td>Deferred to Phase 2 alongside the dynamic-decisioning surface (re-decision 2026-05-18; see Open Item #6). Degenerate at MVP with only one possible value (<span class="mono">'rules_engine'</span>) until the override surface ships.</td>
+          </tr>
+          <tr class="row-new">
+            <td><span class="mono">checkout.step_name</span></td>
+            <td>(does not exist)</td>
+            <td><span class="mono">prop39</span> &mdash; <strong>NEW MINT</strong></td>
+            <td>5-value enum: <span class="mono">'plan_selection'</span> / <span class="mono">'payment'</span> / <span class="mono">'account'</span> / <span class="mono">'address'</span> / <span class="mono">'intent_capture'</span>. Seed label: <span class="mono">'checkout_step_name'</span>.</td>
+          </tr>
+          <tr class="row-new">
+            <td><span class="mono">checkout_started</span> event</td>
+            <td>(does not exist)</td>
+            <td><span class="mono">event44</span> &mdash; <strong>NEW MINT</strong></td>
+            <td>Wide-definition checkout-entry counter. Fires on <span class="mono">checkout.&lt;brand&gt;.com</span> load (one-shot per Adobe visit per Open Item #15).</td>
+          </tr>
+        </tbody>
+      </table>
+
+    <p class="src">Source: live Reactor cache rule_components (PRba666e8d77, AN canonical); live Adobe Analytics dimensions API.</p>
+  </section>
+
+
+  <footer class="endnote">
+    Companion contract: <span class="mono">derivatives/2026-05-17-checkout-paywall-analytics-contract.md</span>. Sean Bales &middot; Crain Communications &middot; internal use only.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rail = document.querySelector('.progress-rail');
+  if (!rail) return;
+  let ticking = false;
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
+    rail.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+</body>
+</html>
