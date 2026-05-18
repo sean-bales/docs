@@ -337,10 +337,42 @@ footer.endnote {
 
   <div class="decks-header">
     <h4>Published</h4>
-    <span class="count">9 decks</span>
+    <span class="count">11 decks</span>
   </div>
 
   <ol class="deck-list">
+
+    <li>
+      <div class="deck-meta">
+        <span class="deck-date">05 / 17 / 2026</span>
+        <span class="deck-topic">Analytics spec</span>
+      </div>
+      <div>
+        <h3 class="deck-title"><a href="checkout-paywall-analytics-walkthrough.html">Adobe instrumentation: Checkout v3 + Server-Side Paywall</a></h3>
+        <p class="deck-summary">Spec walkthrough for analytics on the two summer-2026 builds: Checkout v3 (new subscription flow on a Vercel subdomain replacing V1/V2 PageBuilder checkout) and Server-Side Paywall (in-house gate replacing Piano). Pivots checkout to industry-standard named events (<span class="mono">checkout_started</span> / <span class="mono">checkout_step_viewed</span> / <span class="mono">checkout_completed</span>) with step semantics in the payload. Preserves existing paywall event slots (<span class="mono">event83 / event86 / event87</span>) via SSP-direct writes &mdash; saved Workspace + INMA reports keep working unchanged. Mints <span class="mono">eVar153 paywall.version</span> to start tracking which deployed paywall artifact was rendered (a signal Crain has zero historical record of today). MVP brand: CCB July 30; all brands by Sept 30.</p>
+        <div class="deck-tags">
+          <span class="tag">Adobe Analytics</span>
+          <span class="tag">Checkout v3</span>
+          <span class="tag">Server-Side Paywall</span>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="deck-meta">
+        <span class="deck-date">05 / 17 / 2026</span>
+        <span class="deck-topic">Team structure</span>
+      </div>
+      <div>
+        <h3 class="deck-title"><a href="product-data-pmo-structure.html">Team structure: Product, Data, PMO</a></h3>
+        <p class="deck-summary">Three-slide team announcement. Product expands to include Data and Analytics under a single Sr. Director. PMO decouples from product and stands up as its own peer function under a new Director. Three principles anchor the shift: data treated as a product instead of an analytics service, product officially leading initiatives with senior leadership team deciding weekly, and a standalone PMO that frees the product team to focus on product work. Effective 06/01/2026.</p>
+        <div class="deck-tags">
+          <span class="tag">Team</span>
+          <span class="tag">Org chart</span>
+          <span class="tag">Structure</span>
+        </div>
+      </div>
+    </li>
 
     <li>
       <div class="deck-meta">
